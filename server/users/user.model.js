@@ -11,7 +11,6 @@ const schema = new Schema({
   password: {
     type: String,
     required: true,
-    maxlength: 20,
   },
   firstName: {
     type: String,
@@ -36,6 +35,4 @@ schema.set("toJSON", {
   },
 });
 
-const User = mongoose.model("User", schema);
-
-module.exports = { User };
+module.exports = mongoose.model("User", schema);

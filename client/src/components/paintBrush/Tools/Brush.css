@@ -1,0 +1,53 @@
+label.switch {
+  position: relative;
+  display: inline-block;
+  width: 54px;
+  height: 24px;
+}
+
+label.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+label.switch span {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.4s;
+  background: #ccc;
+  border-radius: 14px;
+}
+
+label.switch span:before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 20px;
+  left: 2px;
+  top: 2px;
+  background: #fff;
+  border-radius: 12px;
+  transition: 0.4s;
+}
+
+label.switch input:checked + span {
+  background: #2196f3;
+}
+
+label.switch input:focus + span {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+label.switch input:checked + span:before {
+  transition: 0.4s;
+  transform: translateX(29px);
+}

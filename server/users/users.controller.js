@@ -14,6 +14,7 @@ router.delete("/:id", _delete);
 module.exports = router;
 
 function authenticate(req, res, next) {
+  console.log(req.body);
   userService
     .authenticate(req.body)
     .then((user) =>
@@ -26,14 +27,14 @@ function authenticate(req, res, next) {
 function register(req, res, next) {
   userService
     .createAccount(req.body)
-    .then(() => res.json({}))
+    .then(() => res.status(200).json({ message: "signin success" }))
     .catch((err) => next(err));
 }
 
 function getAll(req, res, next) {
   userService
     .getAll()
-    .then((users) => res.json(users))
+    .then((users) => res.status(200).json(users))
     .catch((err) => next(err));
 }
 
@@ -54,13 +55,13 @@ function getById(req, res, next) {
 function userUpdate(req, res, next) {
   userService
     .userUpdate(req.params.id, req.body)
-    .then(() => res.json({}))
+    .then(() => res.status(200).json({ message: "update success" }))
     .catch((err) => next(err));
 }
 
 function _delete(req, res, next) {
   userService
     .delete(req.params.id)
-    .then(() => res.json({}))
+    .then(() => res.status(200).json({ message: "delete success" }))
     .catch((err) => next(err));
 }

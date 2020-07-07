@@ -1,0 +1,85 @@
+@charset "utf-8";
+
+/*reset*/
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+textarea,
+p,
+blockquote,
+th,
+td,
+input,
+select,
+textarea,
+button {
+  margin: 0;
+  padding: 0;
+}
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+}
+a:link {
+  text-decoration: none;
+}
+a:visited {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: none;
+}
+a:active {
+  text-decoration: none;
+}
+img {
+  border: 0px;
+  max-width: 100%;
+}
+img,
+a,
+label,
+span {
+  vertical-align: middle;
+}
+li {
+  list-style: none;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+var,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-style: normal;
+  font-weight: normal;
+}
