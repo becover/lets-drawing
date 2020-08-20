@@ -40,43 +40,43 @@ const ColorList = styled.ul`
 function Colors({ onChangeColor }) {
   const colors = [
     {
-      color: '#333',
+      color: 'rgba(51, 51, 51, 1)',
       clicked: true,
     },
     {
-      color: '#fff',
+      color: 'rgba(255, 255, 255, 1)',
       clicked: false,
     },
     {
-      color: '#ff1f09',
+      color: 'rgba(255, 31, 9, 1)',
       clicked: false,
     },
     {
-      color: '#ff7e0f',
+      color: 'rgba(255, 126, 15, 1)',
       clicked: false,
     },
     {
-      color: '#ffdf00',
+      color: 'rgba(255, 223, 0, 1)',
       clicked: false,
     },
     {
-      color: '#22ce16',
+      color: 'rgba(34, 206, 22, 1)',
       clicked: false,
     },
     {
-      color: '#0bc5e2',
+      color: 'rgba(11, 197, 226, 1)',
       clicked: false,
     },
     {
-      color: '#1621a7',
+      color: 'rgba(22, 33, 167, 1)',
       clicked: false,
     },
     {
-      color: '#7a21dc',
+      color: 'rgba(122, 33, 220, 1)',
       clicked: false,
     },
     {
-      color: '#ff15ac',
+      color: 'rgba(255, 21, 172, 1)',
       clicked: false,
     },
   ];

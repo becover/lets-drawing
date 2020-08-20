@@ -156,11 +156,7 @@ const BrushTypes = styled.div`
   }
 `;
 
-function Brush({
-  onChangeLineCap,
-  onChangeStatusToPainting,
-  onChangeStatusToFilling,
-}) {
+function Brush({ onChangeLineCap, onChangeStatusToFilling, mode }) {
   const brushs = [
     { type: 'butt', checked: true },
     { type: 'square', checked: false },
@@ -186,15 +182,14 @@ function Brush({
   const toggleSwitch = useCallback(() => {
     if (Switch) {
       onChangeStatusToFilling(false);
-      onChangeStatusToPainting(true);
     } else {
       onChangeStatusToFilling(true);
-      onChangeStatusToPainting(false);
     }
-  }, [Switch, onChangeStatusToFilling, onChangeStatusToPainting]);
+  }, [Switch, onChangeStatusToFilling]);
   useEffect(() => {
-    toggleSwitch();
-  }, [toggleSwitch]);
+    console.log(mode);
+    mode === 'brush' && toggleSwitch();
+  }, [toggleSwitch, mode]);
 
   const onToggleSwitch = (e) => {
     e.preventDefault();
@@ -219,17 +214,18 @@ function Brush({
   const FillIcon = () => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="16"
+      width="17"
       height="20"
-      viewBox="0 0 16 20"
+      viewBox="0 0 17 20"
     >
       <path
-        id="ic_insert_drive_file_24px"
-        d="M6,2A2,2,0,0,0,4.01,4L4,20a2,2,0,0,0,1.99,2H18a2.006,2.006,0,0,0,2-2V8L14,2Zm7,7V3.5L18.5,9Z"
+        id="ic_format_paint_24px"
+        d="M18,4V3a1,1,0,0,0-1-1H5A1,1,0,0,0,4,3V7A1,1,0,0,0,5,8H17a1,1,0,0,0,1-1V6h1v4H9V21a1,1,0,0,0,1,1h2a1,1,0,0,0,1-1V12h8V4Z"
         transform="translate(-4 -2)"
       />
     </svg>
   );
+
   return (
     <BrushContainer>
       <TabToggle switch={Switch}>
@@ -238,7 +234,7 @@ function Brush({
           <SwitchLabel
             htmlFor="brushSwitch"
             className="switch"
-            onClick={onToggleSwitch}
+            onClick={mode === 'brush' && onToggleSwitch}
           >
             <input type="checkbox" id="brushSwitch" checked={Switch} readOnly />
             <span></span>
@@ -251,7 +247,7 @@ function Brush({
           <div
             key={index}
             id={brush.type}
-            onClick={(e) => onChangeLineCaps(e, index)}
+            onClick={(e) => mode === 'brush' && onChangeLineCaps(e, index)}
           >
             <input
               type="radio"

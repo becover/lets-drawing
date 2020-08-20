@@ -6,11 +6,14 @@ import {
   change_linecap,
   change_linewidth,
   change_color,
+  change_mode,
   is_painting,
   is_filling,
   is_pipetting,
   is_picking,
+  is_writing,
 } from '../redux/modules/canvas';
+import { text_mode } from '../redux/modules/text';
 import { undo, redo } from '../redux/modules/history';
 import Brush from '../components/paintBrush/Tools/Brush';
 import Text from '../components/paintBrush/Tools/Text';
@@ -38,14 +41,24 @@ const ToolsButtom = styled.div`
 
 function ToolsContainer() {
   const dispatch = useDispatch();
-  const { isPainting, isPicking } = useSelector(({ canvas }) => ({
+  const { color, isPainting, isPicking, mode } = useSelector(({ canvas }) => ({
+    color: canvas.color,
     isPainting: canvas.isPainting,
     isPicking: canvas.isPicking,
+    mode: canvas.mode,
   }));
 
+  const { text_mode: textMode } = useSelector(({ text }) => ({
+    text_mode: text.text_mode,
+  }));
+
+  const onChangeMode = useCallback((mode) => dispatch(change_mode(mode)), [
+    dispatch,
+  ]);
   const onChangeColor = useCallback((color) => dispatch(change_color(color)), [
     dispatch,
   ]);
+
   const onChangeAlpha = useCallback((color) => dispatch(alpha(color)), [
     dispatch,
   ]);
@@ -63,6 +76,10 @@ function ToolsContainer() {
     (boolean) => dispatch(is_painting(boolean)),
     [dispatch],
   );
+  const onChangeStatusToWriting = useCallback(
+    (boolean) => dispatch(is_writing(boolean)),
+    [dispatch],
+  );
   const onChangeStatusToFilling = useCallback(
     (boolean) => dispatch(is_filling(boolean)),
     [dispatch],
@@ -75,6 +92,11 @@ function ToolsContainer() {
 
   const onChangeStatusToPicking = useCallback(
     (boolean) => dispatch(is_picking(boolean)),
+    [dispatch],
+  );
+
+  const onChangeStatusToTextMode = useCallback(
+    (boolean) => dispatch(text_mode(boolean)),
     [dispatch],
   );
 
@@ -95,9 +117,14 @@ function ToolsContainer() {
           onChangeLineCap={onChangeLineCap}
           onChangeStatusToPainting={onChangeStatusToPainting}
           onChangeStatusToFilling={onChangeStatusToFilling}
+          mode={mode}
         />
-        <Text />
-        <Shapes />
+        <Text
+          onChangeStatusToWriting={onChangeStatusToWriting}
+          onChangeStatusToTextMode={onChangeStatusToTextMode}
+          onChangeMode={onChangeMode}
+        />
+        <Shapes onChangeMode={onChangeMode} />
         <Colors onChangeColor={onChangeColor} />
         <div
           style={{
@@ -120,6 +147,10 @@ function ToolsContainer() {
         <Range
           onChangeLineWidth={onChangeLineWidth}
           onChangeAlpha={onChangeAlpha}
+          onChangeColor={onChangeColor}
+          color={color}
+          canvasMode={mode}
+          textMode={textMode}
         />
         <History onUndo={onUndo} onRedo={onRedo} />
       </ToolsButtom>

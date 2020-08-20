@@ -6,7 +6,9 @@ import {
   is_painting,
   is_clicking,
   is_pipetting,
+  is_writing,
   change_color,
+  change_mode,
 } from '../redux/modules/canvas';
 import { stack_History, remove_redo } from '../redux/modules/history';
 
@@ -45,11 +47,20 @@ function CanvasContainer() {
     shapes: canvas.mode,
   }));
   const { undo } = useSelector(({ history }) => ({ undo: history.undo }));
+  const { mode: textMode } = useSelector(({ text }) => ({
+    mode: text.mode,
+  }));
   const dispatch = useDispatch();
   const onChangeStatusToPainting = useCallback(
     (boolean) => dispatch(is_painting(boolean)),
     [dispatch],
   );
+
+  const onChangeStatusTowriting = useCallback(
+    (boolean) => dispatch(is_writing(boolean)),
+    [dispatch],
+  );
+
   const onChangeStatuesToClicking = useCallback(
     (boolean) => dispatch(is_clicking(boolean)),
     [dispatch],
@@ -64,6 +75,10 @@ function CanvasContainer() {
     (boolean) => dispatch(change_color(boolean)),
     [dispatch],
   );
+
+  const onChangeMode = useCallback((mode) => dispatch(change_mode(mode)), [
+    dispatch,
+  ]);
 
   const onStackHistory = useCallback(
     (history) => dispatch(stack_History(history)),
@@ -99,9 +114,12 @@ function CanvasContainer() {
         shapes={shapes}
         onChangeStatusToPainting={onChangeStatusToPainting}
         onChangeStatuesToClicking={onChangeStatuesToClicking}
+        onChangeStatusTowriting={onChangeStatusTowriting}
         onStackHistory={onStackHistory}
         onRemoveRedo={onRemoveRedo}
         onChangeColor={onChangeColor}
+        textMode={textMode}
+        onChangeMode={onChangeMode}
       />
     </div>
   );

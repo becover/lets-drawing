@@ -1,5 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { is_writing } from '../../../redux/modules/canvas';
 // import { useSelector } from 'react-redux';
+import CreateText from '../Tools/CreateText';
 
 function Layer({
   width,
@@ -18,18 +20,65 @@ function Layer({
   shapes,
   onChangeStatusToPainting,
   onChangeStatuesToClicking,
+  onChangeStatusTowriting,
   onStackHistory,
   onRemoveRedo,
   onChangeColor,
+  textMode,
+  onChangeMode,
 }) {
   const layerRef = useRef();
+  const fillRef = useRef({ color, lineWidth });
+  const borderRef = useRef({ color, lineWidth });
+  const [position, setPosition] = useState({ x: 10, y: 10 });
+  const [fillMode, setFillMode] = useState({
+    color: fillRef.color,
+    lineWidth: fillRef.lineWidth,
+  });
+  const [borderMode, setborderMode] = useState({
+    color: borderRef.color,
+    lineWidth: borderRef.lineWidth,
+  });
+
+  useEffect(() => {
+    if (textMode === 'fill') {
+      fillRef.current = {
+        color: color,
+        lineWidth: lineWidth,
+      };
+      console.log(fillRef);
+      setFillMode((preValue) => ({
+        ...preValue,
+        color: fillRef.current.color,
+      }));
+      setFillMode((preValue) => ({
+        ...preValue,
+        lineWidth: fillRef.current.lineWidth,
+      }));
+    }
+
+    if (textMode === 'border') {
+      borderRef.current = {
+        color: color,
+        lineWidth: lineWidth,
+      };
+      setborderMode((preValue) => ({
+        ...preValue,
+        color: borderRef.current.color,
+      }));
+      setborderMode((preValue) => ({
+        ...preValue,
+        lineWidth: borderRef.current.lineWidth,
+      }));
+    }
+  }, [textMode, color, lineWidth]);
 
   useEffect(() => {
     const layer = layerRef.current;
     const ctx = layer.getContext('2d');
     layer.width = width;
     layer.height = height;
-    ctx.fillStyle = 'rgba(255,255,255,0';
+    ctx.fillStyle = 'rgba(255,255,255,0)';
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = color;
     ctx.lineWidth = lineWidth;
@@ -110,14 +159,12 @@ function Layer({
     };
   };
 
-  // const onHandleLayerClick = (e) => {
-  //   const layer = layerRef.current;
-  //   const ctx = layer.getContext('2d');
-  //   // isFilling &&
-  //   // (setCurrentColor2ctx(),
-  //   // ctx.fillRect(0, 0, width, height));
-  //   // isWriting && handleFillText(e.offsetX, e.offsetY);
-  // };
+  const onHandleLayerClick = (e) => {
+    const layer = layerRef.current;
+    const ctx = layer.getContext('2d');
+    isFilling && ctx.fillRect(0, 0, width, height);
+    isWriting && setPosition({ x: e.offsetX, y: e.offsetY });
+  };
 
   // function setCurrentColor2ctx() {
   //   const layer = layerRef.current;
@@ -129,24 +176,38 @@ function Layer({
   // }
 
   return (
-    <canvas
-      style={{
-        boxShadow: '1px 1px 5px #c0c0c0, -1px 1px 5px #c0c0c0',
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        width: width,
-        height: height,
-        opacity: alpha,
-      }}
-      onContextMenu={onRightClick}
-      ref={layerRef}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
-      onMouseLeave={() => onChangeStatusToPainting(false)}
-      // onClick={onHandleLayerClick}
-    ></canvas>
+    <>
+      <canvas
+        style={{
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          width: width,
+          height: height,
+          opacity: alpha,
+        }}
+        onContextMenu={onRightClick}
+        ref={layerRef}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={() => onChangeStatusToPainting(false)}
+        onClick={onHandleLayerClick}
+      ></canvas>
+      {isWriting && (
+        <CreateText
+          position={position}
+          size={lineWidth}
+          fillMode={fillMode}
+          borderMode={borderMode}
+          isWriting={isWriting}
+          alpha={alpha}
+          textMode={textMode}
+          onChangeStatusTowriting={onChangeStatusTowriting}
+          onChangeMode={onChangeMode}
+        />
+      )}
+    </>
   );
 }
 

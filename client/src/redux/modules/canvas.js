@@ -42,7 +42,7 @@ export const is_drawing_shapes = (boolean) => ({
   type: IS_DRAWING_SHAPES,
   boolean,
 });
-export const modes = (mode) => ({ type: MODE, mode });
+export const change_mode = (mode) => ({ type: MODE, mode });
 export const shapes_type = (types) => ({ type: SHAPES_TYPE, types });
 export const shapes_location = (location, value) => ({
   type: SHAPES_LOCATION,
@@ -53,7 +53,7 @@ export const shapes_location = (location, value) => ({
 const initialState = {
   width: null,
   height: null,
-  color: '#333',
+  color: 'rgba(51, 51, 51, 1)',
   alpha: 1,
   lineWidth: 25,
   lineCap: 'butt',

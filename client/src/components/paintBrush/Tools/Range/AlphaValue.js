@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+// import { useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
 
 const AlphaValueContainer = styled.div`
@@ -64,13 +64,50 @@ const AlphaValueContainer = styled.div`
   }
 `;
 
-function AlphaValue({ onChangeAlpha }) {
+function AlphaValue({
+  onChangeAlpha,
+  onChangeColor,
+  color,
+  canvasMode,
+  textMode,
+}) {
   const [Alpha, setAlpha] = useState(100);
-  const color = useSelector(({ canvas }) => canvas.color);
+  // const color = useSelector(({ canvas }) => canvas.color);
 
-  useEffect(() => {
-    onChangeAlpha(Alpha / 100);
-  }, [Alpha, onChangeAlpha]);
+  // const handleAlphaMode = useCallback(
+  //   (color) => {
+  //     if (mode === 'text') {
+  //       const rgbColorCodeRegExp = /(rgba|rgb)\((\d+), ?(\d+), ?(\d+),? ?(\d+|\d\.\d+)?\)/g;
+  //       const replaceReg = /^(, ?\d+|\d\.\d+\))$/g;
+  //       const result = rgbColorCodeRegExp.exec(color);
+  //       let newColor;
+  //       if (result && result[5] === undefined) {
+  //         newColor = color.replace(')', `, ${Alpha / 100})`);
+  //         onChangeColor(newColor);
+  //         console.log(color);
+  //       } else {
+  //         newColor = color.replace(replaceReg, `, ${Alpha / 100})`);
+  //         onChangeColor(newColor);
+  //         console.log(color);
+  //       }
+  //     }
+  //     if (mode === 'brush') onChangeAlpha(Alpha / 100);
+  //   },
+  //   [Alpha, onChangeAlpha, mode, onChangeColor],
+  // );
+
+  const handleAlphaMode = useCallback(() => {
+    if (canvasMode === 'text') {
+      const [, colorStruc] = color.split('(');
+      const [colorNumbers] = colorStruc.split(')');
+      let [r, g, b, a = Alpha / 100] = colorNumbers.split(',');
+      a = Alpha / 100;
+      console.log(`rgba(${r},${g},${b},${a})`);
+      onChangeColor(`rgba(${r},${g},${b},${a})`);
+    } else {
+      onChangeAlpha(Alpha / 100);
+    }
+  }, [color, Alpha, onChangeColor, canvasMode, onChangeAlpha]);
 
   const whieelEventBindAlpha = (e) => {
     e.preventDefault();
@@ -78,11 +115,14 @@ function AlphaValue({ onChangeAlpha }) {
     if (delta + 1) {
       if (Alpha < 2) return false;
       setAlpha(Alpha - 1);
+      handleAlphaMode();
     } else {
       if (Alpha > 99) return false;
       setAlpha(Alpha + 1);
+      handleAlphaMode();
     }
   };
+
   return (
     <AlphaValueContainer color={color}>
       <svg
@@ -104,7 +144,10 @@ function AlphaValue({ onChangeAlpha }) {
         min="1"
         max="100"
         step="1"
-        onChange={(e) => setAlpha(+e.target.value)}
+        onChange={(e) => {
+          setAlpha(+e.target.value);
+          handleAlphaMode();
+        }}
         onWheel={whieelEventBindAlpha}
         id="lineWidth"
       />

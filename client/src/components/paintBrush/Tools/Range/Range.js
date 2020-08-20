@@ -36,9 +36,15 @@ const CurrentColor = styled.div`
   }
 `;
 
-function Range({ onChangeLineWidth, onChangeAlpha }) {
-  const { color, lineWidth, alpha, isPainting } = useSelector(({ canvas }) => ({
-    color: canvas.color,
+function Range({
+  onChangeLineWidth,
+  onChangeAlpha,
+  onChangeColor,
+  color,
+  canvasMode,
+  textMode,
+}) {
+  const { lineWidth, alpha, isPainting } = useSelector(({ canvas }) => ({
     lineWidth: canvas.lineWidth,
     alpha: canvas.alpha,
   }));
@@ -46,7 +52,13 @@ function Range({ onChangeLineWidth, onChangeAlpha }) {
     <RangeContainer isPainting={isPainting} style={{}}>
       <div>
         <Size onChangeLineWidth={onChangeLineWidth} />
-        <AlphaValue onChangeAlpha={onChangeAlpha} />
+        <AlphaValue
+          onChangeAlpha={onChangeAlpha}
+          onChangeColor={onChangeColor}
+          color={color}
+          canvasMode={canvasMode}
+          textMode={textMode}
+        />
       </div>
       <CurrentColor>
         <span
