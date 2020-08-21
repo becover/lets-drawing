@@ -37,7 +37,7 @@ const ColorList = styled.ul`
   }
 `;
 
-function Colors({ onChangeColor }) {
+function Colors({ onChangeColor, textModeAlpha, canvasMode }) {
   const colors = [
     {
       color: 'rgba(51, 51, 51, 1)',
@@ -84,7 +84,19 @@ function Colors({ onChangeColor }) {
   const [Colors, setColors] = useState(colors);
 
   const onClickColor = (e) => {
-    onChangeColor(e.target.style.backgroundColor);
+    const color = e.target.style.backgroundColor;
+    console.group('color log');
+    console.log(color);
+    if (canvasMode === 'text') {
+      const [, colorStruc] = color.split('(');
+      const [colorNumbers] = colorStruc.split(')');
+      let [r, g, b, a = textModeAlpha / 100] = colorNumbers.split(',');
+      a = textModeAlpha / 100;
+      console.log(`rgba(${r},${g},${b},${a})`);
+      console.groupEnd('color log');
+      return onChangeColor(`rgba(${r},${g},${b},${a})`);
+    }
+    onChangeColor(color);
   };
 
   const CheckdIcon = () => (

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
-import fontFace from '../../../assets/fontFace-DoHyeon';
+// import fontFace from '../../../assets/fontFace-DoHyeon';
 
 const Textbox = styled.span`
   ${(props) =>
@@ -37,7 +37,7 @@ function CreateText({
   onChangeStatusTowriting,
   onChangeMode,
 }) {
-  // const [mode, setMode] = useState(textMode);
+  const [mode, setMode] = useState(textMode);
   const textRef = useRef();
 
   useEffect(() => {

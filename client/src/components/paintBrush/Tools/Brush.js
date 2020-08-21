@@ -234,7 +234,7 @@ function Brush({ onChangeLineCap, onChangeStatusToFilling, mode }) {
           <SwitchLabel
             htmlFor="brushSwitch"
             className="switch"
-            onClick={mode === 'brush' && onToggleSwitch}
+            onClick={mode === 'brush' ? onToggleSwitch : undefined}
           >
             <input type="checkbox" id="brushSwitch" checked={Switch} readOnly />
             <span></span>
@@ -247,7 +247,9 @@ function Brush({ onChangeLineCap, onChangeStatusToFilling, mode }) {
           <div
             key={index}
             id={brush.type}
-            onClick={(e) => mode === 'brush' && onChangeLineCaps(e, index)}
+            onClick={(e) =>
+              mode === 'brush' ? onChangeLineCaps(e, index) : undefined
+            }
           >
             <input
               type="radio"

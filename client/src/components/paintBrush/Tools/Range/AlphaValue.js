@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 // import { useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
 
@@ -70,32 +70,42 @@ function AlphaValue({
   color,
   canvasMode,
   textMode,
+  setTextModeAlpha,
 }) {
   const [Alpha, setAlpha] = useState(100);
+  const alphaRangeRef = useRef();
   // const color = useSelector(({ canvas }) => canvas.color);
 
-  // const handleAlphaMode = useCallback(
-  //   (color) => {
-  //     if (mode === 'text') {
-  //       const rgbColorCodeRegExp = /(rgba|rgb)\((\d+), ?(\d+), ?(\d+),? ?(\d+|\d\.\d+)?\)/g;
-  //       const replaceReg = /^(, ?\d+|\d\.\d+\))$/g;
-  //       const result = rgbColorCodeRegExp.exec(color);
-  //       let newColor;
-  //       if (result && result[5] === undefined) {
-  //         newColor = color.replace(')', `, ${Alpha / 100})`);
-  //         onChangeColor(newColor);
-  //         console.log(color);
-  //       } else {
-  //         newColor = color.replace(replaceReg, `, ${Alpha / 100})`);
-  //         onChangeColor(newColor);
-  //         console.log(color);
-  //       }
+  // const handleAlphaMode = useCallback(() => {
+  //   if (canvasMode === 'text') {
+  //     const rgbColorCodeRegExp = /(rgba|rgb)\((\d+), ?(\d+), ?(\d+),? ?(\d+|\d\.\d+)?\)/g;
+  //     const replaceReg = /^(, ?(\d+|\d\.\d+)\))$/g;
+  //     const result = rgbColorCodeRegExp.exec(color);
+  //     let newColor;
+  //     if (result && result[5] === undefined) {
+  //       newColor = color.replace(')', `, ${Alpha / 100})`);
+  //       onChangeColor(newColor);
+  //       console.log(color);
+  //     } else {
+  //       newColor = color.replace(replaceReg, `, ${Alpha / 100})`);
+  //       onChangeColor(newColor);
+  //       console.log(color);
   //     }
-  //     if (mode === 'brush') onChangeAlpha(Alpha / 100);
-  //   },
-  //   [Alpha, onChangeAlpha, mode, onChangeColor],
-  // );
-
+  //   }
+  //   if (canvasMode === 'brush') onChangeAlpha(Alpha / 100);
+  // }, [Alpha, onChangeAlpha, canvasMode, onChangeColor, color]);
+  useEffect(() => {
+    const cancelEvent = (e) => e.preventDefault();
+    const alphaDom = alphaRangeRef.current;
+    alphaDom.addEventListener('wheel', cancelEvent, {
+      passive: false,
+    });
+    return () => {
+      alphaDom.removeEventListener('wheel', cancelEvent, {
+        passive: false,
+      });
+    };
+  }, []);
   const handleAlphaMode = useCallback(() => {
     if (canvasMode === 'text') {
       const [, colorStruc] = color.split('(');
@@ -104,10 +114,18 @@ function AlphaValue({
       a = Alpha / 100;
       console.log(`rgba(${r},${g},${b},${a})`);
       onChangeColor(`rgba(${r},${g},${b},${a})`);
+      setTextModeAlpha(Alpha);
     } else {
       onChangeAlpha(Alpha / 100);
     }
-  }, [color, Alpha, onChangeColor, canvasMode, onChangeAlpha]);
+  }, [
+    color,
+    Alpha,
+    onChangeColor,
+    canvasMode,
+    onChangeAlpha,
+    setTextModeAlpha,
+  ]);
 
   const whieelEventBindAlpha = (e) => {
     e.preventDefault();
@@ -115,12 +133,11 @@ function AlphaValue({
     if (delta + 1) {
       if (Alpha < 2) return false;
       setAlpha(Alpha - 1);
-      handleAlphaMode();
     } else {
       if (Alpha > 99) return false;
       setAlpha(Alpha + 1);
-      handleAlphaMode();
     }
+    handleAlphaMode();
   };
 
   return (
@@ -145,10 +162,11 @@ function AlphaValue({
         max="100"
         step="1"
         onChange={(e) => {
-          setAlpha(+e.target.value);
+          setAlpha(e.target.valueAsNumber);
           handleAlphaMode();
         }}
         onWheel={whieelEventBindAlpha}
+        ref={alphaRangeRef}
         id="lineWidth"
       />
     </AlphaValueContainer>

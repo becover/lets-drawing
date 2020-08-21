@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled, { css } from 'styled-components';
 import {
@@ -40,6 +40,7 @@ const ToolsButtom = styled.div`
 `;
 
 function ToolsContainer() {
+  const [textModeAlpha, setTextModeAlpha] = useState(100);
   const dispatch = useDispatch();
   const { color, isPainting, isPicking, mode } = useSelector(({ canvas }) => ({
     color: canvas.color,
@@ -125,7 +126,11 @@ function ToolsContainer() {
           onChangeMode={onChangeMode}
         />
         <Shapes onChangeMode={onChangeMode} />
-        <Colors onChangeColor={onChangeColor} />
+        <Colors
+          onChangeColor={onChangeColor}
+          textModeAlpha={textModeAlpha}
+          canvasMode={mode}
+        />
         <div
           style={{
             width: '3%',
@@ -151,6 +156,7 @@ function ToolsContainer() {
           color={color}
           canvasMode={mode}
           textMode={textMode}
+          setTextModeAlpha={setTextModeAlpha}
         />
         <History onUndo={onUndo} onRedo={onRedo} />
       </ToolsButtom>

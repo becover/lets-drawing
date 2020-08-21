@@ -43,6 +43,7 @@ function Range({
   color,
   canvasMode,
   textMode,
+  setTextModeAlpha,
 }) {
   const { lineWidth, alpha, isPainting } = useSelector(({ canvas }) => ({
     lineWidth: canvas.lineWidth,
@@ -58,6 +59,7 @@ function Range({
           color={color}
           canvasMode={canvasMode}
           textMode={textMode}
+          setTextModeAlpha={setTextModeAlpha}
         />
       </div>
       <CurrentColor>

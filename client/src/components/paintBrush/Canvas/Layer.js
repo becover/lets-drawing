@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { is_writing } from '../../../redux/modules/canvas';
+// import { is_writing } from '../../../redux/modules/canvas';
 // import { useSelector } from 'react-redux';
 import CreateText from '../Tools/CreateText';
 
@@ -32,12 +32,12 @@ function Layer({
   const borderRef = useRef({ color, lineWidth });
   const [position, setPosition] = useState({ x: 10, y: 10 });
   const [fillMode, setFillMode] = useState({
-    color: fillRef.color,
-    lineWidth: fillRef.lineWidth,
+    color: color,
+    lineWidth: lineWidth,
   });
   const [borderMode, setborderMode] = useState({
-    color: borderRef.color,
-    lineWidth: borderRef.lineWidth,
+    color: color,
+    lineWidth: lineWidth,
   });
 
   useEffect(() => {
@@ -46,7 +46,6 @@ function Layer({
         color: color,
         lineWidth: lineWidth,
       };
-      console.log(fillRef);
       setFillMode((preValue) => ({
         ...preValue,
         color: fillRef.current.color,
@@ -71,6 +70,9 @@ function Layer({
         lineWidth: borderRef.current.lineWidth,
       }));
     }
+    console.group('fill & border');
+    console.log(fillRef, borderRef);
+    console.groupEnd('fill & border');
   }, [textMode, color, lineWidth]);
 
   useEffect(() => {
