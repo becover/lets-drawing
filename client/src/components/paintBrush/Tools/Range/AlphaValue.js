@@ -106,7 +106,7 @@ function AlphaValue({
       });
     };
   }, []);
-  const handleAlphaMode = useCallback(() => {
+  useEffect(() => {
     if (canvasMode === 'text') {
       const [, colorStruc] = color.split('(');
       const [colorNumbers] = colorStruc.split(')');
@@ -118,14 +118,7 @@ function AlphaValue({
     } else {
       onChangeAlpha(Alpha / 100);
     }
-  }, [
-    color,
-    Alpha,
-    onChangeColor,
-    canvasMode,
-    onChangeAlpha,
-    setTextModeAlpha,
-  ]);
+  }, [Alpha]);
 
   const whieelEventBindAlpha = (e) => {
     e.preventDefault();
@@ -137,7 +130,6 @@ function AlphaValue({
       if (Alpha > 99) return false;
       setAlpha(Alpha + 1);
     }
-    handleAlphaMode();
   };
 
   return (
@@ -163,7 +155,6 @@ function AlphaValue({
         step="1"
         onChange={(e) => {
           setAlpha(e.target.valueAsNumber);
-          handleAlphaMode();
         }}
         onWheel={whieelEventBindAlpha}
         ref={alphaRangeRef}
