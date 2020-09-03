@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-// import { useSelector } from 'react-redux';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
+import { STATES } from 'mongoose';
 // import fontFace from '../../../assets/fontFace-DoHyeon';
 
 const Textbox = styled.span`
@@ -36,13 +36,25 @@ function CreateText({
   textMode,
   onChangeStatusTowriting,
   onChangeMode,
+  onStartAngle,
+  onAngle,
+  onCenter,
+  onOffset,
+  onRotation,
+  onRotate,
+  onMove,
+  startAngle,
+  angle,
+  center,
+  offset,
+  rotation,
+  rotate,
+  move,
 }) {
-  const [mode, setMode] = useState(textMode);
-  const textRef = useRef();
+  // const [mode, setMode] = useState(textMode);
+  const [positon, setPosition] = useState({ x: 0, y: 0 });
 
-  useEffect(() => {
-    console.log(fillMode, borderMode);
-  }, [fillMode, borderMode]);
+  const textRef = useRef();
 
   // const paintText2canvas = (e) =>{
   //   const style = e.target.attributes.style.value;
@@ -81,6 +93,90 @@ function CreateText({
   //   };
   // }
 
+  const dragStart = useCallback(
+    (e) => {
+      e.preventDefault();
+      const {
+        top,
+        left,
+        height,
+        width,
+      } = textRef.current.getBoundingClientRect();
+      console.log(top, left, height, width, e.offsetX, e.offsetY);
+
+      onOffset('x', e.offsetX);
+      onOffset('y', e.offsetY);
+
+      onCenter('x', left + width / 2);
+      onCenter('y', top + height / 2);
+
+      if (
+        Math.abs(center.x - e.clientX) <= 50 &&
+        Math.abs(center.y - e.clientY) <= 50
+      ) {
+        textRef.current.style.cursor = 'move';
+        onMove(true);
+      } else {
+        const x = e.clientX - center.x;
+        const y = e.clientY - center.y;
+        onStartAngle((180 / Math.PI) * Math.atan2(y, x));
+        onRotate(true);
+      }
+    },
+    [onOffset, onCenter, center.x, center.y, onMove, onStartAngle, onRotate],
+  );
+
+  const dragging = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (rotate) {
+        const x = e.clientX - center.x;
+        const y = e.clientY - center.y;
+        const degree = Math.round((180 / Math.PI) * Math.atan2(y, x));
+        onRotation(degree - startAngle);
+        textRef.current.style.transform = `rotate(${angle + rotation}deg)`;
+      }
+      if (move) {
+        const y = e.clientY - offset.y;
+        const x = e.clientX - offset.x;
+        console.log(
+          'move! x y top',
+          x,
+          y,
+          textRef.current.getBoundingClientRect().top,
+        );
+
+        setPosition({
+          x: x - textRef.current.getBoundingClientRect().left,
+          y: y - textRef.current.getBoundingClientRect().top,
+        });
+      }
+    },
+    [
+      rotate,
+      onRotation,
+      offset.y,
+      offset.x,
+      angle,
+      center.x,
+      center.y,
+      startAngle,
+      move,
+      rotation,
+    ],
+  );
+
+  const dragStop = useCallback(() => {
+    if (rotate) {
+      onAngle(Math.round(angle + rotation));
+      return onRotate(false);
+    }
+    if (move) {
+      textRef.current.style.cursor = 'pointer';
+      return onMove(false);
+    }
+  }, [rotate, onAngle, angle, rotation, onRotate, onMove, move]);
+
   const onEnterkeyDown = (e) => {
     if (e.keyCode === 13) {
       e.preventDefault();
@@ -91,6 +187,44 @@ function CreateText({
     }
   };
 
+  useEffect(() => {
+    const textDom = textRef.current;
+    textDom.addEventListener('dblclick', function dbClick() {
+      textDom.contentEditable = isWriting;
+      textDom.style.cursor = 'text';
+      textDom.focus();
+    });
+    textDom.addEventListener('blur', function loseFocus() {
+      textDom.contentEditable = false;
+      textDom.style.cursor = 'default';
+    });
+    textDom.addEventListener('mouseenter', function hover() {
+      textDom.style.cursor = 'pointer';
+    });
+    textDom.addEventListener('mousedown', dragStart, false);
+    textDom.addEventListener('mousemove', dragging, false);
+    textDom.addEventListener('mouseup', dragStop, false);
+    textDom.addEventListener('mouseleave', dragStop, false);
+    return () => {
+      textDom.removeEventListener('dblclick', function dbClick() {
+        textDom.contentEditable = isWriting;
+        textDom.style.cursor = 'text';
+        textDom.focus();
+      });
+      textDom.removeEventListener('blur', function loseFocus() {
+        textDom.contentEditable = false;
+        textDom.style.cursor = 'default';
+      });
+      textDom.removeEventListener('mouseenter', function hover() {
+        textDom.style.cursor = 'pointer';
+      });
+      textDom.removeEventListener('mousedown', dragStart, false);
+      textDom.removeEventListener('mousemove', dragging, false);
+      textDom.removeEventListener('mouseup', dragStop, false);
+      textDom.removeEventListener('mouseleave', dragStop, false);
+    };
+  }, [dragStart, dragging, dragStop, isWriting]);
+
   return (
     <Textbox
       textMode={textMode}
@@ -98,8 +232,9 @@ function CreateText({
       borderMode={borderMode}
       style={{
         position: 'absolute',
-        top: position.y,
-        left: position.x,
+        zIndex: 10,
+        top: positon.y,
+        left: positon.x,
         fontSize: fillMode.lineWidth,
         color: fillMode.color,
         opacity: alpha,
@@ -111,10 +246,24 @@ function CreateText({
         0 -1px ${borderMode.lineWidth}px ${borderMode.color},
         1px 0 ${borderMode.lineWidth}px ${borderMode.color},
         0 1px ${borderMode.lineWidth}px ${borderMode.color}`,
+        transform: `rotate(${angle + rotation})deg`,
       }}
       ref={textRef}
-      onDoubleClick={() => (textRef.current.contentEditable = isWriting)}
+      // onDoubleClick={() => {
+      //   textRef.current.contentEditable = isWriting;
+      //   textRef.current.style = 'text';
+      //   textRef.current.fucus();
+      // }}
       onKeyDown={onEnterkeyDown}
+      // onBlur={() => {
+      //   textRef.current.contentEditable = false;
+      //   textRef.current.style = 'default';
+      // }}
+      // onMouseEnter={() => (textRef.current.style = 'pointer')}
+      // onMouseDown={dragStart}
+      // onMouseMove={dragging}
+      // onMouseUp={dragStop}
+      // onMouseLeave={dragStop}
     >
       작성 후 엔터를 치세요
     </Textbox>
