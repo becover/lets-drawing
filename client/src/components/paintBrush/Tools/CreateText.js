@@ -9,6 +9,7 @@ const Textbox = styled.span`
   font-family: 'Do Hyeon', sans-serif;
   box-sizing: border-box;
   border: 2px dashed paleturquoise;
+  line-height:1;
 
   /* ${(props) =>
     props.textMode === 'border' &&
@@ -200,12 +201,6 @@ function CreateText({
         { id: 'border', checked: false },
       ]);
     }
-    // const textDomId = Textbox.styledComponentId;
-    // console.log(
-    //   document.querySelector('.asdfasdf').attributes[1].ownerDocument
-    //     .styleSheets[3].rules,
-    // );
-    // console.log(Textbox.componentStyle.rules[1];
   };
 
   useEffect(() => {
@@ -214,6 +209,11 @@ function CreateText({
       textDom.contentEditable = isWriting;
       textDom.style.cursor = 'text';
       textDom.focus();
+      let range = new Range();
+      range.setStart(textDom, 0);
+      range.setEnd(textDom, 1);
+      document.getSelection().removeAllRanges();
+      document.getSelection().addRange(range);
     });
     textDom.addEventListener('blur', function loseFocus() {
       textDom.contentEditable = false;
