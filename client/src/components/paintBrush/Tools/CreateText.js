@@ -1,10 +1,16 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import styled, { css } from 'styled-components';
-import { STATES } from 'mongoose';
-// import fontFace from '../../../assets/fontFace-DoHyeon';
+// import styled, { css } from 'styled-components';
+import fontFace from '../../../assets/fontFace-DoHyeon';
+import { css } from '@emotion/core';
+import styled from '@emotion/styled';
 
 const Textbox = styled.span`
-  ${(props) =>
+  display: inline-block;
+  font-family: 'Do Hyeon', sans-serif;
+  box-sizing: border-box;
+  border: 2px dashed paleturquoise;
+
+  /* ${(props) =>
     props.textMode === 'border' &&
     css`
       text-shadow: 1px 1px ${props.borderMode.lineWidth}px
@@ -16,7 +22,7 @@ const Textbox = styled.span`
         0 -1px ${props.borderMode.lineWidth}px ${props.borderMode.color},
         1px 0 ${props.borderMode.lineWidth}px ${props.borderMode.color},
         0 1px ${props.borderMode.lineWidth}px ${props.borderMode.color};
-    `}
+    `} */
 
   ${(props) =>
     props.textMode === 'fill' &&
@@ -50,48 +56,53 @@ function CreateText({
   rotation,
   rotate,
   move,
+  onStackHistory,
+  layerRef,
+  width,
+  height,
+  setInitialSwitch,
 }) {
   // const [mode, setMode] = useState(textMode);
   const [positon, setPosition] = useState({ x: 0, y: 0 });
+  const [transfromRotate, setTransfromRotate] = useState(0);
 
   const textRef = useRef();
 
-  // const paintText2canvas = (e) =>{
-  //   const style = e.target.attributes.style.value;
-  //   const text = e.target.innerText;
-  //   const xml = `
-  //   <svg xmlns="http://www.w3.org/2000/svg" width="500" height="500">
-  //     <foreignObject width="100%" height="100%">
-  //       <div xmlns="http://www.w3.org/1999/xhtml">
-  //         <style>
-  //         ${fontFace}
-  //         span {
-  //           position: absolute;
-  //           display: inline-block;
-  //           font-family: "Do Hyeon", sans-serif;
-  //           background-color: transparent;
-  //           word-wrap: break-word;
-  //           word-break: break-all;
-  //           line-height: 1;
-  //           -webkit-user-select: none;
-  //           -moz-user-select: none;
-  //           -ms-user-select: none;
-  //           user-select: none;
-  //           ${style}
-  //         }
-  //         </style>
-  //         <span font-family="Do Hyeon">${text}</span>
-  //       </div>
-  //     </foreignObject>
-  //   </svg>`;
-  //   const img = new Image();
-  //   img.src = "data:image/svg+xml," + encodeURIComponent(xml);
-  //   img.onload = function () {
-  //     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  //     removeEl(e.target);
-  //     stackCanvasHistory();
-  //   };
-  // }
+  const paintText2canvas = (e) => {
+    const style = e.target.attributes.style.value;
+    const text = e.target.innerText;
+    const xml = `
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <foreignObject width="100%" height="100%">
+        <div xmlns="http://www.w3.org/1999/xhtml">
+          <style>
+          ${fontFace}
+          span {
+            position: absolute;
+            display: inline-block;
+            font-family: "Do Hyeon", sans-serif;
+            background-color: transparent;
+            word-wrap: break-word;
+            word-break: break-all;
+            line-height: 1;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            ${style}
+          }
+          </style>
+          <span font-family="Do Hyeon">${text}</span>
+        </div>
+      </foreignObject>
+    </svg>`;
+    const img = new Image();
+    img.src = 'data:image/svg+xml,' + encodeURIComponent(xml);
+    img.onload = function () {
+      layerRef.current.getContext('2d').drawImage(img, 0, 0, width, height);
+      onStackHistory(img);
+    };
+  };
 
   const dragStart = useCallback(
     (e) => {
@@ -102,7 +113,6 @@ function CreateText({
         height,
         width,
       } = textRef.current.getBoundingClientRect();
-      console.log(top, left, height, width, e.offsetX, e.offsetY);
 
       onOffset('x', e.offsetX);
       onOffset('y', e.offsetY);
@@ -110,45 +120,46 @@ function CreateText({
       onCenter('x', left + width / 2);
       onCenter('y', top + height / 2);
 
-      if (
-        Math.abs(center.x - e.clientX) <= 50 &&
-        Math.abs(center.y - e.clientY) <= 50
-      ) {
-        textRef.current.style.cursor = 'move';
-        onMove(true);
-      } else {
-        const x = e.clientX - center.x;
-        const y = e.clientY - center.y;
-        onStartAngle((180 / Math.PI) * Math.atan2(y, x));
-        onRotate(true);
-      }
+      // if (
+      //   Math.abs(center.x - e.clientX) <= 150 &&
+      //   Math.abs(center.y - e.clientY) <= 150
+      // ) {
+      textRef.current.style.cursor = 'move';
+      onMove(true);
+      // } else {
+      //   const x = e.clientX - center.x;
+      //   const y = e.clientY - center.y;
+      //   onStartAngle((180 / Math.PI) * Math.atan2(y, x));
+      //   onRotate(true);
+      // }
     },
-    [onOffset, onCenter, center.x, center.y, onMove, onStartAngle, onRotate],
+    [onOffset, onCenter, onMove],
   );
 
   const dragging = useCallback(
     (e) => {
       e.preventDefault();
+      if (
+        Math.abs(center.x - e.clientX) <= 150 &&
+        Math.abs(center.y - e.clientY) <= 150
+      ) {
+        textRef.current.style.cursor = 'move';
+      } else {
+        textRef.current.style.cursor = 'text';
+      }
       if (rotate) {
         const x = e.clientX - center.x;
         const y = e.clientY - center.y;
         const degree = Math.round((180 / Math.PI) * Math.atan2(y, x));
         onRotation(degree - startAngle);
-        textRef.current.style.transform = `rotate(${angle + rotation}deg)`;
+        setTransfromRotate(angle + rotation);
       }
       if (move) {
-        const y = e.clientY - offset.y;
         const x = e.clientX - offset.x;
-        console.log(
-          'move! x y top',
-          x,
-          y,
-          textRef.current.getBoundingClientRect().top,
-        );
-
+        const y = e.clientY - offset.y;
         setPosition({
-          x: x - textRef.current.getBoundingClientRect().left,
-          y: y - textRef.current.getBoundingClientRect().top,
+          x: x - document.querySelector('.layer').getBoundingClientRect().left,
+          y: y - document.querySelector('.layer').getBoundingClientRect().top,
         });
       }
     },
@@ -180,11 +191,21 @@ function CreateText({
   const onEnterkeyDown = (e) => {
     if (e.keyCode === 13) {
       e.preventDefault();
-      // paintText2canvas(e);
+      paintText2canvas(e);
       // initDragStatus();
       onChangeStatusTowriting(false);
       onChangeMode('brush');
+      setInitialSwitch([
+        { id: 'fill', checked: false },
+        { id: 'border', checked: false },
+      ]);
     }
+    // const textDomId = Textbox.styledComponentId;
+    // console.log(
+    //   document.querySelector('.asdfasdf').attributes[1].ownerDocument
+    //     .styleSheets[3].rules,
+    // );
+    // console.log(Textbox.componentStyle.rules[1];
   };
 
   useEffect(() => {
@@ -198,8 +219,16 @@ function CreateText({
       textDom.contentEditable = false;
       textDom.style.cursor = 'default';
     });
-    textDom.addEventListener('mouseenter', function hover() {
-      textDom.style.cursor = 'pointer';
+    textDom.addEventListener('mouseenter', function hover(e) {
+      e.preventDefault();
+      if (
+        Math.abs(center.x - e.clientX) <= 150 &&
+        Math.abs(center.y - e.clientY) <= 150
+      ) {
+        textDom.style.cursor = 'move';
+      } else {
+        textDom.style.cursor = 'text';
+      }
     });
     textDom.addEventListener('mousedown', dragStart, false);
     textDom.addEventListener('mousemove', dragging, false);
@@ -209,24 +238,45 @@ function CreateText({
       textDom.removeEventListener('dblclick', function dbClick() {
         textDom.contentEditable = isWriting;
         textDom.style.cursor = 'text';
-        textDom.focus();
+        textDom.focus().setSelectionRange(0, 10);
       });
       textDom.removeEventListener('blur', function loseFocus() {
         textDom.contentEditable = false;
         textDom.style.cursor = 'default';
       });
-      textDom.removeEventListener('mouseenter', function hover() {
-        textDom.style.cursor = 'pointer';
+      textDom.removeEventListener('mouseenter', function hover(e) {
+        e.preventDefault();
+        if (
+          Math.abs(center.x - e.clientX) <= 150 &&
+          Math.abs(center.y - e.clientY) <= 150
+        ) {
+          textDom.style.cursor = 'move';
+        } else {
+          textDom.style.cursor = 'text';
+        }
       });
       textDom.removeEventListener('mousedown', dragStart, false);
       textDom.removeEventListener('mousemove', dragging, false);
       textDom.removeEventListener('mouseup', dragStop, false);
       textDom.removeEventListener('mouseleave', dragStop, false);
     };
-  }, [dragStart, dragging, dragStop, isWriting]);
+  }, [dragStart, dragging, dragStop, isWriting, center.x, center.y]);
 
   return (
     <Textbox
+      className={css([
+        textMode === 'border' && {
+          textShadow: `1px 1px ${borderMode.lineWidth}px
+        -1px 1px ${borderMode.lineWidth}px ${borderMode.color},
+        -1px -1px ${borderMode.lineWidth}px ${borderMode.color},
+        1px -1px ${borderMode.lineWidth}px ${borderMode.color},
+        -1px 0 ${borderMode.lineWidth}px ${borderMode.color},
+        0 -1px ${borderMode.lineWidth}px ${borderMode.color},
+        1px 0 ${borderMode.lineWidth}px ${borderMode.color},
+        0 1px ${borderMode.lineWidth}px ${borderMode.color}`,
+          transform: `rotate(${transfromRotate}deg)`,
+        },
+      ])}
       textMode={textMode}
       fillMode={fillMode}
       borderMode={borderMode}
@@ -238,15 +288,6 @@ function CreateText({
         fontSize: fillMode.lineWidth,
         color: fillMode.color,
         opacity: alpha,
-        textShadow: `1px 1px ${borderMode.lineWidth}px
-        -1px 1px ${borderMode.lineWidth}px ${borderMode.color},
-        -1px -1px ${borderMode.lineWidth}px ${borderMode.color},
-        1px -1px ${borderMode.lineWidth}px ${borderMode.color},
-        -1px 0 ${borderMode.lineWidth}px ${borderMode.color},
-        0 -1px ${borderMode.lineWidth}px ${borderMode.color},
-        1px 0 ${borderMode.lineWidth}px ${borderMode.color},
-        0 1px ${borderMode.lineWidth}px ${borderMode.color}`,
-        transform: `rotate(${angle + rotation})deg`,
       }}
       ref={textRef}
       // onDoubleClick={() => {

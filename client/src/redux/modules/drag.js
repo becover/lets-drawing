@@ -6,21 +6,21 @@ const ROTATION = 'paint/drag/ROTATION';
 const ROTATE = 'paint/drag/ROTATE';
 const MOVE = 'paint/drag/MOVE';
 
-export const start_angle = (number) => ({ type: START_ANGLE, number });
-export const angle = (number) => ({ type: ANGLE, number });
-export const center = (location, number) => ({
+export const change_start_angle = (number) => ({ type: START_ANGLE, number });
+export const change_angle = (number) => ({ type: ANGLE, number });
+export const change_center = (location, number) => ({
   type: CENTER,
   location,
   number,
 });
-export const offset = (location, number) => ({
+export const change_offset = (location, number) => ({
   type: OFFSET,
   location,
   number,
 });
-export const rotation = (number) => ({ type: ROTATION, number });
-export const rotate = (boolean) => ({ type: ROTATE, boolean });
-export const move = (boolean) => ({ type: MOVE, boolean });
+export const change_rotation = (number) => ({ type: ROTATION, number });
+export const is_rotate = (boolean) => ({ type: ROTATE, boolean });
+export const is_move = (boolean) => ({ type: MOVE, boolean });
 
 const initialState = {
   startAngle: 0,
@@ -48,6 +48,37 @@ const drag = (state = initialState, action) => {
     return {
       ...state,
       angle: action.number,
+    };
+  } else if (action.type === CENTER) {
+    return {
+      ...state,
+      center: {
+        ...state.center,
+        [action.location]: action.number,
+      },
+    };
+  } else if (action.type === OFFSET) {
+    return {
+      ...state,
+      offset: {
+        ...state.offset,
+        [action.location]: action.number,
+      },
+    };
+  } else if (action.type === ROTATION) {
+    return {
+      ...state,
+      rotation: action.number,
+    };
+  } else if (action.type === ROTATE) {
+    return {
+      ...state,
+      rotate: action.boolean,
+    };
+  } else if (action.type === MOVE) {
+    return {
+      ...state,
+      move: action.boolean,
     };
   } else {
     return state;

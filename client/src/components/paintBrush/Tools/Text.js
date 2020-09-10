@@ -38,11 +38,9 @@ function Text({
   onChangeStatusToWriting,
   onChangeStatusToTextMode,
   onChangeMode,
+  initialSwitch,
 }) {
-  const [Switch, setSwitch] = useState([
-    { id: 'fill', checked: false },
-    { id: 'border', checked: false },
-  ]);
+  const [Switch, setSwitch] = useState(initialSwitch);
 
   const passingSwitchResult = useCallback(() => {
     onChangeStatusToWriting(Switch.some((status) => status.checked));

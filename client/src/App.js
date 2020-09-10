@@ -34,6 +34,10 @@ function App() {
 
   const { header, footer } = refs;
   const [width, height] = UseWindowSize();
+  const [initialSwitch, setInitialSwitch] = useState([
+    { id: 'fill', checked: false },
+    { id: 'border', checked: false },
+  ]);
 
   function UseWindowSize() {
     const [size, setSize] = useState([0, 0]);
@@ -63,9 +67,9 @@ function App() {
     <div style={{ height: '100vh' }}>
       <Container ref={header}>
         <NavContainer />
-        <ToolsContainer />
+        <ToolsContainer initialSwitch={initialSwitch} />
       </Container>
-      <CanvasContainer />
+      <CanvasContainer setInitialSwitch={setInitialSwitch} />
       <Container ref={footer}>
         <Footer />
       </Container>

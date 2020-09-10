@@ -118,7 +118,15 @@ function AlphaValue({
     } else {
       onChangeAlpha(Alpha / 100);
     }
-  }, [Alpha]);
+    if (canvasMode === 'brush') onChangeAlpha(Alpha / 100);
+  }, [
+    Alpha,
+    onChangeAlpha,
+    canvasMode,
+    onChangeColor,
+    color,
+    setTextModeAlpha,
+  ]);
 
   const whieelEventBindAlpha = (e) => {
     e.preventDefault();

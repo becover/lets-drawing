@@ -39,7 +39,7 @@ const ToolsButtom = styled.div`
     `}
 `;
 
-function ToolsContainer() {
+function ToolsContainer({ initialSwitch }) {
   const [textModeAlpha, setTextModeAlpha] = useState(100);
   const dispatch = useDispatch();
   const { color, isPainting, isPicking, mode } = useSelector(({ canvas }) => ({
@@ -104,7 +104,14 @@ function ToolsContainer() {
   const onUndo = useCallback((history) => dispatch(undo(history)), [dispatch]);
   const onRedo = useCallback((history) => dispatch(redo(history)), [dispatch]);
   return (
-    <div style={{ borderBottom: '1px solid #eee', padding: '10px 0' }}>
+    <div
+      style={{
+        borderBottom: '1px solid #eee',
+        padding: '10px 0',
+        boxSing: 'border-box',
+        height: '9vh;',
+      }}
+    >
       <div
         style={{
           display: 'flex',
@@ -124,6 +131,7 @@ function ToolsContainer() {
           onChangeStatusToWriting={onChangeStatusToWriting}
           onChangeStatusToTextMode={onChangeStatusToTextMode}
           onChangeMode={onChangeMode}
+          initialSwitch={initialSwitch}
         />
         <Shapes onChangeMode={onChangeMode} />
         <Colors

@@ -26,6 +26,21 @@ function Layer({
   onChangeColor,
   textMode,
   onChangeMode,
+  onStartAngle,
+  onAngle,
+  onCenter,
+  onOffset,
+  onRotation,
+  onRotate,
+  onMove,
+  startAngle,
+  angle,
+  center,
+  offset,
+  rotation,
+  rotate,
+  move,
+  setInitialSwitch,
 }) {
   const layerRef = useRef();
   const fillRef = useRef({ color, lineWidth });
@@ -178,24 +193,7 @@ function Layer({
   // }
 
   return (
-    <>
-      <canvas
-        style={{
-          position: 'absolute',
-          top: '0',
-          left: '0',
-          width: width,
-          height: height,
-          opacity: alpha,
-        }}
-        onContextMenu={onRightClick}
-        ref={layerRef}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onMouseLeave={() => onChangeStatusToPainting(false)}
-        onClick={onHandleLayerClick}
-      ></canvas>
+    <div style={{ position: 'relative', overflow: 'hidden', height: '100%' }}>
       {isWriting && (
         <CreateText
           position={position}
@@ -207,9 +205,47 @@ function Layer({
           textMode={textMode}
           onChangeStatusTowriting={onChangeStatusTowriting}
           onChangeMode={onChangeMode}
+          onStartAngle={onStartAngle}
+          onAngle={onAngle}
+          onCenter={onCenter}
+          onOffset={onOffset}
+          onRotation={onRotation}
+          onRotate={onRotate}
+          onMove={onMove}
+          startAngle={startAngle}
+          angle={angle}
+          center={center}
+          offset={offset}
+          rotation={rotation}
+          rotate={rotate}
+          move={move}
+          onStackHistory={onStackHistory}
+          layerRef={layerRef}
+          width
+          height
+          setInitialSwitch={setInitialSwitch}
         />
       )}
-    </>
+      <canvas
+        className="layer"
+        style={{
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          width: width,
+          height: height,
+          opacity: alpha,
+          zIndex: 0,
+        }}
+        onContextMenu={onRightClick}
+        ref={layerRef}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+        onMouseUp={onMouseUp}
+        onMouseLeave={() => onChangeStatusToPainting(false)}
+        onClick={onHandleLayerClick}
+      ></canvas>
+    </div>
   );
 }
 
