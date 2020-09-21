@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-// import styled, { css } from 'styled-components';
+import styled, { css } from 'styled-components';
 import fontFace from '../../../assets/fontFace-DoHyeon';
-import { css } from '@emotion/core';
-import styled from '@emotion/styled';
+// import { css, jsx } from '@emotion/core';
+// import styled from '@emotion/styled';
 
 const Textbox = styled.span`
   display: inline-block;
   font-family: 'Do Hyeon', sans-serif;
   box-sizing: border-box;
-  border: 2px dashed paleturquoise;
-  line-height:1;
+  border: 1.5px dashed paleturquoise;
+  line-height: 1;
 
-  /* ${(props) =>
+  ${(props) =>
     props.textMode === 'border' &&
     css`
       text-shadow: 1px 1px ${props.borderMode.lineWidth}px
@@ -23,7 +23,7 @@ const Textbox = styled.span`
         0 -1px ${props.borderMode.lineWidth}px ${props.borderMode.color},
         1px 0 ${props.borderMode.lineWidth}px ${props.borderMode.color},
         0 1px ${props.borderMode.lineWidth}px ${props.borderMode.color};
-    `} */
+    `}
 
   ${(props) =>
     props.textMode === 'fill' &&
@@ -33,8 +33,27 @@ const Textbox = styled.span`
     `}
 `;
 
+const Rotater = styled.div`
+  .rotater {
+    display: inline-block;
+    position: absolute;
+    width: 20px;
+    height: 100%;
+    background: rgba(95, 0, 236, 0.35);
+    top: 0;
+    cursor: grab;
+  }
+
+  .rotate_left {
+    left: -20.5px;
+  }
+  .rotate_right {
+    right: -20.5px;
+  }
+`;
+
 function CreateText({
-  position,
+  // position,
   size,
   fillMode,
   borderMode,
@@ -64,13 +83,14 @@ function CreateText({
   setInitialSwitch,
 }) {
   // const [mode, setMode] = useState(textMode);
-  const [positon, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [transfromRotate, setTransfromRotate] = useState(0);
 
   const textRef = useRef();
+  const rotateRef = useRef();
 
   const paintText2canvas = (e) => {
-    const style = e.target.attributes.style.value;
+    const style = `${e.target.attributes.style.value} ${e.target.parentNode.attributes.style.value}`;
     const text = e.target.innerText;
     const xml = `
     <svg xmlns="http://www.w3.org/2000/svg">
@@ -107,47 +127,43 @@ function CreateText({
 
   const dragStart = useCallback(
     (e) => {
+      console.log(e);
       e.preventDefault();
-      const {
-        top,
-        left,
-        height,
-        width,
-      } = textRef.current.getBoundingClientRect();
-
       onOffset('x', e.offsetX);
       onOffset('y', e.offsetY);
-
-      onCenter('x', left + width / 2);
-      onCenter('y', top + height / 2);
-
-      // if (
-      //   Math.abs(center.x - e.clientX) <= 150 &&
-      //   Math.abs(center.y - e.clientY) <= 150
-      // ) {
-      textRef.current.style.cursor = 'move';
-      onMove(true);
-      // } else {
+      // if (e.target.className.includes('rotater')) {
+      //   console.log('rotate!');
       //   const x = e.clientX - center.x;
       //   const y = e.clientY - center.y;
       //   onStartAngle((180 / Math.PI) * Math.atan2(y, x));
       //   onRotate(true);
+      // } else {
+      console.log('move!');
+      textRef.current.style.cursor = 'move';
+      onMove(true);
       // }
     },
-    [onOffset, onCenter, onMove],
+    [onOffset, onMove],
+  );
+
+  const rotationStart = useCallback(
+    (e) => {
+      console.log(e);
+      e.preventDefault();
+      if (e.target.className.includes('rotater')) {
+        console.log('rotate!');
+        const x = e.clientX - center.x;
+        const y = e.clientY - center.y;
+        onStartAngle((180 / Math.PI) * Math.atan2(y, x));
+        onRotate(true);
+      }
+    },
+    [onStartAngle, onRotate, center.x, center.y],
   );
 
   const dragging = useCallback(
     (e) => {
       e.preventDefault();
-      if (
-        Math.abs(center.x - e.clientX) <= 150 &&
-        Math.abs(center.y - e.clientY) <= 150
-      ) {
-        textRef.current.style.cursor = 'move';
-      } else {
-        textRef.current.style.cursor = 'text';
-      }
       if (rotate) {
         const x = e.clientX - center.x;
         const y = e.clientY - center.y;
@@ -204,7 +220,19 @@ function CreateText({
   };
 
   useEffect(() => {
+    const {
+      top,
+      left,
+      height,
+      width,
+    } = textRef.current.getBoundingClientRect();
+
+    onCenter('x', left + width / 2);
+    onCenter('y', top + height / 2);
+
     const textDom = textRef.current;
+    const rotateDom = rotateRef.current;
+    console.dir(rotateDom);
     textDom.addEventListener('dblclick', function dbClick() {
       textDom.contentEditable = isWriting;
       textDom.style.cursor = 'text';
@@ -219,21 +247,15 @@ function CreateText({
       textDom.contentEditable = false;
       textDom.style.cursor = 'default';
     });
-    textDom.addEventListener('mouseenter', function hover(e) {
-      e.preventDefault();
-      if (
-        Math.abs(center.x - e.clientX) <= 150 &&
-        Math.abs(center.y - e.clientY) <= 150
-      ) {
-        textDom.style.cursor = 'move';
-      } else {
-        textDom.style.cursor = 'text';
-      }
-    });
     textDom.addEventListener('mousedown', dragStart, false);
     textDom.addEventListener('mousemove', dragging, false);
     textDom.addEventListener('mouseup', dragStop, false);
     textDom.addEventListener('mouseleave', dragStop, false);
+    rotateDom.addEventListener('mousedown', rotationStart, false);
+    rotateDom.addEventListener('mousemove', dragging, false);
+    rotateDom.addEventListener('mouseup', dragStop, false);
+    rotateDom.addEventListener('mouseleave', dragStop, false);
+
     return () => {
       textDom.removeEventListener('dblclick', function dbClick() {
         textDom.contentEditable = isWriting;
@@ -244,70 +266,69 @@ function CreateText({
         textDom.contentEditable = false;
         textDom.style.cursor = 'default';
       });
-      textDom.removeEventListener('mouseenter', function hover(e) {
-        e.preventDefault();
-        if (
-          Math.abs(center.x - e.clientX) <= 150 &&
-          Math.abs(center.y - e.clientY) <= 150
-        ) {
-          textDom.style.cursor = 'move';
-        } else {
-          textDom.style.cursor = 'text';
-        }
-      });
       textDom.removeEventListener('mousedown', dragStart, false);
       textDom.removeEventListener('mousemove', dragging, false);
       textDom.removeEventListener('mouseup', dragStop, false);
       textDom.removeEventListener('mouseleave', dragStop, false);
+      rotateDom.removeEventListener('mousedown', rotationStart, false);
+      rotateDom.removeEventListener('mousemove', dragging, false);
+      rotateDom.removeEventListener('mouseup', dragStop, false);
+      rotateDom.removeEventListener('mouseleave', dragStop, false);
     };
-  }, [dragStart, dragging, dragStop, isWriting, center.x, center.y]);
+  }, [
+    onCenter,
+    rotationStart,
+    dragStart,
+    dragging,
+    dragStop,
+    isWriting,
+    center.x,
+    center.y,
+  ]);
 
   return (
-    <Textbox
-      className={css([
-        textMode === 'border' && {
-          textShadow: `1px 1px ${borderMode.lineWidth}px
-        -1px 1px ${borderMode.lineWidth}px ${borderMode.color},
-        -1px -1px ${borderMode.lineWidth}px ${borderMode.color},
-        1px -1px ${borderMode.lineWidth}px ${borderMode.color},
-        -1px 0 ${borderMode.lineWidth}px ${borderMode.color},
-        0 -1px ${borderMode.lineWidth}px ${borderMode.color},
-        1px 0 ${borderMode.lineWidth}px ${borderMode.color},
-        0 1px ${borderMode.lineWidth}px ${borderMode.color}`,
-          transform: `rotate(${transfromRotate}deg)`,
-        },
-      ])}
-      textMode={textMode}
-      fillMode={fillMode}
-      borderMode={borderMode}
+    <div
       style={{
         position: 'absolute',
+        top: position.y,
+        left: position.x,
+        transform: `rotate(${transfromRotate}deg)`,
         zIndex: 10,
-        top: positon.y,
-        left: positon.x,
-        fontSize: fillMode.lineWidth,
-        color: fillMode.color,
-        opacity: alpha,
       }}
-      ref={textRef}
-      // onDoubleClick={() => {
-      //   textRef.current.contentEditable = isWriting;
-      //   textRef.current.style = 'text';
-      //   textRef.current.fucus();
-      // }}
-      onKeyDown={onEnterkeyDown}
-      // onBlur={() => {
-      //   textRef.current.contentEditable = false;
-      //   textRef.current.style = 'default';
-      // }}
-      // onMouseEnter={() => (textRef.current.style = 'pointer')}
-      // onMouseDown={dragStart}
-      // onMouseMove={dragging}
-      // onMouseUp={dragStop}
-      // onMouseLeave={dragStop}
     >
-      작성 후 엔터를 치세요
-    </Textbox>
+      <Textbox
+        textMode={textMode}
+        fillMode={fillMode}
+        borderMode={borderMode}
+        style={{
+          fontSize: fillMode.lineWidth,
+          color: fillMode.color,
+          opacity: alpha,
+        }}
+        ref={textRef}
+        // onDoubleClick={() => {
+        //   textRef.current.contentEditable = isWriting;
+        //   textRef.current.style = 'text';
+        //   textRef.current.fucus();
+        // }}
+        onKeyDown={onEnterkeyDown}
+        // onBlur={() => {
+        //   textRef.current.contentEditable = false;
+        //   textRef.current.style = 'default';
+        // }}
+        // onMouseEnter={() => (textRef.current.style = 'pointer')}
+        // onMouseDown={dragStart}
+        // onMouseMove={dragging}
+        // onMouseUp={dragStop}
+        // onMouseLeave={dragStop}
+      >
+        작성 후 엔터를 치세요
+      </Textbox>
+      <Rotater ref={rotateRef}>
+        <span class="rotater rotate_left"></span>
+        <span class="rotater rotate_right"></span>
+      </Rotater>
+    </div>
   );
 }
 
