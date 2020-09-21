@@ -108,8 +108,8 @@ function ToolsContainer({ initialSwitch }) {
       style={{
         borderBottom: '1px solid #eee',
         padding: '10px 0',
-        boxSing: 'border-box',
-        height: '9vh;',
+        height: '9vh',
+        boxSizing: 'border-box',
       }}
     >
       <div
