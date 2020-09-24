@@ -325,8 +325,8 @@ function CreateText({
         작성 후 엔터를 치세요
       </Textbox>
       <Rotater ref={rotateRef}>
-        <span class="rotater rotate_left"></span>
-        <span class="rotater rotate_right"></span>
+        <span className="rotater rotate_left"></span>
+        <span className="rotater rotate_right"></span>
       </Rotater>
     </div>
   );
