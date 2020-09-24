@@ -16,10 +16,10 @@ function Layer({
   isPicking,
   isWriting,
   isDrawingShapes,
-  mode,
+  canvasMode,
   shapes,
   onChangeStatusToPainting,
-  onChangeStatuesToClicking,
+  onChangeStatusToClicking,
   onChangeStatusTowriting,
   onStackHistory,
   onRemoveRedo,
@@ -85,9 +85,9 @@ function Layer({
         lineWidth: borderRef.current.lineWidth,
       }));
     }
-    console.group('fill & border');
-    console.log(fillRef, borderRef);
-    console.groupEnd('fill & border');
+    // console.group('fill & border');
+    // console.log(fillRef, borderRef);
+    // console.groupEnd('fill & border');
   }, [textMode, color, lineWidth]);
 
   useEffect(() => {
@@ -122,7 +122,7 @@ function Layer({
       shapes.location.start = getMousePosition(layerRef.current, e);
     }
     onChangeStatusToPainting(true);
-    onChangeStatuesToClicking(true);
+    onChangeStatusToClicking(true);
   };
 
   const onMouseMove = (e) => {
@@ -130,9 +130,50 @@ function Layer({
     const ctx = layer.getContext('2d');
     const x = e.nativeEvent.offsetX;
     const y = e.nativeEvent.offsetY;
+
     if (!isPainting) {
       ctx.beginPath();
       ctx.moveTo(x, y);
+    } else if (isDrawingShapes) {
+      e.preventDefault();
+      ctx.fillStyle = color;
+      ctx.strokeStyle = color;
+      shapes.location.end = getMousePosition(layer, e);
+      ctx.clearRect(0, 0, width, height);
+      ctx.beginPath();
+      console.log(shapes);
+
+      if (shapes.type === 'rectangle') {
+        ctx.strokeRect(
+          shapes.location.start.x,
+          shapes.location.start.y,
+          shapes.location.end.x - shapes.location.start.x,
+          shapes.location.end.y - shapes.location.start.y,
+        );
+      } else if (shapes.type === 'triangle') {
+        const triangle = new Path2D();
+        triangle.moveTo(
+          shapes.location.start.x +
+            (shapes.location.end.x - shapes.location.start.x) / 2,
+          shapes.location.start.y,
+        );
+        triangle.lineTo(shapes.location.start.x, shapes.location.end.y);
+        triangle.lineTo(shapes.location.end.x, shapes.location.end.y);
+        triangle.closePath();
+        ctx.stroke(triangle);
+      } else if (shapes.type === 'circle') {
+        const circle = new Path2D();
+        circle.arc(
+          shapes.location.start.x +
+            (shapes.location.end.x - shapes.location.start.x) / 2,
+          shapes.location.start.y +
+            (shapes.location.end.y - shapes.location.start.y) / 2,
+          (shapes.location.end.x - shapes.location.start.x) / 2,
+          -0.5 * Math.PI,
+          2 * Math.PI,
+        );
+        ctx.stroke(circle);
+      }
     } else {
       layer.style.webkitFilter = 'blur(0.4px)';
       ctx.fillStyle = color;
@@ -170,7 +211,7 @@ function Layer({
     canvasImg.onload = function () {
       onStackHistory(canvasImg);
       onChangeStatusToPainting(false);
-      onChangeStatuesToClicking(false);
+      onChangeStatusToClicking(false);
       onRemoveRedo();
       ctx.clearRect(0, 0, width, height);
     };
