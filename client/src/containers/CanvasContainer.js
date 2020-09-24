@@ -38,7 +38,7 @@ function CanvasContainer({ setInitialSwitch }) {
     isPicking,
     isWriting,
     isDrawingShapes,
-    mode,
+    mode: canvasMode,
     shapes,
   } = useSelector(({ canvas }) => ({
     width: canvas.width,
@@ -55,7 +55,7 @@ function CanvasContainer({ setInitialSwitch }) {
     isWriting: canvas.isWriting,
     isDrawingShapes: canvas.isDrawingShapes,
     mode: canvas.mode,
-    shapes: canvas.mode,
+    shapes: canvas.shapes,
   }));
 
   const {
@@ -90,7 +90,7 @@ function CanvasContainer({ setInitialSwitch }) {
     (boolean) => dispatch(is_writing(boolean)),
     [dispatch],
   );
-  const onChangeStatuesToClicking = useCallback(
+  const onChangeStatusToClicking = useCallback(
     (boolean) => dispatch(is_clicking(boolean)),
     [dispatch],
   );
@@ -162,10 +162,10 @@ function CanvasContainer({ setInitialSwitch }) {
         isPicking={isPicking}
         isWriting={isWriting}
         isDrawingShapes={isDrawingShapes}
-        mode={mode}
+        canvasMode={canvasMode}
         shapes={shapes}
         onChangeStatusToPainting={onChangeStatusToPainting}
-        onChangeStatuesToClicking={onChangeStatuesToClicking}
+        onChangeStatusToClicking={onChangeStatusToClicking}
         onChangeStatusTowriting={onChangeStatusTowriting}
         onStackHistory={onStackHistory}
         onRemoveRedo={onRemoveRedo}
