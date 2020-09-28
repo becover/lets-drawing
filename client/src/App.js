@@ -1,10 +1,4 @@
-import React, {
-  useRef,
-  useEffect,
-  useCallback,
-  useState,
-  useLayoutEffect,
-} from 'react';
+import React, { useRef, useLayoutEffect, useCallback } from 'react';
 import './App.css';
 import CanvasContainer from './containers/CanvasContainer';
 import NavContainer from './containers/NavContainer';
@@ -33,43 +27,33 @@ function App() {
   };
 
   const { header, footer } = refs;
-  const [width, height] = UseWindowSize();
-  const [initialSwitch, setInitialSwitch] = useState([
-    { id: 'fill', checked: false },
-    { id: 'border', checked: false },
-  ]);
 
-  function UseWindowSize() {
-    const [size, setSize] = useState([0, 0]);
-    useLayoutEffect(() => {
-      function updateSize() {
-        setSize([
-          window.innerWidth,
-          window.innerHeight -
-            header.current.offsetHeight -
-            footer.current.offsetHeight,
-        ]);
-      }
-      window.addEventListener('resize', updateSize);
-      updateSize();
-      return () => window.removeEventListener('resize', updateSize);
-    }, []);
-    return size;
-  }
+  const updateSize = useCallback(
+    function () {
+      const width = window.innerWidth;
+      const height =
+        window.innerHeight -
+        header.current.offsetHeight -
+        footer.current.offsetHeight;
+      onchangeWidth(width);
+      onchangeHeight(height);
+    },
+    [onchangeWidth, onchangeHeight, header, footer],
+  );
 
-  useEffect(() => {
-    onchangeWidth(width);
-    onchangeHeight(height);
-    console.log(width, height);
-  }, [onchangeWidth, onchangeHeight, width, height, header, footer]);
+  useLayoutEffect(() => {
+    window.addEventListener('resize', updateSize);
+    updateSize();
+    return () => window.removeEventListener('resize', updateSize);
+  }, [updateSize]);
 
   return (
     <div style={{ height: '100vh' }}>
       <Container ref={header}>
         <NavContainer />
-        <ToolsContainer initialSwitch={initialSwitch} />
+        <ToolsContainer />
       </Container>
-      <CanvasContainer setInitialSwitch={setInitialSwitch} />
+      <CanvasContainer />
       <Container ref={footer}>
         <Footer />
       </Container>
