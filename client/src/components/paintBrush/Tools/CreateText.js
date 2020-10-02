@@ -11,26 +11,25 @@ const Textbox = styled.span`
   border: 1.5px dashed paleturquoise;
   line-height: 1;
 
-  ${(props) =>
+  /* ${(props) =>
     props.textMode === 'border' &&
     css`
-      text-shadow: 1px 1px ${props.borderMode.lineWidth}px
-          ${props.borderMode.color},
-        -1px 1px ${props.borderMode.lineWidth}px ${props.borderMode.color},
-        -1px -1px ${props.borderMode.lineWidth}px ${props.borderMode.color},
-        1px -1px ${props.borderMode.lineWidth}px ${props.borderMode.color},
-        -1px 0 ${props.borderMode.lineWidth}px ${props.borderMode.color},
-        0 -1px ${props.borderMode.lineWidth}px ${props.borderMode.color},
-        1px 0 ${props.borderMode.lineWidth}px ${props.borderMode.color},
-        0 1px ${props.borderMode.lineWidth}px ${props.borderMode.color};
+      text-shadow: 1px 1px ${props.size}px ${props.border},
+        -1px 1px ${props.size}px ${props.border},
+        -1px -1px ${props.size}px ${props.border},
+        1px -1px ${props.size}px ${props.border},
+        -1px 0 ${props.size}px ${props.border},
+        0 -1px ${props.size}px ${props.border},
+        1px 0 ${props.size}px ${props.border},
+        0 1px ${props.size}px ${props.border};
     `}
 
   ${(props) =>
     props.textMode === 'fill' &&
     css`
-      color: ${props.fillMode.color};
-      font-size: ${props.fillMode.lineWidth}px;
-    `}
+      color: ${props.fill};
+      font-size: ${props.size}px;
+    `} */
 `;
 
 const Rotater = styled.div`
@@ -53,10 +52,8 @@ const Rotater = styled.div`
 `;
 
 function CreateText({
-  // position,
+  text_position,
   size,
-  fillMode,
-  borderMode,
   isWriting,
   alpha,
   textMode,
@@ -80,10 +77,13 @@ function CreateText({
   layerRef,
   width,
   height,
-  setInitialSwitch,
+  onChangeButtonMode,
+  onChangeActive,
+  textColor,
 }) {
-  // const [mode, setMode] = useState(textMode);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const { fill, border } = textColor;
+  console.log(fill, border);
+  const [positions, setPositions] = useState(text_position);
   const [transfromRotate, setTransfromRotate] = useState(0);
 
   const textRef = useRef();
@@ -127,7 +127,6 @@ function CreateText({
 
   const dragStart = useCallback(
     (e) => {
-      console.log(e);
       e.preventDefault();
       onOffset('x', e.offsetX);
       onOffset('y', e.offsetY);
@@ -174,7 +173,7 @@ function CreateText({
       if (move) {
         const x = e.clientX - offset.x;
         const y = e.clientY - offset.y;
-        setPosition({
+        setPositions({
           x: x - document.querySelector('.layer').getBoundingClientRect().left,
           y: y - document.querySelector('.layer').getBoundingClientRect().top,
         });
@@ -212,10 +211,12 @@ function CreateText({
       // initDragStatus();
       onChangeStatusTowriting(false);
       onChangeMode('brush');
-      setInitialSwitch([
-        { id: 'fill', checked: false },
-        { id: 'border', checked: false },
+      onChangeButtonMode('text', [
+        { type: 'fill', checked: false },
+        { type: 'border', checked: false },
       ]);
+      onChangeActive('brush', true);
+      onChangeActive('text', false);
     }
   };
 
@@ -232,7 +233,6 @@ function CreateText({
 
     const textDom = textRef.current;
     const rotateDom = rotateRef.current;
-    console.dir(rotateDom);
     textDom.addEventListener('dblclick', function dbClick() {
       textDom.contentEditable = isWriting;
       textDom.style.cursor = 'text';
@@ -290,37 +290,34 @@ function CreateText({
     <div
       style={{
         position: 'absolute',
-        top: position.y,
-        left: position.x,
+        top: positions.y,
+        left: positions.x,
         transform: `rotate(${transfromRotate}deg)`,
         zIndex: 10,
       }}
     >
       <Textbox
         textMode={textMode}
-        fillMode={fillMode}
-        borderMode={borderMode}
+        fill={fill}
+        border={border}
+        size={size}
         style={{
-          fontSize: fillMode.lineWidth,
-          color: fillMode.color,
+          fontSize: size,
+          color: fill,
           opacity: alpha,
+          textShadow: `1px 1px ${size}px ${
+            border === null ? 'transparent' : border
+          },
+        -1px 1px ${size}px ${border === null ? 'transparent' : border},
+        -1px -1px ${size}px ${border === null ? 'transparent' : border},
+        1px -1px ${size}px ${border === null ? 'transparent' : border},
+        -1px 0 ${size}px ${border === null ? 'transparent' : border},
+        0 -1px ${size}px ${border === null ? 'transparent' : border},
+        1px 0 ${size}px ${border === null ? 'transparent' : border},
+        0 1px ${size}px ${border === null ? 'transparent' : border}`,
         }}
         ref={textRef}
-        // onDoubleClick={() => {
-        //   textRef.current.contentEditable = isWriting;
-        //   textRef.current.style = 'text';
-        //   textRef.current.fucus();
-        // }}
         onKeyDown={onEnterkeyDown}
-        // onBlur={() => {
-        //   textRef.current.contentEditable = false;
-        //   textRef.current.style = 'default';
-        // }}
-        // onMouseEnter={() => (textRef.current.style = 'pointer')}
-        // onMouseDown={dragStart}
-        // onMouseMove={dragging}
-        // onMouseUp={dragStop}
-        // onMouseLeave={dragStop}
       >
         작성 후 엔터를 치세요
       </Textbox>
