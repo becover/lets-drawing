@@ -1,10 +1,10 @@
 import React from 'react';
 
-function Pipett({ onChangeStatusToPipetting }) {
+function Pipett({ onChangeStatusToPipetting, isPicking }) {
   return (
     <div
       style={{ cursor: 'pointer' }}
-      onClick={() => onChangeStatusToPipetting(true)}
+      onClick={() => !isPicking && onChangeStatusToPipetting(true)}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
