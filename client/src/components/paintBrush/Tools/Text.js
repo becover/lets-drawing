@@ -3,10 +3,25 @@ import styled from 'styled-components';
 import { useCallback } from 'react';
 
 const TextContain = styled.div`
-  width: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 5px;
+
+  > h2 {
+    width: 20px;
+    height: 25px;
+    margin-right: 10px;
+    position: relative;
+  }
+
+  > h2 svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
   > div {
     display: flex;
     margin-right: 10px;
@@ -16,6 +31,7 @@ const TextContain = styled.div`
     border: 1px solid #ddd;
     border-radius: 5px;
     cursor: pointer;
+    font-size: small;
   }
 
   label ~ label {
@@ -38,14 +54,18 @@ function Text({
   onChangeStatusToWriting,
   onChangeStatusToTextMode,
   onChangeMode,
-  initialSwitch,
+  onChangeActive,
+  onChangeButtonMode,
+  textState,
+  onChangeTextColor,
+  color,
 }) {
-  const [Switch, setSwitch] = useState(initialSwitch);
+  const [Switch, setSwitch] = useState(textState.mode);
 
   const passingSwitchResult = useCallback(() => {
     onChangeStatusToWriting(Switch.some((status) => status.checked));
     Switch.forEach(
-      (status) => status.checked && onChangeStatusToTextMode(status.id),
+      (status) => status.checked && onChangeStatusToTextMode(status.type),
     );
   }, [Switch, onChangeStatusToWriting, onChangeStatusToTextMode]);
 
@@ -53,20 +73,34 @@ function Text({
     const status = Switch.every((status) => status.checked === false);
     if (status) {
       onChangeMode('brush');
+      onChangeActive('brush', true);
+      onChangeActive('text', false);
     } else {
       onChangeMode('text');
+      onChangeActive('brush', false);
+      onChangeActive('text', true);
     }
-  }, [Switch, onChangeMode]);
+  }, [Switch, onChangeMode, onChangeActive]);
 
   useEffect(() => {
+    onChangeButtonMode('text', Switch);
     passingSwitchResult();
     handleMode();
-  }, [passingSwitchResult, handleMode]);
+    const filterMode = Switch.filter((button) => button.checked);
+    filterMode.length > 0 && onChangeTextColor(filterMode[0]?.type, color);
+  }, [
+    passingSwitchResult,
+    handleMode,
+    onChangeButtonMode,
+    Switch,
+    onChangeTextColor,
+    color,
+  ]);
 
-  const onToggleSwitch = (id) => {
+  const onToggleSwitch = (type) => {
     setSwitch(
       Switch.map((switchs) =>
-        switchs.id !== id
+        switchs.type !== type
           ? { ...switchs, checked: false }
           : { ...switchs, checked: !switchs.checked },
       ),
@@ -77,7 +111,7 @@ function Text({
 
   return (
     <TextContain>
-      <div>
+      <h2>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"
@@ -90,26 +124,24 @@ function Text({
             transform="translate(-5 -4)"
           />
         </svg>
-      </div>
+      </h2>
       <div>
-        <input
-          type="checkbox"
-          id="fillInput"
-          checked={Switch[0].checked}
-          readOnly
-        />
-        <label htmlFor="fillInput" onClick={() => onToggleSwitch('fill')}>
-          Fill
-        </label>
-        <input
-          type="checkbox"
-          id="borderInput"
-          checked={Switch[1].checked}
-          readOnly
-        />
-        <label htmlFor="borderInput" onClick={() => onToggleSwitch('border')}>
-          Border
-        </label>
+        {Switch.map((input, index) => (
+          <React.Fragment key={input.type}>
+            <input
+              type="checkbox"
+              id={input.type + 'Input'}
+              checked={textState.isActive ? input.checked : false}
+              readOnly
+            />
+            <label
+              htmlFor={input.type + 'Input'}
+              onClick={() => onToggleSwitch(input.type)}
+            >
+              {input.type}
+            </label>
+          </React.Fragment>
+        ))}
       </div>
     </TextContain>
   );
