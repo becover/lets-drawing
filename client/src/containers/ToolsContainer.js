@@ -4,7 +4,8 @@ import styled, { css } from 'styled-components';
 import {
   alpha,
   change_linecap,
-  change_linewidth,
+  change_lineJoin,
+  change_lineWidth,
   change_color,
   change_mode,
   is_painting,
@@ -12,7 +13,14 @@ import {
   is_pipetting,
   is_picking,
   is_writing,
+  is_drawing_shapes,
+  shapes_type,
 } from '../redux/modules/canvas';
+import {
+  active,
+  change_button_mode,
+  text_colors,
+} from '../redux/modules/tools';
 import { text_mode } from '../redux/modules/text';
 import { undo, redo } from '../redux/modules/history';
 import Brush from '../components/paintBrush/Tools/Brush';
@@ -39,14 +47,31 @@ const ToolsButtom = styled.div`
     `}
 `;
 
-function ToolsContainer({ initialSwitch }) {
+function ToolsContainer() {
   const [textModeAlpha, setTextModeAlpha] = useState(100);
   const dispatch = useDispatch();
-  const { color, isPainting, isPicking, mode } = useSelector(({ canvas }) => ({
+  const {
+    color,
+    isPainting,
+    isPicking,
+    isWriting,
+    mode: canvasMode,
+  } = useSelector(({ canvas }) => ({
     color: canvas.color,
     isPainting: canvas.isPainting,
     isPicking: canvas.isPicking,
+    isWriting: canvas.isWriting,
     mode: canvas.mode,
+  }));
+
+  const {
+    text: textState,
+    brush: brushsState,
+    shape: shapeState,
+  } = useSelector(({ tools }) => ({
+    text: tools.text,
+    brush: tools.brush,
+    shape: tools.shape,
   }));
 
   const { text_mode: textMode } = useSelector(({ text }) => ({
@@ -68,8 +93,14 @@ function ToolsContainer({ initialSwitch }) {
     (lineCap) => dispatch(change_linecap(lineCap)),
     [dispatch],
   );
+
+  const onChangeLineJoin = useCallback(
+    (lineJoin) => dispatch(change_lineJoin(lineJoin)),
+    [dispatch],
+  );
+
   const onChangeLineWidth = useCallback(
-    (value) => dispatch(change_linewidth(value)),
+    (value) => dispatch(change_lineWidth(value)),
     [dispatch],
   );
 
@@ -97,10 +128,37 @@ function ToolsContainer({ initialSwitch }) {
   );
 
   const onChangeStatusToTextMode = useCallback(
-    (boolean) => dispatch(text_mode(boolean)),
+    (mode) => dispatch(text_mode(mode)),
     [dispatch],
   );
 
+  const onChangesStatusToDrawingShapes = useCallback(
+    (boolean) => dispatch(is_drawing_shapes(boolean)),
+    [dispatch],
+  );
+
+  const onChangesShapesType = useCallback(
+    (types) => dispatch(shapes_type(types)),
+    [dispatch],
+  );
+
+  //tools
+  const onChangeActive = useCallback(
+    (kinds, boolean) => dispatch(active(kinds, boolean)),
+    [dispatch],
+  );
+
+  const onChangeButtonMode = useCallback(
+    (kinds, mode) => dispatch(change_button_mode(kinds, mode)),
+    [dispatch],
+  );
+
+  const onChangeTextColor = useCallback(
+    (mode, colors) => dispatch(text_colors(mode, colors)),
+    [dispatch],
+  );
+
+  //history
   const onUndo = useCallback((history) => dispatch(undo(history)), [dispatch]);
   const onRedo = useCallback((history) => dispatch(redo(history)), [dispatch]);
   return (
@@ -123,21 +181,39 @@ function ToolsContainer({ initialSwitch }) {
       >
         <Brush
           onChangeLineCap={onChangeLineCap}
+          onChangeLineJoin={onChangeLineJoin}
           onChangeStatusToPainting={onChangeStatusToPainting}
           onChangeStatusToFilling={onChangeStatusToFilling}
-          mode={mode}
+          canvasMode={canvasMode}
+          onChangeActive={onChangeActive}
+          onChangeButtonMode={onChangeButtonMode}
+          brushsState={brushsState}
+          isWriting={isWriting}
         />
-        <Text
-          onChangeStatusToWriting={onChangeStatusToWriting}
-          onChangeStatusToTextMode={onChangeStatusToTextMode}
-          onChangeMode={onChangeMode}
-          initialSwitch={initialSwitch}
-        />
-        <Shapes onChangeMode={onChangeMode} />
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <Text
+            onChangeStatusToWriting={onChangeStatusToWriting}
+            onChangeStatusToTextMode={onChangeStatusToTextMode}
+            onChangeMode={onChangeMode}
+            onChangeActive={onChangeActive}
+            onChangeButtonMode={onChangeButtonMode}
+            textState={textState}
+            onChangeTextColor={onChangeTextColor}
+            color={color}
+          />
+          <Shapes
+            onChangeMode={onChangeMode}
+            onDrawingShapes={onChangesStatusToDrawingShapes}
+            onChangesShapesType={onChangesShapesType}
+            textState={textState}
+            shapeState={shapeState}
+            onChangeButtonMode={onChangeButtonMode}
+          />
+        </div>
         <Colors
           onChangeColor={onChangeColor}
           textModeAlpha={textModeAlpha}
-          canvasMode={mode}
+          canvasMode={canvasMode}
         />
         <div
           style={{
@@ -148,7 +224,10 @@ function ToolsContainer({ initialSwitch }) {
             alignItems: 'center',
           }}
         >
-          <Pipett onChangeStatusToPipetting={onChangeStatusToPipetting} />
+          <Pipett
+            onChangeStatusToPipetting={onChangeStatusToPipetting}
+            isPicking={isPicking}
+          />
           <ColorPicker
             onChangeStatusToPicking={onChangeStatusToPicking}
             onChangeColor={onChangeColor}
@@ -162,7 +241,7 @@ function ToolsContainer({ initialSwitch }) {
           onChangeAlpha={onChangeAlpha}
           onChangeColor={onChangeColor}
           color={color}
-          canvasMode={mode}
+          canvasMode={canvasMode}
           textMode={textMode}
           setTextModeAlpha={setTextModeAlpha}
         />

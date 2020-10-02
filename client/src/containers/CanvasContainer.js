@@ -11,6 +11,8 @@ import {
   change_mode,
 } from '../redux/modules/canvas';
 
+import { active, change_button_mode } from '../redux/modules/tools';
+
 import {
   change_start_angle,
   change_angle,
@@ -23,7 +25,7 @@ import {
 
 import { stack_History, remove_redo } from '../redux/modules/history';
 
-function CanvasContainer({ setInitialSwitch }) {
+function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
   const {
     width,
     height,
@@ -80,7 +82,12 @@ function CanvasContainer({ setInitialSwitch }) {
   const { mode: textMode } = useSelector(({ text }) => ({
     mode: text.mode,
   }));
+
+  const {
+    text: { color: textColor },
+  } = useSelector(({ tools }) => ({ text: tools.text }));
   const dispatch = useDispatch();
+
   //canvas
   const onChangeStatusToPainting = useCallback(
     (boolean) => dispatch(is_painting(boolean)),
@@ -110,6 +117,17 @@ function CanvasContainer({ setInitialSwitch }) {
     [dispatch],
   );
   const onRemoveRedo = useCallback(() => dispatch(remove_redo()), [dispatch]);
+
+  //tools(button mode)
+  const onChangeActive = useCallback(
+    (kinds, boolean) => dispatch(active(kinds, boolean)),
+    [dispatch],
+  );
+
+  const onChangeButtonMode = useCallback(
+    (kinds, mode) => dispatch(change_button_mode(kinds, mode)),
+    [dispatch],
+  );
 
   //drag
   const onStartAngle = useCallback(
@@ -187,6 +205,10 @@ function CanvasContainer({ setInitialSwitch }) {
         rotate={rotate}
         move={move}
         setInitialSwitch={setInitialSwitch}
+        setBeforeLineCap={setBeforeLineCap}
+        onChangeButtonMode={onChangeButtonMode}
+        onChangeActive={onChangeActive}
+        textColor={textColor}
       />
     </div>
   );
