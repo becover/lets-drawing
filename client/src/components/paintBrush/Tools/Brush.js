@@ -108,7 +108,7 @@ const BrushTypes = styled.div`
     position: relative;
     display: inline-block;
     width: 34px;
-    height: 34px;
+    height: 30px;
     cursor: pointer;
 
     label {
@@ -118,25 +118,23 @@ const BrushTypes = styled.div`
       background: #777;
       display: block;
       cursor: pointer;
+      width: 13px;
     }
   }
 
   & > div:nth-of-type(1) label {
-    width: 50%;
     height: 1.5px;
     transform-origin: center;
     transform: translate(-50%, -50%) rotate(42deg);
   }
 
   & > div:nth-of-type(2) label {
-    width: 40%;
-    height: 40%;
+    height: 13px;
     transform: translate(-50%, -50%);
   }
 
   & > div:nth-of-type(3) label {
-    width: 40%;
-    height: 40%;
+    height: 13px;
     border-radius: 50%;
     transform: translate(-50%, -50%);
   }
@@ -156,13 +154,17 @@ const BrushTypes = styled.div`
   }
 `;
 
-function Brush({ onChangeLineCap, onChangeStatusToFilling, mode }) {
-  const brushs = [
-    { type: 'butt', checked: true },
-    { type: 'square', checked: false },
-    { type: 'round', checked: false },
-  ];
-  const [Brushs, setBrushs] = useState(brushs);
+function Brush({
+  onChangeLineCap,
+  onChangeLineJoin,
+  onChangeStatusToFilling,
+  canvasMode,
+  onChangeActive,
+  onChangeButtonMode,
+  brushsState,
+  isWriting,
+}) {
+  const [Brushs, setBrushs] = useState(brushsState.mode);
 
   const onChangeLineCaps = useCallback(
     (e, index) => {
@@ -173,9 +175,11 @@ function Brush({ onChangeLineCap, onChangeStatusToFilling, mode }) {
             : { ...brush, checked: false },
         ),
       );
+
       onChangeLineCap(e.currentTarget.id);
+      onChangeLineJoin(e.currentTarget.dataset.join);
     },
-    [Brushs, onChangeLineCap],
+    [Brushs, onChangeLineCap, onChangeLineJoin],
   );
 
   const [Switch, setSwitch] = useState(true);
@@ -186,15 +190,16 @@ function Brush({ onChangeLineCap, onChangeStatusToFilling, mode }) {
       onChangeStatusToFilling(true);
     }
   }, [Switch, onChangeStatusToFilling]);
-  useEffect(() => {
-    console.log(mode);
-    mode === 'brush' && toggleSwitch();
-  }, [toggleSwitch, mode]);
 
   const onToggleSwitch = (e) => {
     e.preventDefault();
     setSwitch(!Switch);
   };
+
+  useEffect(() => {
+    onChangeButtonMode('brush', Brushs);
+    (canvasMode === 'brush' || canvasMode === 'shape') && toggleSwitch();
+  }, [toggleSwitch, canvasMode, Brushs, onChangeButtonMode]);
 
   const BrushIcon = () => (
     <svg
@@ -234,7 +239,11 @@ function Brush({ onChangeLineCap, onChangeStatusToFilling, mode }) {
           <SwitchLabel
             htmlFor="brushSwitch"
             className="switch"
-            onClick={mode === 'brush' ? onToggleSwitch : undefined}
+            onClick={
+              canvasMode === 'brush' || canvasMode === 'shape'
+                ? onToggleSwitch
+                : undefined
+            }
           >
             <input type="checkbox" id="brushSwitch" checked={Switch} readOnly />
             <span></span>
@@ -247,16 +256,19 @@ function Brush({ onChangeLineCap, onChangeStatusToFilling, mode }) {
           <div
             key={index}
             id={brush.type}
+            data-join={brush.join}
             onClick={(e) =>
-              mode === 'brush' ? onChangeLineCaps(e, index) : undefined
+              brushsState.isActive &&
+              (canvasMode === 'brush' || canvasMode === 'shape') &&
+              onChangeLineCaps(e, index)
             }
           >
             <input
               type="radio"
               id={brush.type}
               name="linecap"
-              disabled={!Switch}
-              checked={brush.checked}
+              disabled={brushsState.isActive && !Switch}
+              checked={brushsState.isActive ? brush.checked : false}
               readOnly
             />
             <label htmlFor={brush.type}></label>
