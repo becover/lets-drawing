@@ -46,6 +46,7 @@ const ShapesBox = styled.div`
     justify-content: center;
     align-items: center;
     margin-left: 5px;
+    cursor: pointer;
   }
   input {
     opacity: 0;
@@ -58,6 +59,7 @@ const ShapesBox = styled.div`
     height: 13px;
     border: 0.9px dashed rgb(134, 133, 133);
     box-sizing: border-box;
+    cursor: pointer;
   }
 
   #shape__circle + label {
@@ -87,23 +89,30 @@ const ShapesBox = styled.div`
   }
 `;
 
-function Shapes({ onChangeMode, onDrawingShapes, onChangesShapesType }) {
-  const shapes = [
-    { type: 'rectangle', checked: false },
-    { type: 'triangle', checked: false },
-    { type: 'circle', checked: false },
-  ];
+function Shapes({
+  onChangeMode,
+  onDrawingShapes,
+  onChangesShapesType,
+  textState,
+  shapeState,
+  onChangeButtonMode,
+}) {
+  const [Shapes, setShapes] = useState(shapeState.mode);
+  const [Switch, setSwitch] = useState(true);
 
-  const [Shapes, setShapes] = useState(shapes);
-
-  const onChangeShapes = (index) => {
+  const onChangeShapes = (type) => {
     setShapes(
       Shapes.map((shape, i) =>
-        i === index
-          ? { ...shape, checked: true }
-          : { ...shape, checked: false },
+        shape.type !== type
+          ? { ...shape, checked: false }
+          : { ...shape, checked: !shape.checked },
       ),
     );
+  };
+
+  const onToggleSwitch = (e) => {
+    e.preventDefault();
+    setSwitch(!Switch);
   };
 
   const handleMode = useCallback(() => {
@@ -120,7 +129,8 @@ function Shapes({ onChangeMode, onDrawingShapes, onChangesShapesType }) {
 
   useEffect(() => {
     handleMode();
-  }, [handleMode]);
+    onChangeButtonMode('shape', Shapes);
+  }, [handleMode, onChangeButtonMode, Shapes]);
 
   const ShapsIcon = () => (
     <h2>
@@ -163,13 +173,19 @@ function Shapes({ onChangeMode, onDrawingShapes, onChangesShapesType }) {
       <ShapsIcon />
       <ul>
         {Shapes.map((shape, index) => (
-          <li key={index} onClick={() => onChangeShapes(index)}>
+          <li
+            key={index}
+            onClick={(e) => {
+              onChangeShapes(shape.type);
+              onToggleSwitch(e);
+            }}
+          >
             <input
-              type="radio"
+              type="checkbox"
               id={'shape__' + shape.type}
               name="shapes"
-              disabled={!shape.checked}
-              checked={shape.checked}
+              disabled={!Switch}
+              checked={!textState.isActive ? shape.checked : false}
               readOnly
             />
             <label htmlFor={'shape__' + shape.type}>
