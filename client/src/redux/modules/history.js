@@ -8,12 +8,12 @@ export const redo = () => ({ type: REDO });
 export const stack_History = (history) => ({ type: STACK_HISTORY, history });
 export const remove_redo = () => ({ type: REMOVE_REDO });
 
-const initialState = {
+const INITIAL_STATE = {
   undo: [],
   redo: [],
 };
 
-const history = (state = initialState, action) => {
+const history = (state = INITIAL_STATE, action) => {
   if (action.type === STACK_HISTORY) {
     return { ...state, undo: [...state.undo.concat(action.history)] };
   } else if (action.type === UNDO) {

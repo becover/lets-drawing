@@ -22,7 +22,7 @@ export const change_rotation = (number) => ({ type: ROTATION, number });
 export const is_rotate = (boolean) => ({ type: ROTATE, boolean });
 export const is_move = (boolean) => ({ type: MOVE, boolean });
 
-const initialState = {
+const INITIAL_STATE = {
   startAngle: 0,
   angle: 0,
   center: {
@@ -38,7 +38,7 @@ const initialState = {
   move: false,
 };
 
-const drag = (state = initialState, action) => {
+const drag = (state = INITIAL_STATE, action) => {
   if (action.type === START_ANGLE) {
     return {
       ...state,
