@@ -20,7 +20,7 @@ export const Width = (value) => ({ type: WIDTH, value });
 export const Height = (value) => ({ type: HEIGHT, value });
 export const alpha = (value) => ({ type: ALPHA, value });
 export const change_color = (color) => ({ type: CHANGE_COLOR, color });
-export const change_linewidth = (lineWidth) => ({
+export const change_lineWidth = (lineWidth) => ({
   type: CHANGE_LINEWIDTH,
   lineWidth,
 });
@@ -28,7 +28,7 @@ export const change_linecap = (lineCap) => ({
   type: CHANGE_LINECAP,
   lineCap,
 });
-export const change_linejoin = (lineJoin) => ({
+export const change_lineJoin = (lineJoin) => ({
   type: CHANGE_LINEJOIN,
   lineJoin,
 });
@@ -50,7 +50,7 @@ export const shapes_location = (location, value) => ({
   value,
 });
 
-const initialState = {
+const INITIAL_STATE = {
   width: null,
   height: null,
   color: 'rgba(51, 51, 51, 1)',
@@ -75,7 +75,7 @@ const initialState = {
   },
 };
 
-const canvas = (state = initialState, action) => {
+const canvas = (state = INITIAL_STATE, action) => {
   if (action.type === WIDTH) {
     return {
       ...state,
@@ -176,130 +176,5 @@ const canvas = (state = initialState, action) => {
 };
 
 export default canvas;
-
-/**
-import {
-  change_color,
-  change_linewidth,
-  change_linecap,
-  change_linejoin,
-  is_painting,
-  is_filling,
-  is_pipetting,
-  is_picking,
-  is_writing,
-  is_drawing_shapes,
-  modes,
-  shapes_type,
-  shapes_location,
-} from '../redux/modules/canvas';
-import Canvas from '../components/paintBrush/Canvas/Canvas';
-import Layer from '../components/paintBrush/Canvas/Layer';
-
-function canvasContainer() {
-  const {
-    width,
-    height,
-    color,
-    lineWidth,
-    lineCap,
-    lineJoin,
-    isPainting,
-    isFilling,
-    isPipetting,
-    isPicking,
-    isWriting,
-    isDrawingShapes,
-    modes,
-    shapes: { type, location },
-  } = useSelector(({canvas}) => ({
-    width: canvas.width,
-    height: canvas.height,
-    color: canvas.color,
-    lineWidth: canvas.lineWidth,
-    lineCap: canvas.lineCap,
-    lineJoin: canvas.lineJoin,
-    isPainting: canvas.isPainting,
-    isFilling: canvas.isFilling,
-    isPipetting: canvas.isPipetting,
-    isPicking: canvas.isPicking,
-    isWriting: canvas.isWriting,
-    isDrawingShapes: canvas.isDrawingShapes,
-    modes: canvas.modes,
-    type: canvas.type,
-    location: canvas.location,
-  }));
-  const dispatch = useDispatch();
-  const onchangeColor = useCallback((color) => dispatch(change_color(color)), [
-    dispatch,
-  ]);
-  const onchangeLineWidth = useCallback(
-    (lineWidth) => dispatch(change_linewidth(lineWidth)),
-    [dispatch],
-  );
-  const onchangeLineCap = useCallback(
-    (lineCap) => dispatch(change_linecap(lineCap)),
-    [dispatch],
-  );
-  const onchangeLineJoin = useCallback(
-    (lineJoin) => dispatch(change_linejoin(lineJoin)),
-    [dispatch],
-  );
-  const onchangeStatusToPainting = useCallback(
-    (boolean) => dispatch(is_painting(boolean)),
-    [dispatch],
-  );
-  const onchangeStatusToFilling = useCallback(
-    (boolean) => dispatch(is_filling(boolean)),
-    [dispatch],
-  );
-  const onchangeStatusToPipetting = useCallback(
-    (boolean) => dispatch(is_pipetting(boolean)),
-    [dispatch],
-  );
-  const onchangeStatusToPicking = useCallback(
-    (boolean) => dispatch(is_picking(boolean)),
-    [dispatch],
-  );
-  const onchangeStatusToWriting = useCallback(
-    (boolean) => dispatch(is_writing(boolean)),
-    [dispatch],
-  );
-  const onchangeStatusToDrawingShapes = useCallback(
-    (boolean) => dispatch(is_drawing_shapes(boolean)),
-    [dispatch],
-  );
-  const onchangeMode = useCallback((mode) => dispatch(modes(mode)), [dispatch]);
-  const onchangeStatusToShapeType = useCallback(
-    (types) => dispatch(shapes_type(types)),
-    [dispatch],
-  );
-  const onchangeStatusToShapeLocation = useCallback(
-    (location, value) => dispatch(shapes_location(location, value)),
-    [dispatch],
-  );
-
-  return (
-    <div>
-      <Canvas />
-      <Layer
-      // width={width}
-      // height={height}
-      // color={color}
-      // lineWidt={lineWidth}
-      // lineCap={lineCap}
-      // lineJoin={lineJoin}
-      // isPainting={isPainting}
-      // isFilling={isFilling}
-      // isPipetting={isPipetting}
-      // isPicking={isPicking}
-      // isWriting={isWriting}
-      // isDrawingShapes={isDrawingShapes}
-      // modes={modes}
-      // type={type}
-      // location={location}
-      />
-    </div>
-  );
 }
  */
