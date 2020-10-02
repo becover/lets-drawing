@@ -47,52 +47,7 @@ function Layer({
   textColor,
 }) {
   const layerRef = useRef();
-  // const fillRef = useRef({ color, lineWidth });
-  // const borderRef = useRef({ color, lineWidth });
   const [position, setPosition] = useState({ x: 10, y: 10 });
-  // const [fillMode, setFillMode] = useState({
-  //   color: color,
-  //   lineWidth: lineWidth,
-  // });
-  // const [borderMode, setborderMode] = useState({
-  //   color: color,
-  //   lineWidth: lineWidth,
-  // });
-
-  // useEffect(() => {
-  //   if (textMode === 'fill') {
-  //     fillRef.current = {
-  //       color: color,
-  //       lineWidth: lineWidth,
-  //     };
-  //     setFillMode((preValue) => ({
-  //       ...preValue,
-  //       color: fillRef.current.color,
-  //     }));
-  //     setFillMode((preValue) => ({
-  //       ...preValue,
-  //       lineWidth: fillRef.current.lineWidth,
-  //     }));
-  //   }
-
-  //   if (textMode === 'border') {
-  //     borderRef.current = {
-  //       color: color,
-  //       lineWidth: lineWidth,
-  //     };
-  //     setborderMode((preValue) => ({
-  //       ...preValue,
-  //       color: borderRef.current.color,
-  //     }));
-  //     setborderMode((preValue) => ({
-  //       ...preValue,
-  //       lineWidth: borderRef.current.lineWidth,
-  //     }));
-  //   }
-  //   // console.group('fill & border');
-  //   // console.log(fillRef, borderRef);
-  //   // console.groupEnd('fill & border');
-  // }, [textMode, color, lineWidth]);
 
   useEffect(() => {
     const layer = layerRef.current;
