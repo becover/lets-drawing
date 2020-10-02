@@ -176,5 +176,3 @@ const canvas = (state = INITIAL_STATE, action) => {
 };
 
 export default canvas;
-}
- */
