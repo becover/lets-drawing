@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useRef } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -24,12 +24,14 @@ function ColorPicker({ onChangeStatusToPicking, onChangeColor, isPicking }) {
   const pickerRef = useRef();
   const [togglePicker, setTogglePicker] = useState(isPicking);
 
-  const hanleTogglePicker = (e) => {
-    if (e.currentTarget && e.target.tagName !== 'CANVAS') {
-      setTogglePicker(!togglePicker);
-      onChangeStatusToPicking(togglePicker);
-    }
-  };
+  const hanleTogglePicker = useCallback(
+    (e) => {
+      // if (e.currentTarget && e.target.tagName !== 'CANVAS') {
+      setTogglePicker((prevPicker) => !prevPicker);
+      // }
+    },
+    [setTogglePicker],
+  );
 
   function createGradient(ctx, width, height) {
     let gradient = ctx.createLinearGradient(0, 0, width, 0);
@@ -84,10 +86,16 @@ function ColorPicker({ onChangeStatusToPicking, onChangeColor, isPicking }) {
   }
 
   const hanleColorPicker = (e) => {
+    console.log('hanleColorPicker', e);
+
     const picker = pickerRef.current;
     const ctx = picker.getContext('2d');
     pipetColor(ctx, e.nativeEvent.offsetX, e.nativeEvent.offsetY, e);
   };
+
+  useEffect(() => {
+    onChangeStatusToPicking(togglePicker);
+  }, [onChangeStatusToPicking, togglePicker]);
 
   return (
     <div
