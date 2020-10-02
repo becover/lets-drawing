@@ -54,7 +54,6 @@ function Canvas({
   }
 
   const onHandleCanvasClick = (e) => {
-    console.log('click!', isPipetting, e);
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     isPipetting &&
