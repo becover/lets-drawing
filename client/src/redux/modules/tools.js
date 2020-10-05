@@ -1,5 +1,6 @@
 const CHANGE_BUTTON_MODE = 'paint/tools/CHANGE_BUTTON_MODE';
 const TEXT_COLORS = 'paint/tools/TEXT_COLORS';
+const TEXT_SIZE = 'paint/tools/TEXT_SIZE';
 const ACTIVE = 'paint/tools/ACTIVE';
 
 export const change_button_mode = (kinds, mode) => ({
@@ -12,6 +13,12 @@ export const text_colors = (mode, color) => ({
   mode,
   color,
 });
+
+export const text_size = (mode, size) => ({
+  type: TEXT_SIZE,
+  mode,
+  size,
+});
 export const active = (kinds, boolean) => ({ type: ACTIVE, kinds, boolean });
 
 const INITIAL_STATE = {
@@ -22,8 +29,12 @@ const INITIAL_STATE = {
       { type: 'border', checked: false },
     ],
     color: {
-      fill: null,
-      border: null,
+      fill: 'rgb(0,0,0,1)',
+      border: 'transparent',
+    },
+    size: {
+      text: 25,
+      border: 25,
     },
   },
   brush: {
@@ -68,6 +79,17 @@ const tools = (state = INITIAL_STATE, action) => {
         color: {
           ...state.text.color,
           [action.mode]: action.color,
+        },
+      },
+    };
+  } else if (action.type === TEXT_SIZE) {
+    return {
+      ...state,
+      text: {
+        ...state.text,
+        size: {
+          ...state.text.size,
+          [action.mode]: action.size,
         },
       },
     };

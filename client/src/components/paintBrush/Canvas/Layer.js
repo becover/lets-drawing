@@ -45,6 +45,8 @@ function Layer({
   onChangeActive,
   onChangeTextColor,
   textColor,
+  textSize,
+  loadImage,
 }) {
   const layerRef = useRef();
   const [position, setPosition] = useState({ x: 10, y: 10 });
@@ -236,6 +238,7 @@ function Layer({
           onChangeButtonMode={onChangeButtonMode}
           onChangeActive={onChangeActive}
           textColor={textColor}
+          textSize={textSize}
         />
       )}
       <canvas

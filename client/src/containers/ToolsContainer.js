@@ -20,6 +20,7 @@ import {
   active,
   change_button_mode,
   text_colors,
+  text_size,
 } from '../redux/modules/tools';
 import { text_mode } from '../redux/modules/text';
 import { undo, redo } from '../redux/modules/history';
@@ -75,7 +76,7 @@ function ToolsContainer() {
   }));
 
   const { text_mode: textMode } = useSelector(({ text }) => ({
-    text_mode: text.text_mode,
+    text_mode: text.mode,
   }));
 
   const onChangeMode = useCallback((mode) => dispatch(change_mode(mode)), [
@@ -155,6 +156,11 @@ function ToolsContainer() {
 
   const onChangeTextColor = useCallback(
     (mode, colors) => dispatch(text_colors(mode, colors)),
+    [dispatch],
+  );
+
+  const onChangeTextSize = useCallback(
+    (mode, size) => dispatch(text_size(mode, size)),
     [dispatch],
   );
 
@@ -244,6 +250,7 @@ function ToolsContainer() {
           canvasMode={canvasMode}
           textMode={textMode}
           setTextModeAlpha={setTextModeAlpha}
+          onChangeTextSize={onChangeTextSize}
         />
         <History onUndo={onUndo} onRedo={onRedo} />
       </ToolsButtom>

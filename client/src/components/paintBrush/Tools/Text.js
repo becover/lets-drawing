@@ -64,9 +64,8 @@ function Text({
 
   const passingSwitchResult = useCallback(() => {
     onChangeStatusToWriting(Switch.some((status) => status.checked));
-    Switch.forEach(
-      (status) => status.checked && onChangeStatusToTextMode(status.type),
-    );
+    const [checkedType] = Switch.filter((status) => status.checked);
+    checkedType && onChangeStatusToTextMode(checkedType['type']);
   }, [Switch, onChangeStatusToWriting, onChangeStatusToTextMode]);
 
   const handleMode = useCallback(() => {

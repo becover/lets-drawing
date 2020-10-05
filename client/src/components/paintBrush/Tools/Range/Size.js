@@ -58,7 +58,7 @@ const SizeContainer = styled.div`
   }
 `;
 
-function Size({ onChangeLineWidth }) {
+function Size({ onChangeLineWidth, onChangeTextSize, textMode }) {
   const lineWidth = useSelector(({ canvas }) => canvas.lineWidth);
   const color = useSelector(({ canvas }) => canvas.color);
   const [Size, setSize] = useState(lineWidth);
@@ -75,7 +75,9 @@ function Size({ onChangeLineWidth }) {
   };
   useEffect(() => {
     onChangeLineWidth(Size);
-  }, [onChangeLineWidth, Size]);
+    textMode === 'fill' && onChangeTextSize('text', Size);
+    textMode === 'border' && onChangeTextSize('border', Size);
+  }, [onChangeLineWidth, Size, textMode, onChangeTextSize]);
 
   return (
     <SizeContainer color={color}>
@@ -97,7 +99,7 @@ function Size({ onChangeLineWidth }) {
         min="1"
         max="50"
         step="1"
-        onChange={(e) => setSize(+e.target.value)}
+        onChange={(e) => setSize(e.target.valueAsNumber)} //+e.target.value
         onWheel={whieelEventBindSize}
         id="lineWidth"
       />

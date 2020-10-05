@@ -84,9 +84,14 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
   }));
 
   const {
-    text: { color: textColor },
+    text: { color: textColor, size: textSize },
   } = useSelector(({ tools }) => ({ text: tools.text }));
+
   const dispatch = useDispatch();
+
+  const { loadImage } = useSelector(({ nav }) => ({
+    loadImage: nav.loadImage,
+  }));
 
   //canvas
   const onChangeStatusToPainting = useCallback(
@@ -209,6 +214,8 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
         onChangeButtonMode={onChangeButtonMode}
         onChangeActive={onChangeActive}
         textColor={textColor}
+        textSize={textSize}
+        loadImage={loadImage}
       />
     </div>
   );

@@ -44,6 +44,7 @@ function Range({
   canvasMode,
   textMode,
   setTextModeAlpha,
+  onChangeTextSize,
 }) {
   const { lineWidth, alpha, isPainting } = useSelector(({ canvas }) => ({
     lineWidth: canvas.lineWidth,
@@ -52,7 +53,11 @@ function Range({
   return (
     <RangeContainer isPainting={isPainting} style={{}}>
       <div>
-        <Size onChangeLineWidth={onChangeLineWidth} />
+        <Size
+          onChangeLineWidth={onChangeLineWidth}
+          onChangeTextSize={onChangeTextSize}
+          textMode={textMode}
+        />
         <AlphaValue
           onChangeAlpha={onChangeAlpha}
           onChangeColor={onChangeColor}

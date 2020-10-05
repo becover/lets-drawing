@@ -1,8 +1,25 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import fontFace from '../../../assets/fontFace-DoHyeon';
 // import { css, jsx } from '@emotion/core';
 // import styled from '@emotion/styled';
+
+const borderStyledString = (border, size) =>
+  `
+  text-shadow: 1px 1px ${size}px ${border},
+  -1px 1px ${size}px ${border},
+  -1px -1px ${size}px ${border},
+  1px -1px ${size}px ${border},
+  -1px 0 ${size}px ${border},
+  0 -1px ${size}px ${border},
+  1px 0 ${size}px ${border},
+  0 1px ${size}px ${border};
+`;
+
+const fillStyledString = (fill, size) =>
+  `color: ${fill};
+  font-size: ${size}px;
+`;
 
 const Textbox = styled.span`
   display: inline-block;
@@ -11,25 +28,9 @@ const Textbox = styled.span`
   border: 1.5px dashed paleturquoise;
   line-height: 1;
 
-  /* ${(props) =>
-    props.textMode === 'border' &&
-    css`
-      text-shadow: 1px 1px ${props.size}px ${props.border},
-        -1px 1px ${props.size}px ${props.border},
-        -1px -1px ${props.size}px ${props.border},
-        1px -1px ${props.size}px ${props.border},
-        -1px 0 ${props.size}px ${props.border},
-        0 -1px ${props.size}px ${props.border},
-        1px 0 ${props.size}px ${props.border},
-        0 1px ${props.size}px ${props.border};
-    `}
+  ${(props) => borderStyledString(props.border, props.size.border)}
 
-  ${(props) =>
-    props.textMode === 'fill' &&
-    css`
-      color: ${props.fill};
-      font-size: ${props.size}px;
-    `} */
+  ${(props) => fillStyledString(props.fill, props.size.text)}
 `;
 
 const Rotater = styled.div`
@@ -80,17 +81,25 @@ function CreateText({
   onChangeButtonMode,
   onChangeActive,
   textColor,
+  textSize,
 }) {
   const { fill, border } = textColor;
-  console.log(fill, border);
   const [positions, setPositions] = useState(text_position);
   const [transfromRotate, setTransfromRotate] = useState(0);
+  const [fillStyleStrings, setFillStyleStrings] = useState(null);
+  const [borderStyleStrings, setBorderStyleStrings] = useState(null);
 
   const textRef = useRef();
   const rotateRef = useRef();
 
+  useEffect(() => {
+    setFillStyleStrings(fillStyledString(fill, textSize.text));
+    setBorderStyleStrings(borderStyledString(border, textSize.border));
+  }, [textMode, fill, border, textSize]);
+
   const paintText2canvas = (e) => {
-    const style = `${e.target.attributes.style.value} ${e.target.parentNode.attributes.style.value}`;
+    const style = `${e.target.attributes.style.value} ${e.target.parentNode.attributes.style.value} ${fillStyleStrings} ${borderStyleStrings}`;
+    console.log(style);
     const text = e.target.innerText;
     const xml = `
     <svg xmlns="http://www.w3.org/2000/svg">
@@ -300,21 +309,11 @@ function CreateText({
         textMode={textMode}
         fill={fill}
         border={border}
-        size={size}
+        size={textSize}
         style={{
-          fontSize: size,
+          fontSize: textSize.text,
           color: fill,
           opacity: alpha,
-          textShadow: `1px 1px ${size}px ${
-            border === null ? 'transparent' : border
-          },
-        -1px 1px ${size}px ${border === null ? 'transparent' : border},
-        -1px -1px ${size}px ${border === null ? 'transparent' : border},
-        1px -1px ${size}px ${border === null ? 'transparent' : border},
-        -1px 0 ${size}px ${border === null ? 'transparent' : border},
-        0 -1px ${size}px ${border === null ? 'transparent' : border},
-        1px 0 ${size}px ${border === null ? 'transparent' : border},
-        0 1px ${size}px ${border === null ? 'transparent' : border}`,
         }}
         ref={textRef}
         onKeyDown={onEnterkeyDown}
