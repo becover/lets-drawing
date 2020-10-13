@@ -83,20 +83,26 @@ function Colors({ onChangeColor, textModeAlpha, canvasMode }) {
 
   const [Colors, setColors] = useState(colors);
 
-  const onClickColor = (e) => {
-    const color = e.target.style.backgroundColor;
-    console.group('color log');
-    console.log(color);
-    if (canvasMode === 'text') {
-      const [, colorStruc] = color.split('(');
-      const [colorNumbers] = colorStruc.split(')');
-      let [r, g, b, a = textModeAlpha / 100] = colorNumbers.split(',');
-      a = textModeAlpha / 100;
-      console.log(`rgba(${r},${g},${b},${a})`);
-      console.groupEnd('color log');
-      return onChangeColor(`rgba(${r},${g},${b},${a})`);
+  const handleRgbRegex = (color) => {
+    const rgbRegex = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/;
+    const rgbaRegex = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/;
+    if (rgbRegex.test(color)) {
+      const [_, r, g, b] = color.match(rgbRegex);
+      const ALPHA = textModeAlpha / 100;
+      return onChangeColor(`rgba(${r},${g},${b},${ALPHA})`);
+    } else if (rgbaRegex.test(color)) {
+      const [_, r, g, b, a] = color.match(rgbaRegex);
+      const ALPHA = textModeAlpha / 100;
+      return onChangeColor(`rgba(${r},${g},${b},${ALPHA})`);
     }
-    onChangeColor(color);
+  };
+
+  const onClickColor = (e) => {
+    if (e.target && e.target.tagName === 'LI') {
+      const color = e.target.style.backgroundColor;
+      canvasMode === 'text' && handleRgbRegex(color);
+      onChangeColor(color);
+    }
   };
 
   const CheckdIcon = () => (

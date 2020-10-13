@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 // import { useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
 
@@ -74,26 +74,7 @@ function AlphaValue({
 }) {
   const [Alpha, setAlpha] = useState(100);
   const alphaRangeRef = useRef();
-  // const color = useSelector(({ canvas }) => canvas.color);
 
-  // const handleAlphaMode = useCallback(() => {
-  //   if (canvasMode === 'text') {
-  //     const rgbColorCodeRegExp = /(rgba|rgb)\((\d+), ?(\d+), ?(\d+),? ?(\d+|\d\.\d+)?\)/g;
-  //     const replaceReg = /^(, ?(\d+|\d\.\d+)\))$/g;
-  //     const result = rgbColorCodeRegExp.exec(color);
-  //     let newColor;
-  //     if (result && result[5] === undefined) {
-  //       newColor = color.replace(')', `, ${Alpha / 100})`);
-  //       onChangeColor(newColor);
-  //       console.log(color);
-  //     } else {
-  //       newColor = color.replace(replaceReg, `, ${Alpha / 100})`);
-  //       onChangeColor(newColor);
-  //       console.log(color);
-  //     }
-  //   }
-  //   if (canvasMode === 'brush') onChangeAlpha(Alpha / 100);
-  // }, [Alpha, onChangeAlpha, canvasMode, onChangeColor, color]);
   useEffect(() => {
     const cancelEvent = (e) => e.preventDefault();
     const alphaDom = alphaRangeRef.current;
@@ -106,19 +87,27 @@ function AlphaValue({
       });
     };
   }, []);
+
+  const handleRgbRegex = useCallback(
+    (color) => {
+      const rgbRegex = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/;
+      const rgbaRegex = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/;
+      if (rgbRegex.test(color)) {
+        const [_, r, g, b] = color.match(rgbRegex);
+        const ALPHA = Alpha / 100;
+        onChangeColor(`rgba(${r},${g},${b},${ALPHA})`);
+      } else if (rgbaRegex.test(color)) {
+        const [_, r, g, b, a] = color.match(rgbaRegex);
+        const ALPHA = Alpha / 100;
+        onChangeColor(`rgba(${r},${g},${b},${ALPHA})`);
+      }
+    },
+    [Alpha, onChangeColor],
+  );
+
   useEffect(() => {
-    if (canvasMode === 'text') {
-      const [, colorStruc] = color.split('(');
-      const [colorNumbers] = colorStruc.split(')');
-      let [r, g, b, a = Alpha / 100] = colorNumbers.split(',');
-      a = Alpha / 100;
-      console.log(`rgba(${r},${g},${b},${a})`);
-      onChangeColor(`rgba(${r},${g},${b},${a})`);
-      setTextModeAlpha(Alpha);
-    } else {
-      onChangeAlpha(Alpha / 100);
-    }
-    if (canvasMode === 'brush') onChangeAlpha(Alpha / 100);
+    canvasMode === 'text' && handleRgbRegex(color);
+    canvasMode === 'brush' && onChangeAlpha(Alpha / 100);
   }, [
     Alpha,
     onChangeAlpha,
@@ -126,6 +115,7 @@ function AlphaValue({
     onChangeColor,
     color,
     setTextModeAlpha,
+    handleRgbRegex,
   ]);
 
   const whieelEventBindAlpha = (e) => {
