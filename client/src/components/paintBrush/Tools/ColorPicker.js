@@ -24,14 +24,9 @@ function ColorPicker({ onChangeStatusToPicking, onChangeColor, isPicking }) {
   const pickerRef = useRef();
   const [togglePicker, setTogglePicker] = useState(isPicking);
 
-  const hanleTogglePicker = useCallback(
-    (e) => {
-      // if (e.currentTarget && e.target.tagName !== 'CANVAS') {
-      setTogglePicker((prevPicker) => !prevPicker);
-      // }
-    },
-    [setTogglePicker],
-  );
+  const hanleTogglePicker = useCallback(() => {
+    setTogglePicker((prevPicker) => !prevPicker);
+  }, [setTogglePicker]);
 
   function createGradient(ctx, width, height) {
     let gradient = ctx.createLinearGradient(0, 0, width, 0);
