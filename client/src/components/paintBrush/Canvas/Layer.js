@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 // import { is_writing } from '../../../redux/modules/canvas';
 // import { useSelector } from 'react-redux';
 import CreateText from '../Tools/CreateText';
@@ -45,7 +45,6 @@ function Layer({
   onChangeActive,
   onChangeTextColor,
   textColor,
-  textSize,
   loadImage,
 }) {
   const layerRef = useRef();
@@ -143,16 +142,12 @@ function Layer({
     }
   };
 
-  const onMouseUp = (e) => {
-    const layer = layerRef.current;
-    const ctx = layer.getContext('2d');
-    if (isFilling) ctx.fillRect(0, 0, width, height);
-    const layerImg = new Image();
-    const src = layer.toDataURL('image/png');
-    layerImg.src = src;
-    const canvasImg = new Image();
-    const style = e.target.attributes.style.value;
-    const xml = `
+  const handleHtmlToImage = useCallback(
+    (src, ctx) => {
+      const canvasImg = new Image();
+      const style = layerRef.current.attributes.style.value;
+      console.log(style, layerRef.current);
+      const xml = `
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
       <foreignObject width="100%" height="100%">
         <div xmlns="http://www.w3.org/1999/xhtml">
@@ -169,14 +164,33 @@ function Layer({
         </div>
       </foreignObject>
     </svg>`;
-    canvasImg.src = 'data:image/svg+xml,' + encodeURIComponent(xml);
-    canvasImg.onload = function () {
-      onStackHistory(canvasImg);
-      onChangeStatusToPainting(false);
-      onChangeStatusToClicking(false);
-      onRemoveRedo();
-      ctx.clearRect(0, 0, width, height);
-    };
+      canvasImg.src = 'data:image/svg+xml,' + encodeURIComponent(xml);
+      canvasImg.onload = function () {
+        onStackHistory(canvasImg);
+        onChangeStatusToPainting(false);
+        onChangeStatusToClicking(false);
+        onRemoveRedo();
+        ctx.clearRect(0, 0, width, height);
+      };
+    },
+    [
+      onStackHistory,
+      onChangeStatusToPainting,
+      onChangeStatusToClicking,
+      onRemoveRedo,
+      width,
+      height,
+    ],
+  );
+
+  const onMouseUp = (e) => {
+    const layer = layerRef.current;
+    const ctx = layer.getContext('2d');
+    if (isFilling) ctx.fillRect(0, 0, width, height);
+    const layerImg = new Image();
+    const src = layer.toDataURL('image/png');
+    layerImg.src = src;
+    handleHtmlToImage(src, ctx);
   };
 
   const fillCanvas = (ctx) => {
@@ -198,6 +212,26 @@ function Layer({
   //   layerCtx.fillStyle = color;
   //   layerCtx.strokeStyle = color;
   // }
+  const watchLoadFileButton = useCallback(() => {
+    const layer = layerRef.current;
+    const ctx = layer.getContext('2d');
+    const img = new Image();
+    const url = window.URL || window.webkitURL;
+
+    img.src = loadImage.src;
+    img.onload = function () {
+      const width = img.width;
+      const height = img.height;
+      ctx.drawImage(img, 0, 0, width, height);
+      url.revokeObjectURL(img.src);
+      const imgToDataURL = layer.toDataURL('image/png');
+      handleHtmlToImage(imgToDataURL, ctx);
+    };
+  }, [loadImage.src, handleHtmlToImage]);
+
+  useEffect(() => {
+    loadImage.isActive && watchLoadFileButton();
+  }, [loadImage.isActive, watchLoadFileButton]);
 
   return (
     <div
@@ -238,7 +272,6 @@ function Layer({
           onChangeButtonMode={onChangeButtonMode}
           onChangeActive={onChangeActive}
           textColor={textColor}
-          textSize={textSize}
         />
       )}
       <canvas
