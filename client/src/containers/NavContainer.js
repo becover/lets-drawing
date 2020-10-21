@@ -60,9 +60,9 @@ const NavigationContainer = styled.div`
  *
  */
 function NavContainer({ location }) {
-  const { isActive, portalCompo } = useSelector(({ portal }) => ({
+  const { isActive, PortalCompo } = useSelector(({ portal }) => ({
     isActive: portal.isActive,
-    portalCompo: portal.portalCompo,
+    PortalCompo: portal.portalCompo,
   }));
   const dispatch = useDispatch();
   const onSettingButton = useCallback(
@@ -79,7 +79,11 @@ function NavContainer({ location }) {
         <Logo />
         <RightMenu onModal={onModal} />
       </NavigationContainer>
-      {isActive && <Portal>{portalCompo()}</Portal>}
+      {isActive && (
+        <Portal>
+          <PortalCompo />
+        </Portal>
+      )}
     </>
   );
 }
