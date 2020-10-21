@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import LeftMenu from '../components/Nav/LeftMenu/LeftMenu';
 import Logo from '../components/Nav/Logo';
 import styled from 'styled-components';
 import RightMenu from '../components/Nav/RightMenu/RightMenu';
+import { on_setting_button } from '../redux/modules/nav';
+import { modal } from '../redux/modules/portal';
+import { useSelector } from 'react-redux';
+import Portal from '../Portal';
 
 const NavigationContainer = styled.div`
   padding: 20px 20px;
@@ -14,6 +19,26 @@ const NavigationContainer = styled.div`
   align-items: center;
   height: 13vh;
   box-sizing: border-box;
+  > div {
+    flex: 1;
+    display: flex;
+  }
+
+  > div svg:hover {
+    fill: #ff7b57;
+  }
+
+  > div:first-of-type {
+    justify-content: flex-start;
+  }
+
+  > div:nth-of-type(2) {
+    justify-content: center;
+  }
+
+  > div:last-of-type {
+    justify-content: flex-end;
+  }
 
   &::after {
     content: '';
@@ -31,14 +56,31 @@ const NavigationContainer = styled.div`
     height: 20px;
   }
 `;
-
-function NavContainer() {
+/**
+ *
+ */
+function NavContainer({ location }) {
+  const { isActive, portalCompo } = useSelector(({ portal }) => ({
+    isActive: portal.isActive,
+    portalCompo: portal.portalCompo,
+  }));
+  const dispatch = useDispatch();
+  const onSettingButton = useCallback(
+    (kinds, state, value) => dispatch(on_setting_button(kinds, state, value)),
+    [dispatch],
+  );
+  const onModal = useCallback((state, compo) => dispatch(modal(state, compo)), [
+    dispatch,
+  ]);
   return (
-    <NavigationContainer>
-      <LeftMenu />
-      <Logo />
-      <RightMenu />
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        <LeftMenu onSettingButton={onSettingButton} />
+        <Logo />
+        <RightMenu onModal={onModal} />
+      </NavigationContainer>
+      {isActive && <Portal>{portalCompo()}</Portal>}
+    </>
   );
 }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from '../../assets/logo_letsdrawing.png';
 import styled, { keyframes } from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const shining1 = keyframes`
   0% {
@@ -37,8 +38,10 @@ const shining2 = keyframes`
 `;
 
 const ImageBox = styled.div`
-  position: relative;
-  &:after {
+  span {
+    position: relative;
+  }
+  span::after {
     content: '';
     display: block;
     width: 10px;
@@ -50,7 +53,7 @@ const ImageBox = styled.div`
     animation: ${shining1} 2s 4.5s infinite cubic-bezier(1, 0.21, 0.36, 0.93)
       backwards;
   }
-  &:before {
+  span::before {
     content: '';
     display: block;
     width: 10px;
@@ -71,7 +74,11 @@ const ImageBox = styled.div`
 function Logo() {
   return (
     <ImageBox>
-      <img src={logo} alt="logo" />
+      <span>
+        <Link to="/">
+          <img src={logo} alt="logo" />
+        </Link>
+      </span>
     </ImageBox>
   );
 }

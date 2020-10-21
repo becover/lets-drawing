@@ -87,10 +87,12 @@ function Colors({ onChangeColor, textModeAlpha, canvasMode }) {
     const rgbRegex = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/;
     const rgbaRegex = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/;
     if (rgbRegex.test(color)) {
+      // eslint-disable-next-line
       const [_, r, g, b] = color.match(rgbRegex);
       const ALPHA = textModeAlpha / 100;
       return onChangeColor(`rgba(${r},${g},${b},${ALPHA})`);
     } else if (rgbaRegex.test(color)) {
+      // eslint-disable-next-line
       const [_, r, g, b, a] = color.match(rgbaRegex);
       const ALPHA = textModeAlpha / 100;
       return onChangeColor(`rgba(${r},${g},${b},${ALPHA})`);

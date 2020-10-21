@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
-import LoginForm from '../components/auth/LoginForm';
+import SingupForm from '../components/auth/SingupForm';
 import styled from 'styled-components';
-import Signup from './Signup';
-import { useDispatch, useSelector } from 'react-redux';
 import { modal } from '../redux/modules/portal';
+import { useDispatch } from 'react-redux';
+import Login from './Login';
 
-const LoginLayout = styled.div`
+const SignUpLayout = styled.div`
   width: 30%;
   height: 40%;
   position: absolute;
@@ -75,27 +75,24 @@ const LoginLayout = styled.div`
   }
 `;
 
-export default function Login() {
-  // const dispatch = useDispatch();
-  // const { portalCompo } = useSelector(({ portal }) => ({
-  //   portalCompo: portal.portalCompo,
-  // }));
-  // const onModal = useCallback((state, compo) => dispatch(modal(state, compo)), [
-  //   dispatch,
-  // ]);
+export default function Signup() {
+  const dispatch = useDispatch();
+  const onModal = useCallback((state, compo) => dispatch(modal(state, compo)), [
+    dispatch,
+  ]);
   const handleModal = (e) => {
     e.stopPropagation();
   };
-  // const goSignupModal = () => {
-  //   if (portalCompo) onModal(true, Signup);
-  // };
+  const goLoginModal = () => {
+    onModal(true, Login);
+  };
   return (
-    <LoginLayout onClick={(e) => handleModal(e)}>
-      <h2>LOGIN</h2>
-      <LoginForm />
+    <SignUpLayout onClick={(e) => handleModal(e)}>
+      <h2>SIGNUP</h2>
+      <SingupForm />
       <p>
-        아이디가 없나요? <span onClick={() => {}}>가입하기</span>
+        회원이신가요? <span onClick={goLoginModal}>로그인하기</span>
       </p>
-    </LoginLayout>
+    </SignUpLayout>
   );
 }

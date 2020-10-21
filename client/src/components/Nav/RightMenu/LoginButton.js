@@ -1,8 +1,12 @@
 import React from 'react';
+import Login from '../../../routes/Login';
 
-function Login() {
+function LoginButton({ onModal }) {
+  const onLoginModal = () => {
+    onModal(true, Login);
+  };
   return (
-    <div>
+    <div onClick={onLoginModal}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="20"
@@ -19,4 +23,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginButton;

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 
-function useForwardRef(Compo) {
+function UseForwardRef(Compo) {
   const elemRef = useRef();
   const Element = React.forwardRef((props, ref) => (
     <Compo ref={ref}>{props.children}</Compo>
@@ -8,4 +8,4 @@ function useForwardRef(Compo) {
   return { elemRef, Element };
 }
 
-export default useForwardRef;
+export default UseForwardRef;
