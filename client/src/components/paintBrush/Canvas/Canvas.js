@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 
 const CanvasElem = styled.canvas`
@@ -16,6 +16,9 @@ function Canvas({
   isPipetting,
   onChangeStatusToPipetting,
   onChangeColor,
+  saveImage,
+  onPushImage,
+  onSettingButton,
 }) {
   const canvasRef = useRef();
 
@@ -60,6 +63,26 @@ function Canvas({
       pipetColor(ctx, e.nativeEvent.offsetX, e.nativeEvent.offsetY, e);
   };
 
+  const getToday = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+    console.log(`${year}-${month}-${day}`);
+    return `${year}-${month}-${day}`;
+  };
+
+  const watchSaveFileButton = useCallback(() => {
+    const canvas = canvasRef.current;
+    const image = canvas.toDataURL('image/png');
+    const timeStamp = getToday();
+    onPushImage([image, timeStamp]);
+    onSettingButton('saveImage', 'isActive', false);
+  }, [onPushImage, onSettingButton]);
+
+  useEffect(() => {
+    saveImage.isActive && watchSaveFileButton();
+  }, [saveImage.isActive, watchSaveFileButton]);
   return (
     <CanvasElem
       isPipetting={isPipetting}

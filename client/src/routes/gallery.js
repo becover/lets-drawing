@@ -1,15 +1,14 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import GalleryBoard from '../components/gallery/GalleryBoard';
+import GalleryContainer from '../containers/GalleryContainer';
 import NavContainer from '../containers/NavContainer';
 
 function Gallery() {
   const location = useLocation();
-  console.log(location);
   return (
     <div>
-      <NavContainer />
-      <GalleryBoard />
+      <NavContainer location={location.pathname} />
+      <GalleryContainer />
     </div>
   );
 }

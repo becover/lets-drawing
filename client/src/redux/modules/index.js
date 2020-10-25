@@ -7,6 +7,7 @@ import text from './text';
 import nav from './nav';
 import auth from './auth';
 import portal from './portal';
+import gallery from './gallery';
 
 const rootReducer = combineReducers({
   canvas,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   nav,
   auth,
   portal,
+  gallery,
 });
 
 export default rootReducer;

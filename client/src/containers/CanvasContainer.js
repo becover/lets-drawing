@@ -25,6 +25,9 @@ import {
 
 import { stack_History, remove_redo } from '../redux/modules/history';
 
+import { pushImage } from '../redux/modules/gallery';
+import { on_setting_button } from '../redux/modules/nav';
+
 function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
   const {
     width,
@@ -89,7 +92,8 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
 
   const dispatch = useDispatch();
 
-  const { loadImage } = useSelector(({ nav }) => ({
+  const { saveImage, loadImage } = useSelector(({ nav }) => ({
+    saveImage: nav.saveImage,
     loadImage: nav.loadImage,
   }));
 
@@ -129,8 +133,18 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
     [dispatch],
   );
 
+  //nav
   const onChangeButtonMode = useCallback(
     (kinds, mode) => dispatch(change_button_mode(kinds, mode)),
+    [dispatch],
+  );
+
+  const onPushImage = useCallback((image) => dispatch(pushImage(image)), [
+    dispatch,
+  ]);
+
+  const onSettingButton = useCallback(
+    (kinds, state, value) => dispatch(on_setting_button(kinds, state, value)),
     [dispatch],
   );
 
@@ -170,6 +184,9 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
         isPipetting={isPipetting}
         onChangeStatusToPipetting={onChangeStatusToPipetting}
         onChangeColor={onChangeColor}
+        saveImage={saveImage}
+        onPushImage={onPushImage}
+        onSettingButton={onSettingButton}
       />
       <Layer
         width={width}

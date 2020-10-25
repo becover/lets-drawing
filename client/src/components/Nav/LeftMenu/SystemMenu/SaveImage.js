@@ -1,8 +1,14 @@
 import React from 'react';
+import Login from '../../../../routes/Login';
 
-function SaveImage({ onSettingButton }) {
+function SaveImage({ onSettingButton, isAuth, onModal }) {
   const handleClick = () => {
-    onSettingButton('saveImage', 'isActive', true);
+    if (isAuth) {
+      onSettingButton('saveImage', 'isActive', true);
+    } else {
+      alert('로그인을 먼저 해주세요!');
+      onModal(true, Login);
+    }
   };
   return (
     <span onClick={handleClick}>

@@ -3,7 +3,7 @@ import React from 'react';
 export default function SingupForm() {
   return (
     <>
-      <form>
+      <form autoComplete="chrome-off">
         <fieldset>
           <legend>회원가입 화면</legend>
           <div>
@@ -15,6 +15,7 @@ export default function SingupForm() {
               id="username"
               placeholder="아이디"
               ref={(ref) => ref && ref.focus()}
+              autoComplete="off"
             />
           </div>
           <div>

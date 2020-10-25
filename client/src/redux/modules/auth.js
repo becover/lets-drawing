@@ -8,9 +8,8 @@ export const authentication = (kinds, value) => ({
 
 const INITIAL_STATE = {
   isAuth: false,
-  userName: null,
+  username: null,
   password: null,
-  userPaint: [],
 };
 
 const auth = (state = INITIAL_STATE, action) => {

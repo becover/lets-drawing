@@ -146,7 +146,6 @@ function Layer({
     (src, ctx) => {
       const canvasImg = new Image();
       const style = layerRef.current.attributes.style.value;
-      console.log(style, layerRef.current);
       const xml = `
     <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
       <foreignObject width="100%" height="100%">
