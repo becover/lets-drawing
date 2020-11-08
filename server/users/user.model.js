@@ -1,24 +1,19 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const schema = new Schema({
+const UserSchema = new Schema({
   username: {
     type: String,
     unique: true,
     required: true,
+    minlength: 4,
     maxlength: 20,
   },
-  password: {
+  hashedPassword: {
     type: String,
     required: true,
-  },
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
+    minlength: 6,
+    maxlength: 20,
   },
   createdDate: {
     type: Date,
@@ -35,4 +30,4 @@ schema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("User", schema);
+module.exports = mongoose.model("User", UserSchema);

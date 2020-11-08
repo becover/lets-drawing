@@ -4,7 +4,7 @@ const userService = require("../users/user.service");
 
 function jwt() {
   const secret = config.secret;
-  return expressJwt({ secret, isRevoked }).unless({
+  return expressJwt({ secret, algorithms: ["HS256"], isRevoked }).unless({
     // public routes that don't require authentication
     // 인증 요청이 필요없는 공개된 경로
     path: ["/users/authenticate", "/users/register"],

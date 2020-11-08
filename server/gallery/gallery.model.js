@@ -8,7 +8,7 @@ const schema = new Schema(
       ref: "User",
     },
     imagePath: {
-      type: String,
+      src: String,
     },
   },
   { timestamps: true }
