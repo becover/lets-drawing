@@ -2,72 +2,60 @@ const config = require("_config/config.json");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const db = require("_helpers/db");
+const errorGenerator = require("../_helpers/errorGenerator");
 const User = db.User;
 
-module.exports = {
-  authenticate,
-  getAll,
-  getById,
-  createAccount,
-  userUpdate,
-  delete: _delete,
+const createUserData = async (userInput) => {
+  const user = await userWithHashedPassword(userInput);
+  return user.save();
 };
 
-async function authenticate({ username, password }) {
-  console.log(username, password);
-  const user = await User.findOne({ username });
-  if (user && bcrypt.compareSync(password, user.password)) {
-    const token = jwt.sign({ sub: user.id }, config.secret);
-    return {
-      ...user.toJSON(),
-      token,
-    };
+const userWithHashedPassword = async ({ username, password }) => {
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  const user = new User({ username, hashedPassword });
+  return user;
+};
+
+const signUp = async (req, res, next) => {
+  try {
+    const { username } = req.body;
+    const user = await User.findOne({ username });
+    if (user) errorGenerator("아이디가 중복됩니다. 다시 입력해줏요.", 404);
+    await createUserData(req.body);
+    res.status(201).json({ message: "회원가입이 되었습니다." });
+  } catch (err) {
+    next(err);
   }
-}
+};
 
-async function getAll() {
-  return await User.find();
-}
+const createToken = (userId) => {
+  const token = jwt.sign({ _id: userId.toString() }, config.SECRETKEY, {
+    expiresIn: "1d",
+  });
+  return token;
+};
 
-async function getById(id) {
-  return await User.findById(id);
-}
+const signIn = async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) errorGenerator("Invalid input", 400);
 
-async function createAccount(userParam) {
-  // validate
-  if (await User.findOne({ username: userParam.username })) {
-    throw 'Username "' + userParam.username + '" is already taken';
+    const user = await User.findOne({ username });
+    if (!user) errorGenerator("사용자를 찾을 수 없습니다", 404);
+
+    const checkPassword = await bcrypt.compare(password, user.hashedPassword);
+    if (!checkPassword) errorGenerator("비밀번호를 다시 확인해 주세요", 404);
+
+    const token = createToken(user._id);
+    res.status(201).json({ message: "OK", username: user.username, token });
+    console.log("로그인오켕");
+  } catch (err) {
+    next(err);
   }
-  const user = new User(userParam);
+};
 
-  // hash password
-  if (userParam.password) {
-    user.password = bcrypt.hashSync(userParam.password, 10);
-  }
-
-  await user.save();
-}
-
-async function userUpdate(id, userParam) {
-  const user = await User.findById(id);
-
-  // validate
-  if (!user) throw "User not found";
-  if (
-    user.username !== userParam.username &&
-    (await User.findOne({ username: userParam.username }))
-  ) {
-    throw 'Username "' + userParam.username + '" is already taken';
-  }
-  if (userParam.password) {
-    userParam.password = bcrypt.hashSync(userParam.password, 10);
-  }
-
-  Object.assign(user, userParam);
-
-  await user.save();
-}
-
-async function _delete(id) {
-  await User.findByIdAndRemove(id);
-}
+module.exports = {
+  signUp,
+  signIn,
+};

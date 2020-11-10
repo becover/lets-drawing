@@ -5,35 +5,41 @@ module.exports = {
   saveImage,
   deleteImage,
   getGallery,
-  getImageDetail,
 };
 
-async function saveImage(userParam) {
-  const gallery = await new Gallery(userParam);
-  await gallery.save();
-  // await gallery.save((err, gallery) => {
-  //   if (err)
-  //     return res.status(400).json({
-  //       message:
-  //         "Image information could not be saved due to incorrect or problem information",
-  //     });
-  //   return res.status(200).json({ message: "save success", gallery });
-  // });
+async function saveImage(req, res, next) {
+  try {
+    const gallery = await new Gallery({
+      painter: req.user._id,
+      imagePath: req.body.image,
+    });
+    await gallery.save();
+    res.status(200).json({ message: "그림이 저장 되었습니다." });
+    console.log("그림저장 오켕!");
+  } catch (err) {
+    next(err);
+  }
 }
 
 async function deleteImage(userParam) {
   await Gallery.findByIdAndRemove(userParam);
 }
 
-async function getGallery(userParam) {
-  return await Gallery.find({ _id: userParam._id })
-    .popluate("painter")
-    .exec((err, gallery) => {
-      if (err) return res.status(400).send(err);
-      return res.status(200).json(gallery);
-    });
-}
-
-async function getImageDetail(userParam) {
-  return await Gallery.findOne({ _id: userParam.imageId });
+async function getGallery(req, res, next) {
+  try {
+    const page = parseInt(req.query.page || "1", 10);
+    await Gallery.find({
+      painter: req.user._id,
+    })
+      // .sort({ _id: -1 })
+      // .limit(9)
+      // .skip((page - 1) * 9)
+      .exec((err, gallery) => {
+        if (err) return res.status(400).send(err);
+        return res.status(200).json(gallery);
+      });
+    console.log("겟갤러리 오켕");
+  } catch (err) {
+    next(err);
+  }
 }
