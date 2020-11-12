@@ -21,8 +21,21 @@ async function saveImage(req, res, next) {
   }
 }
 
-async function deleteImage(userParam) {
-  await Gallery.findByIdAndRemove(userParam);
+async function deleteImage(req, res, next) {
+  try {
+    const { painter } = await Gallery.findOne({
+      _id: req.body.id,
+    });
+    if (toString(req.user._id) === toString(painter)) {
+      await Gallery.findByIdAndRemove(req.body.id);
+      res.status(200).json({ message: "그림이 삭제 되었습니다." });
+      console.log("삭제오켕");
+    } else {
+      console.log("삭제 요청하는 그림은 사용자의 그림이 아닙니다.");
+    }
+  } catch (err) {
+    next(err);
+  }
 }
 
 async function getGallery(req, res, next) {
@@ -31,9 +44,9 @@ async function getGallery(req, res, next) {
     await Gallery.find({
       painter: req.user._id,
     })
-      // .sort({ _id: -1 })
-      // .limit(9)
-      // .skip((page - 1) * 9)
+      .sort({ _id: -1 })
+      .limit(9)
+      .skip((page - 1) * 9)
       .exec((err, gallery) => {
         if (err) return res.status(400).send(err);
         return res.status(200).json(gallery);
