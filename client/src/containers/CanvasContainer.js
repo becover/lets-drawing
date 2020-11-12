@@ -25,8 +25,8 @@ import {
 
 import { stack_History, remove_redo } from '../redux/modules/history';
 
-import { pushImage } from '../redux/modules/gallery';
 import { on_setting_button } from '../redux/modules/nav';
+import { modal, modalProps } from '../redux/modules/portal';
 
 function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
   const {
@@ -139,10 +139,6 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
     [dispatch],
   );
 
-  const onPushImage = useCallback((image) => dispatch(pushImage(image)), [
-    dispatch,
-  ]);
-
   const onSettingButton = useCallback(
     (kinds, state, value) => dispatch(on_setting_button(kinds, state, value)),
     [dispatch],
@@ -174,7 +170,13 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
   const onMove = useCallback((boolean) => dispatch(is_move(boolean)), [
     dispatch,
   ]);
-
+  //save시 modal 띄우기
+  const onModal = useCallback((state, compo) => dispatch(modal(state, compo)), [
+    dispatch,
+  ]);
+  const onModalProps = useCallback((obj) => dispatch(modalProps(obj)), [
+    dispatch,
+  ]);
   return (
     <div style={{ height: '78vh' }}>
       <Canvas
@@ -185,8 +187,9 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
         onChangeStatusToPipetting={onChangeStatusToPipetting}
         onChangeColor={onChangeColor}
         saveImage={saveImage}
-        onPushImage={onPushImage}
         onSettingButton={onSettingButton}
+        onModal={onModal}
+        onModalProps={onModalProps}
       />
       <Layer
         width={width}

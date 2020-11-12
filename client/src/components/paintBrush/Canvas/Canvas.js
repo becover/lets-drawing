@@ -1,5 +1,7 @@
+import Axios from 'axios';
 import React, { useCallback, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
+import Alert from '../../../Alert';
 
 const CanvasElem = styled.canvas`
   ${(props) =>
@@ -19,6 +21,8 @@ function Canvas({
   saveImage,
   onPushImage,
   onSettingButton,
+  onModal,
+  onModalProps,
 }) {
   const canvasRef = useRef();
 
@@ -63,22 +67,28 @@ function Canvas({
       pipetColor(ctx, e.nativeEvent.offsetX, e.nativeEvent.offsetY, e);
   };
 
-  const getToday = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    console.log(`${year}-${month}-${day}`);
-    return `${year}-${month}-${day}`;
-  };
+  // const getToday = () => {
+  //   const today = new Date();
+  //   const year = today.getFullYear();
+  //   const month = today.getMonth() + 1;
+  //   const day = today.getDate();
+  //   console.log(`${year}-${month}-${day}`);
+  //   return `${year}-${month}-${day}`;
+  // };
 
   const watchSaveFileButton = useCallback(() => {
     const canvas = canvasRef.current;
     const image = canvas.toDataURL('image/png');
-    const timeStamp = getToday();
-    onPushImage([image, timeStamp]);
-    onSettingButton('saveImage', 'isActive', false);
-  }, [onPushImage, onSettingButton]);
+    // const timeStamp = getToday();
+    const body = {
+      Authorization: JSON.parse(localStorage.getItem('dw-token')),
+      image,
+    };
+    Axios.post('http://localhost:4000/gallery/saveImage', body)
+      .then((res) => onModalProps({ message: res.data.message }))
+      .then(() => onModal(true, Alert))
+      .then(() => onSettingButton('saveImage', 'isActive', false));
+  }, [onSettingButton, onModal, onModalProps]);
 
   useEffect(() => {
     saveImage.isActive && watchSaveFileButton();

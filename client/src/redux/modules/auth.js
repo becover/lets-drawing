@@ -1,24 +1,27 @@
-const AUTH = 'paint/auth/AUTH';
+const LOGIN = 'paint/auth/LOGIN';
+const LOGOUT = 'paint/auth/LOGOUT';
 
-export const authentication = (kinds, value) => ({
-  type: AUTH,
-  kinds,
-  value,
+export const login = (username) => ({
+  type: LOGIN,
+  username,
 });
 
-const INITIAL_STATE = {
-  isAuth: false,
-  username: null,
-  password: null,
+export const logout = () => {
+  return { type: LOGOUT };
 };
 
+let user = JSON.parse(localStorage.getItem('dw-token'));
+let username = JSON.parse(localStorage.getItem('dw-user'));
+const INITIAL_STATE = user ? { isLogged: true, username } : { isLogged: false };
+
 const auth = (state = INITIAL_STATE, action) => {
-  const auth = action.kinds;
-  if (action.type === AUTH) {
+  if (action.type === LOGIN) {
     return {
-      ...state,
-      [auth]: action.value,
+      isLogged: true,
+      username: action.username,
     };
+  } else if (action.type === LOGOUT) {
+    return { isLogged: false };
   } else {
     return state;
   }

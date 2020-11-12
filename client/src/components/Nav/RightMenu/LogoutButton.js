@@ -1,12 +1,10 @@
 import React from 'react';
 
-export default function LogoutButton({ onAuth }) {
+export default function LogoutButton({ onLogout }) {
   return (
     <div
       onClick={() => {
-        onAuth('isAuth', false);
-        onAuth('username', null);
-        onAuth('password', null);
+        onLogout();
       }}
     >
       <svg

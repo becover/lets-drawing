@@ -1,6 +1,7 @@
+import Axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 
-export default function LoginForm({ onAuth, onModal }) {
+export default function LoginForm({ onLogin, onModal }) {
   const refs = {
     usernameRef: useRef(),
     passwordRef: useRef(),
@@ -26,11 +27,16 @@ export default function LoginForm({ onAuth, onModal }) {
       alert('비밀번호를 입력하세요');
       refs.passwordRef.current.focus();
     } else {
-      onAuth('isAuth', true);
-      onAuth('username', loginInput.username);
-      onAuth('username', loginInput.password);
-      setLoginInput({ username: '', password: '' });
-      onModal(false, null);
+      const body = loginInput;
+      Axios.post(`http://localhost:4000/users/signin`, body)
+        .then((res) => {
+          console.log(res);
+          localStorage.setItem('dw-token', JSON.stringify(res.data.token));
+          localStorage.setItem('dw-user', JSON.stringify(res.data.username));
+          onLogin(res.data.username);
+        })
+        .then(() => setLoginInput({ username: '', password: '' }))
+        .then(() => onModal(false, null));
     }
   };
 

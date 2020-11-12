@@ -17,28 +17,36 @@ const LeftMenuContain = styled.div`
   }
 `;
 
-function LeftMenu({ onSettingButton, isAuth, onModal, location }) {
+function LeftMenu({ onSettingButton, isLogged, onModal, location }) {
   return (
     <LeftMenuContain>
       <ul>
-        {isAuth &&
+        {isLogged &&
           (location === '/' ? (
-            <li>
-              <Link to="/gallery">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                >
-                  <path
-                    id="ic_dashboard_24px"
-                    d="M3,13h8V3H3Zm0,8h8V15H3Zm10,0h8V11H13ZM13,3V9h8V3Z"
-                    transform="translate(-3 -3)"
-                  />
-                </svg>
-              </Link>
-            </li>
+            <>
+              <li>
+                <Link to="/gallery">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 18 18"
+                  >
+                    <path
+                      id="ic_dashboard_24px"
+                      d="M3,13h8V3H3Zm0,8h8V15H3Zm10,0h8V11H13ZM13,3V9h8V3Z"
+                      transform="translate(-3 -3)"
+                    />
+                  </svg>
+                </Link>
+              </li>
+              <li>
+                <SaveImage {...{ onSettingButton, isLogged, onModal }} />
+              </li>
+              <li>
+                <LoadImage onSettingButton={onSettingButton} />
+              </li>
+            </>
           ) : (
             <li>
               <Link to="/">
@@ -57,12 +65,6 @@ function LeftMenu({ onSettingButton, isAuth, onModal, location }) {
               </Link>
             </li>
           ))}
-        <li>
-          <SaveImage {...{ onSettingButton, isAuth, onModal }} />
-        </li>
-        <li>
-          <LoadImage onSettingButton={onSettingButton} />
-        </li>
       </ul>
     </LeftMenuContain>
   );

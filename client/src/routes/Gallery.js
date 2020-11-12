@@ -5,6 +5,7 @@ import NavContainer from '../containers/NavContainer';
 
 function Gallery() {
   const location = useLocation();
+
   return (
     <div>
       <NavContainer location={location.pathname} />

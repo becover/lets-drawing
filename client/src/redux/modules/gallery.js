@@ -1,28 +1,37 @@
-const PUSH_IMAGE = 'paint/gallery/PUSH_IMAGE';
-// const REMOVE_IMAGE = 'paint/gallery/REMOVE_IMAGE';
-const REMOVE_ALL = 'paint/gallery/REMOVE_ALL';
+const REMOOVE_ID = 'paint/gallery/REMOOVE_ID';
+const IS_REMOOVE_IMAGE = 'paint/gallery/IS_REMOOVE_IMAGE';
+const INITIALIZATION = 'paint/gallery/INITIALIZATION';
 
-export const pushImage = (image) => ({
-  type: PUSH_IMAGE,
-  image,
+export const removeId = (id) => ({
+  type: REMOOVE_ID,
+  id,
 });
 
-export const removeImage = () => ({});
+export const on_remove_image = (boolean) => ({
+  type: IS_REMOOVE_IMAGE,
+  boolean,
+});
 
-export const removeAll = () => ({ type: REMOVE_ALL });
+export const initState = () => ({ type: INITIALIZATION });
 
 const INITIAL_STATE = {
-  imageList: [],
+  isRemove: false,
+  id: null,
 };
 
 const gallery = (state = INITIAL_STATE, action) => {
-  if (action.type === PUSH_IMAGE) {
+  if (action.type === IS_REMOOVE_IMAGE) {
+    return { ...state, isRemove: action.boolean };
+  } else if (action.type === REMOOVE_ID) {
     return {
       ...state,
-      imageList: [action.image, ...state.imageList],
+      id: action.id,
     };
-  } else if (action.type === REMOVE_ALL) {
-    return { imageList: [] };
+  } else if (action.type === INITIALIZATION) {
+    return {
+      isRemove: false,
+      id: null,
+    };
   } else {
     return state;
   }

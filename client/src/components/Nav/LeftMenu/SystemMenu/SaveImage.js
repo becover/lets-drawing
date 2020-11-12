@@ -1,9 +1,9 @@
 import React from 'react';
 import Login from '../../../../routes/Login';
 
-function SaveImage({ onSettingButton, isAuth, onModal }) {
+function SaveImage({ onSettingButton, isLogged, onModal }) {
   const handleClick = () => {
-    if (isAuth) {
+    if (isLogged) {
       onSettingButton('saveImage', 'isActive', true);
     } else {
       alert('로그인을 먼저 해주세요!');

@@ -22,10 +22,10 @@ const RightMenuContain = styled.div`
   }
 `;
 
-function RightMenu({ onModal, isAuth, username, onAuth }) {
+function RightMenu({ onModal, isLogged, username, onLogout }) {
   return (
     <RightMenuContain>
-      {isAuth ? (
+      {isLogged ? (
         <>
           <span className="greetings">
             {username}
@@ -33,7 +33,7 @@ function RightMenu({ onModal, isAuth, username, onAuth }) {
               😊
             </span>
           </span>
-          <LogoutButton {...{ onAuth }} />
+          <LogoutButton {...{ onLogout }} />
         </>
       ) : (
         <LoginButton onModal={onModal} />
