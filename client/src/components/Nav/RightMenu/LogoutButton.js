@@ -1,10 +1,16 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 export default function LogoutButton({ onLogout }) {
+  const history = useHistory();
+
   return (
     <div
       onClick={() => {
         onLogout();
+        localStorage.removeItem('dw-token');
+        localStorage.removeItem('dw-user', '');
+        history.push('/');
       }}
     >
       <svg
