@@ -46,6 +46,7 @@ function Layer({
   onChangeTextColor,
   textColor,
   loadImage,
+  undo,
 }) {
   const layerRef = useRef();
   const [position, setPosition] = useState({ x: 10, y: 10 });
@@ -142,15 +143,23 @@ function Layer({
     }
   };
 
+  const vCanvasRef = useRef();
   const handleHtmlToImage = useCallback(
     (src, ctx) => {
       const canvasImg = new Image();
+      const vCanvas = vCanvasRef.current;
+      const vCtx = vCanvas.getContext('2d');
+      vCanvas.width = width;
+      vCanvas.height = height;
+      if (undo.length > 0) {
+        vCtx.drawImage(undo[undo.length - 1], 0, 0, width, height);
+      }
       const style = layerRef.current.attributes.style.value;
       const xml = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
       <foreignObject width="100%" height="100%">
-        <div xmlns="http://www.w3.org/1999/xhtml">
-          <style>
+      <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>
           img {
             position: absolute;
             top:0;
@@ -160,16 +169,20 @@ function Layer({
           }
           </style>
           <img src="${src}"/>
-        </div>
-      </foreignObject>
-    </svg>`;
+          </div>
+          </foreignObject>
+          </svg>`;
       canvasImg.src = 'data:image/svg+xml,' + encodeURIComponent(xml);
-      canvasImg.onload = function () {
-        onStackHistory(canvasImg);
-        onChangeStatusToPainting(false);
-        onChangeStatusToClicking(false);
-        onRemoveRedo();
+      canvasImg.onload = async function () {
+        await vCtx.drawImage(canvasImg, 0, 0, width, height);
+        const mergeImg = new Image();
+        mergeImg.src = vCanvas.toDataURL('image/png');
+        await onStackHistory(mergeImg);
+        await onChangeStatusToPainting(false);
+        await onChangeStatusToClicking(false);
+        await onRemoveRedo();
         ctx.clearRect(0, 0, width, height);
+        vCtx.clearRect(0, 0, width, height);
       };
     },
     [
@@ -179,6 +192,7 @@ function Layer({
       onRemoveRedo,
       width,
       height,
+      undo,
     ],
   );
 
@@ -292,6 +306,17 @@ function Layer({
         onMouseLeave={() => onChangeStatusToPainting(false)}
         onClick={onHandleLayerClick}
       ></canvas>
+      <canvas
+        ref={vCanvasRef}
+        style={{
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          width: width,
+          height: height,
+          zIndex: -99999,
+        }}
+      />
     </div>
   );
 }

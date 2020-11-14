@@ -31,8 +31,9 @@ function Canvas({
     const ctx = canvas.getContext('2d');
     canvas.width = width;
     canvas.height = height;
-    if (undo.length > 0)
-      undo.forEach((image) => ctx.drawImage(image, 0, 0, width, height));
+    if (undo.length > 0) {
+      ctx.drawImage(undo[undo.length - 1], 0, 0, width, height);
+    }
   }, [undo, width, height]);
 
   function buildRgbaString({ r, g, b, a }) {
@@ -67,19 +68,9 @@ function Canvas({
       pipetColor(ctx, e.nativeEvent.offsetX, e.nativeEvent.offsetY, e);
   };
 
-  // const getToday = () => {
-  //   const today = new Date();
-  //   const year = today.getFullYear();
-  //   const month = today.getMonth() + 1;
-  //   const day = today.getDate();
-  //   console.log(`${year}-${month}-${day}`);
-  //   return `${year}-${month}-${day}`;
-  // };
-
   const watchSaveFileButton = useCallback(() => {
     const canvas = canvasRef.current;
     const image = canvas.toDataURL('image/png');
-    // const timeStamp = getToday();
     const body = {
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
       image,
