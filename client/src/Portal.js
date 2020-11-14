@@ -3,7 +3,14 @@ import { createPortal } from 'react-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { modal } from './redux/modules/portal';
 import styled from 'styled-components';
-const ModalLayout = styled.div``;
+const ModalLayout = styled.div`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  ${(props) => props?.optionalProps?.message && `background: rgba(0,0,0,.0)`}
+`;
 
 export default function Portal({ children }) {
   const dispatch = useDispatch();
@@ -14,21 +21,12 @@ export default function Portal({ children }) {
     onModal(false, null);
   };
   const { optionalProps } = useSelector(({ portal }) => ({
-    optionalProps: portal.optionalProps,
+    optionalProps: portal?.optionalProps,
   }));
 
   const modalElement = document.getElementById('modal');
   return createPortal(
-    <ModalLayout
-      style={{
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-        background: 'rgba(0,0,0,.6)',
-        zIndex: 999,
-      }}
-      onClick={offModal}
-    >
+    <ModalLayout optionalProps={optionalProps} onClick={offModal}>
       {children}
     </ModalLayout>,
     modalElement,
