@@ -15,7 +15,9 @@ const INITIAL_STATE = {
 
 const history = (state = INITIAL_STATE, action) => {
   if (action.type === STACK_HISTORY) {
-    return { ...state, undo: [...state.undo.concat(action.history)] };
+    // const newState = { ...state, undo: [...state.undo.concat(action.history)] };
+    // if (newState.undo.length > 30) newState.undo.shift();
+    return { ...state, undo: [...state.undo, action.history] };
   } else if (action.type === UNDO) {
     const lastImg = [...state.undo.slice(-1)];
     return {

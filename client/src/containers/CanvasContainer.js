@@ -236,6 +236,7 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
         textColor={textColor}
         textSize={textSize}
         loadImage={loadImage}
+        undo={undo}
       />
     </div>
   );
