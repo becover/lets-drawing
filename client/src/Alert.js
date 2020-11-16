@@ -5,15 +5,15 @@ import styled, { keyframes } from 'styled-components';
 import { modal } from './redux/modules/portal';
 
 const popup = keyframes`
-0%{
-top:3px;
-}
-50%{
-top:3px;
-}
-100%{
-top:-100%
-}
+  0% {
+    top: 5px;
+  }
+  50% {
+    top: 5px;
+  }
+  100% {
+    top: -100%
+  }
 `;
 const AlertLayout = styled.div`
   padding: 20px;
