@@ -21,9 +21,23 @@ const signUp = async (req, res, next) => {
   try {
     const { username } = req.body;
     const user = await User.findOne({ username });
-    if (user) errorGenerator("아이디가 중복됩니다. 다시 입력해줏요.", 404);
+    if (user) res.status(404).json({ message: "아이디가 중복됩니다." });
+    // errorGenerator("아이디가 중복됩니다. 다시 입력해주세요.", 404);
     await createUserData(req.body);
     res.status(201).json({ message: "회원가입이 되었습니다." });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const checkedDuplicate = async (req, res, next) => {
+  try {
+    const username = req.query.username;
+    console.log(username);
+    const user = await User.findOne({ username });
+    if (user) res.status(404).json({ message: "아이디가 중복됩니다." });
+    res.status(201).json({ message: "가입 할 수 있는 아이디입니다." });
+    console.log("확인 오켕~~");
   } catch (err) {
     next(err);
   }
@@ -55,7 +69,24 @@ const signIn = async (req, res, next) => {
   }
 };
 
+const checkedUsername = async (req, res, next) => {
+  try {
+    const { username } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) errorGenerator("사용자를 찾을 수 없습니다", 404);
+    if (toString(user._id) === toString(req.user._id))
+      res.status(200).json({ message: "로그인이 확인 되었습니다" });
+    console.log("자동로그인 오켕!");
+  } catch (err) {
+    err.message = "자동 로그인중에 오류가 발생했습니다";
+    err.statusCode = 401;
+    next(err);
+  }
+};
+
 module.exports = {
+  checkedUsername,
+  checkedDuplicate,
   signUp,
   signIn,
 };
