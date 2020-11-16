@@ -9,7 +9,7 @@ export default function LogoutButton({ onLogout }) {
       onClick={() => {
         onLogout();
         localStorage.removeItem('dw-token');
-        localStorage.removeItem('dw-user', '');
+        localStorage.removeItem('dw-user');
         history.push('/');
       }}
     >
