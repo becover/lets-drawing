@@ -10,9 +10,10 @@ export const logout = () => {
   return { type: LOGOUT };
 };
 
-let user = JSON.parse(localStorage.getItem('dw-token'));
-let username = JSON.parse(localStorage.getItem('dw-user'));
-const INITIAL_STATE = user ? { isLogged: true, username } : { isLogged: false };
+// let user = JSON.parse(localStorage.getItem('dw-token'));
+// let username = JSON.parse(localStorage.getItem('dw-user'));
+// console.log(user, username);
+const INITIAL_STATE = { isLogged: false };
 
 const auth = (state = INITIAL_STATE, action) => {
   if (action.type === LOGIN) {
