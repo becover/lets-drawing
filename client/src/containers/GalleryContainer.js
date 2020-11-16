@@ -21,7 +21,7 @@ export default function GalleryContainer() {
     id: gallery.id,
   }));
 
-  const [galleryList, setGalleryList] = useState([]);
+  const [galleryList, setGalleryList] = useState(null);
   const getGallery = useCallback(() => {
     const body = {
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
