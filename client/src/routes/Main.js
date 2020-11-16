@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, useCallback, useEffect } from 'react';
+import React, { useRef, useLayoutEffect, useCallback } from 'react';
 import NavContainer from '../containers/NavContainer';
 import CanvasContainer from '../containers/CanvasContainer';
 import ToolsContainer from '../containers/ToolsContainer';
@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { Width, Height } from '../redux/modules/canvas';
 import Footer from '../components/Footer/Footer';
 import { useLocation } from 'react-router-dom';
-import Axios from 'axios';
 
 function Main() {
   const location = useLocation();
@@ -48,10 +47,6 @@ function Main() {
     updateSize();
     return () => window.removeEventListener('resize', updateSize);
   }, [updateSize]);
-
-  useEffect(() => {
-    Axios.get('http://localhost:4000').then((res) => console.log(res));
-  }, [dispatch]);
 
   return (
     <>
