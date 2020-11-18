@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import styled, { keyframes } from 'styled-components';
-import { modal } from './redux/modules/portal';
+import { modal, modalProps } from './redux/modules/portal';
 
 const popup = keyframes`
   0% {
@@ -38,9 +38,16 @@ export default function Alert() {
   const onModal = useCallback((state, compo) => dispatch(modal(state, compo)), [
     dispatch,
   ]);
-  const handleToast = () => {
-    setTimeout(() => onModal(false, null), 1000 * 3);
-  };
+  const onModalProps = useCallback((obj) => dispatch(modalProps(obj)), [
+    dispatch,
+  ]);
+  const handleToast = useCallback(() => {
+    setTimeout(() => {
+      onModal(false, null);
+      onModalProps({});
+    }, 1000 * 3);
+  }, [onModal, onModalProps]);
+
   return (
     <AlertLayout ref={(ref) => ref && handleToast()}>
       <p>{optionalProps.message}</p>

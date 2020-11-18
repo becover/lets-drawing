@@ -41,6 +41,11 @@ const FormStyle = styled.div`
     color: #a0a0a0;
     font-size: 0.8rem;
   }
+
+  .err_message {
+    color: tomato;
+    font-size: 0.6rem;
+  }
   form input {
     background: #e8f0fe;
     padding: 8px 10px;

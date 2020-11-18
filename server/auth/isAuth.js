@@ -10,7 +10,7 @@ module.exports = async (req, res, next) => {
     const decodedToken = jwt.verify(token, config.SECRETKEY);
     const { _id } = decodedToken;
     const user = await User.findOne({ _id });
-    if (!user) errorGenerator("사용자를 찾을 수 없습니다.", 404);
+    if (!user) return errorGenerator("사용자를 찾을 수 없습니다.", 404);
     req.user = user;
     console.log("인증오켕");
     next();

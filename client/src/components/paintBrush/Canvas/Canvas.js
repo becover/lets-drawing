@@ -19,7 +19,6 @@ function Canvas({
   onChangeStatusToPipetting,
   onChangeColor,
   saveImage,
-  onPushImage,
   onSettingButton,
   onModal,
   onModalProps,

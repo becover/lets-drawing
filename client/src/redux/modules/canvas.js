@@ -8,6 +8,7 @@ const CHANGE_LINEJOIN = 'paint/canvas/CHANGE_LINEJOIN';
 const IS_CLICKING = 'paint/canvas/IS_CLICKING';
 const IS_PAINTING = 'paint/canvas/IS_PAINTING';
 const IS_FILLING = 'paint/canvas/IS_FILLING';
+const IS_CLEAR = 'paint/canvas/IS_CLEAR';
 const IS_PIPETTING = 'paint/canvas/IS_PIPETTING';
 const IS_PICKING = 'paint/canvas/IS_PICKING';
 const IS_WRITING = 'paint/canvas/IS_WRITING';
@@ -35,6 +36,7 @@ export const change_lineJoin = (lineJoin) => ({
 export const is_clicking = (boolean) => ({ type: IS_CLICKING, boolean });
 export const is_painting = (boolean) => ({ type: IS_PAINTING, boolean });
 export const is_filling = (boolean) => ({ type: IS_FILLING, boolean });
+export const is_clear = (boolean) => ({ type: IS_CLEAR, boolean });
 export const is_pipetting = (boolean) => ({ type: IS_PIPETTING, boolean });
 export const is_picking = (boolean) => ({ type: IS_PICKING, boolean });
 export const is_writing = (boolean) => ({ type: IS_WRITING, boolean });
@@ -61,6 +63,7 @@ const INITIAL_STATE = {
   isClicking: false,
   isPainting: false,
   isFilling: false,
+  isClrear: false,
   isPipetting: false,
   isPicking: false,
   isWriting: false,
@@ -125,6 +128,11 @@ const canvas = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       isFilling: action.boolean,
+    };
+  } else if (action.type === IS_CLEAR) {
+    return {
+      ...state,
+      isClear: action.boolean,
     };
   } else if (action.type === IS_PIPETTING) {
     return {

@@ -6,8 +6,12 @@ const bodyParser = require("body-parser");
 // const jwt = require("./_helpers/jwt");
 const errorHandler = require("./_helpers/error-handler");
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ limit: "2mb", extended: false }));
+app.use(
+  bodyParser.json({
+    limit: "30mb",
+  })
+);
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -16,14 +20,13 @@ app.use(
 );
 
 app.get("/", (req, res) => res.send("Connected to the server..."));
-// app.use(jwt());
 
 // api routes
 app.use("/users", require("./users/user.controller"));
 app.use("/gallery", require("./gallery/gallery.controller"));
 
 // global error handler
-// app.use(errorHandler);
+app.use(errorHandler);
 
 const port =
   process.env.NODE_ENV === "production" ? process.env.PORT || 80 : 4000;

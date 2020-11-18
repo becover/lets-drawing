@@ -54,7 +54,6 @@ const Rotater = styled.div`
 
 function CreateText({
   text_position,
-  size,
   isWriting,
   alpha,
   textMode,

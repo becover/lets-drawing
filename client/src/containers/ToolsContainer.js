@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled, { css } from 'styled-components';
 import {
@@ -15,6 +15,7 @@ import {
   is_writing,
   is_drawing_shapes,
   shapes_type,
+  // is_clicking,
 } from '../redux/modules/canvas';
 import {
   active,
@@ -33,6 +34,15 @@ import Pipett from '../components/paintBrush/Tools/Pipett';
 import History from '../components/paintBrush/Tools/History/History';
 import Range from '../components/paintBrush/Tools/Range/Range';
 
+const handleDisplay = (painting, noshow) => {
+  // console.log('painting', painting, 'noshow', noshow);
+  let result;
+  if (!painting && !noshow) result = `display:block`;
+  else if (!painting && noshow) result = `display:none`;
+  else if (painting && !noshow) result = `display:none`;
+  // console.log(result);
+  return result;
+};
 const ToolsButtom = styled.div`
   display: none;
   position: fixed;
@@ -41,11 +51,25 @@ const ToolsButtom = styled.div`
   transform: translate(-50%, -50%);
   z-index: 100;
   transition: 0.3s;
-  ${(props) =>
+
+  ${(props) => handleDisplay(props.isPainting, props.handleShow.current)}
+
+  /* ${(props) =>
     !props.isPainting &&
     css`
       display: block;
+    `} */
+  /* ${(props) =>
+    props.handleShow.current &&
+    css`
+      display: none;
     `}
+
+    ${(props) =>
+      !props.handleShow.current &&
+      css`
+        display: block;
+      `} */
 `;
 
 function ToolsContainer() {
@@ -109,6 +133,11 @@ function ToolsContainer() {
     (boolean) => dispatch(is_painting(boolean)),
     [dispatch],
   );
+
+  // const onChangeStatusToClicking = useCallback(
+  //   (boolean) => dispatch(is_clicking(boolean)),
+  //   [dispatch],
+  // );
   const onChangeStatusToWriting = useCallback(
     (boolean) => dispatch(is_writing(boolean)),
     [dispatch],
@@ -167,6 +196,40 @@ function ToolsContainer() {
   //history
   const onUndo = useCallback((history) => dispatch(undo(history)), [dispatch]);
   const onRedo = useCallback((history) => dispatch(redo(history)), [dispatch]);
+
+  /**
+   * ctrl + alt 키 동시에 누를때 하단 툴이 paining 상태와 동일하게 바뀌길 원하는데
+   * 이게 안됨 ..................ㅡㅡ후...
+   */
+  let handleShow = useRef();
+  handleShow.current = false;
+  const handleKeydownToolsBottom = useCallback(
+    (e) => {
+      if (e.ctrlKey && e.altKey) {
+        // console.log('알트키 눌렀당');
+        handleShow.current = true;
+        // console.log(handleShow.current);
+      }
+    },
+    [handleShow],
+  );
+
+  const handleKeyupToolsBottom = useCallback(
+    (e) => {
+      // console.log('알트키 땠당');
+      handleShow.current = false;
+      // console.log(handleShow.current);
+    },
+    [handleShow],
+  );
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeydownToolsBottom);
+    window.addEventListener('keyup', handleKeyupToolsBottom);
+    return () => {
+      window.removeEventListener('keydown', handleKeydownToolsBottom);
+      window.removeEventListener('keyup', handleKeyupToolsBottom);
+    };
+  }, [handleKeydownToolsBottom, handleKeyupToolsBottom]);
   return (
     <div
       style={{
@@ -241,7 +304,7 @@ function ToolsContainer() {
           />
         </div>
       </div>
-      <ToolsButtom isPainting={isPainting}>
+      <ToolsButtom isPainting={isPainting} handleShow={handleShow}>
         <Range
           onChangeLineWidth={onChangeLineWidth}
           onChangeAlpha={onChangeAlpha}
