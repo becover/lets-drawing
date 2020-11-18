@@ -10,14 +10,16 @@ const GalleryLayout = styled.div`
   height: 87vh;
   overflow-y: auto;
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
   ul {
     display: flex;
     justify-content: flex-start;
     flex-wrap: wrap;
     li {
       width: 32%;
-      /* height: 33%; */
-      margin: 15px 0.5%;
+      min-width: 300px;
+      margin: 15px auto;
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
       padding: 15px 20px;
       border-radius: 5px;
