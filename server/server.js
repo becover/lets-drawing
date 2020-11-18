@@ -3,7 +3,6 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
-// const jwt = require("./_helpers/jwt");
 const errorHandler = require("./_helpers/error-handler");
 
 app.use(bodyParser.urlencoded({ limit: "2mb", extended: false }));
