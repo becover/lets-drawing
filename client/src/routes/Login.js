@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import LoginForm from '../components/auth/LoginForm';
 import Signup from './Signup';
 import { useDispatch } from 'react-redux';
-import { modal } from '../redux/modules/portal';
+import { modal, modalProps } from '../redux/modules/portal';
 import FormStyle from '../FormStyle';
 import { login, logout } from '../redux/modules/auth';
 
@@ -11,6 +11,9 @@ const LoginLayout = FormStyle;
 export default function Login() {
   const dispatch = useDispatch();
   const onModal = useCallback((state, compo) => dispatch(modal(state, compo)), [
+    dispatch,
+  ]);
+  const onModalProps = useCallback((obj) => dispatch(modalProps(obj)), [
     dispatch,
   ]);
   const onLogout = useCallback(() => dispatch(logout()), [dispatch]);
@@ -30,7 +33,11 @@ export default function Login() {
   return (
     <LoginLayout onClick={(e) => handleModal(e)}>
       <h2>LOGIN</h2>
-      <LoginForm onLogin={onLogin} onModal={onModal} />
+      <LoginForm
+        onLogin={onLogin}
+        onModal={onModal}
+        onModalProps={onModalProps}
+      />
       <p>
         아이디가 없나요? <span onClick={goSignupModal}>가입하기</span>
       </p>

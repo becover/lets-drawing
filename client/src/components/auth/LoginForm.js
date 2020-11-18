@@ -1,7 +1,8 @@
 import Axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
+import Alert from '../../Alert';
 
-export default function LoginForm({ onLogin, onModal }) {
+export default function LoginForm({ onLogin, onModal, onModalProps }) {
   const refs = {
     usernameRef: useRef(),
     passwordRef: useRef(),
@@ -10,6 +11,8 @@ export default function LoginForm({ onLogin, onModal }) {
     username: '',
     password: '',
   });
+
+  const [feedbackMessage, setFeedbackMessage] = useState('');
 
   const onChangeInput = (e) => {
     setLoginInput({
@@ -34,9 +37,15 @@ export default function LoginForm({ onLogin, onModal }) {
           localStorage.setItem('dw-token', JSON.stringify(res.data.token));
           localStorage.setItem('dw-user', JSON.stringify(res.data.username));
           onLogin(res.data.username);
+          onModalProps({ message: '로그인 되었습니다.' });
         })
         .then(() => setLoginInput({ username: '', password: '' }))
-        .then(() => onModal(false, null));
+        .then(() => onModal(false, null))
+        .then(() => onModal(true, Alert))
+        .catch((e) => {
+          console.log(e);
+          setFeedbackMessage('입력하신 정보가 일치 하지 않습니다.');
+        });
     }
   };
 
@@ -79,6 +88,7 @@ export default function LoginForm({ onLogin, onModal }) {
               autoComplete="off"
             />
           </div>
+          <p className="err_message">{feedbackMessage}</p>
           <button type="submit">로그인</button>
         </fieldset>
       </form>
