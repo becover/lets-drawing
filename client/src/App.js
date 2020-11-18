@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import config from './_config/config.json';
 import './App.css';
 import { Route, Switch } from 'react-router-dom';
 import Gallery from './routes/Gallery';
@@ -26,7 +27,7 @@ export default function App() {
   //   alert('정말 그만 그리실 건가요?');
   // };
   useEffect(() => {
-    Axios.get('http://localhost:4000/').then((res) => console.log(res.data));
+    Axios.get(`${config.URI}`).then((res) => console.log(res.data));
     // window.addEventListener('beforeunload', byebye);
   }, []);
 
@@ -36,7 +37,7 @@ export default function App() {
         username: JSON.parse(localStorage.getItem('dw-user')),
         Authorization: JSON.parse(localStorage.getItem('dw-token')),
       };
-      Axios.post('http://localhost:4000/users/', body).then((res) => {
+      Axios.post(`${config.URI}/users/`, body).then((res) => {
         if (res.status === 200) onLogin(body.username);
         else onLogout();
       });

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import {
   alpha,
   change_linecap,
@@ -15,7 +15,6 @@ import {
   is_writing,
   is_drawing_shapes,
   shapes_type,
-  // is_clicking,
 } from '../redux/modules/canvas';
 import {
   active,
@@ -53,23 +52,6 @@ const ToolsButtom = styled.div`
   transition: 0.3s;
 
   ${(props) => handleDisplay(props.isPainting, props.handleShow.current)}
-
-  /* ${(props) =>
-    !props.isPainting &&
-    css`
-      display: block;
-    `} */
-  /* ${(props) =>
-    props.handleShow.current &&
-    css`
-      display: none;
-    `}
-
-    ${(props) =>
-      !props.handleShow.current &&
-      css`
-        display: block;
-      `} */
 `;
 
 function ToolsContainer() {
@@ -134,10 +116,6 @@ function ToolsContainer() {
     [dispatch],
   );
 
-  // const onChangeStatusToClicking = useCallback(
-  //   (boolean) => dispatch(is_clicking(boolean)),
-  //   [dispatch],
-  // );
   const onChangeStatusToWriting = useCallback(
     (boolean) => dispatch(is_writing(boolean)),
     [dispatch],

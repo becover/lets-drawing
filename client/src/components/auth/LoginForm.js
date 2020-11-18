@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
+import config from '../../_config/config.json';
 import Alert from '../../Alert';
 
 export default function LoginForm({ onLogin, onModal, onModalProps }) {
@@ -31,7 +32,7 @@ export default function LoginForm({ onLogin, onModal, onModalProps }) {
       refs.passwordRef.current.focus();
     } else {
       const body = loginInput;
-      Axios.post(`http://localhost:4000/users/signin`, body)
+      Axios.post(`${config.URI}/users/signin`, body)
         .then((res) => {
           console.log(res);
           localStorage.setItem('dw-token', JSON.stringify(res.data.token));

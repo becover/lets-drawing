@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import React, { useCallback, useEffect, useRef } from 'react';
+import config from '../../../_config/config.json';
 import styled, { css } from 'styled-components';
 import Alert from '../../../Alert';
 
@@ -74,7 +75,7 @@ function Canvas({
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
       image,
     };
-    Axios.post('http://localhost:4000/gallery/saveImage', body)
+    Axios.post(`${config.URI}/gallery/saveImage`, body)
       .then((res) => onModalProps({ message: res.data.message }))
       .then(() => onModal(true, Alert))
       .then(() => onSettingButton('saveImage', 'isActive', false));

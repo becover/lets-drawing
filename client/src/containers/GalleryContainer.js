@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
+import config from '../_config/config.json';
 import { modal, modalProps } from '../redux/modules/portal';
 import { useDispatch, useSelector } from 'react-redux';
 import GalleryBoard from '../components/gallery/GalleryBoard';
@@ -26,7 +27,7 @@ export default function GalleryContainer() {
     const body = {
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
     };
-    Axios.post('http://localhost:4000/gallery/', body).then((res) => {
+    Axios.post(`${config.URI}/gallery/`, body).then((res) => {
       setGalleryList(res.data);
     });
   }, []);

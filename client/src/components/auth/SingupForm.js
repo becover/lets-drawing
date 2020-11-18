@@ -1,5 +1,7 @@
 import Axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import config from '../../_config/config.json';
+
 import styled from 'styled-components';
 import Alert from '../../Alert';
 const Checked = styled.span`
@@ -36,7 +38,7 @@ export default function SingupForm({ onModal, onModalProps }) {
 
   const onCheckUsername = useCallback(() => {
     const username = refs.usernameRef.current.value;
-    Axios.get(`http://localhost:4000/users/ckeckUsername?username=${username}`)
+    Axios.get(`${config.URI}/users/ckeckUsername?username=${username}`)
       .then((res) => {
         console.log(res);
         if (res.status === 404) {

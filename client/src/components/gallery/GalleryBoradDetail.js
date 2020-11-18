@@ -1,6 +1,7 @@
 import Axios from 'axios';
 import dayjs from 'dayjs';
 import React, { useCallback } from 'react';
+import config from '../../_config/config.json';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -97,7 +98,7 @@ function GalleryBoradDetail() {
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
       id: optionalProps.id,
     };
-    Axios.post(`http://localhost:4000/gallery/deleteImage`, body).then(() => {
+    Axios.post(`${config.URI}/gallery/deleteImage`, body).then(() => {
       onRemoveImage(true);
       onRemoveId(optionalProps.id);
       handleCloseModal();

@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
+import config from '../../_config/config.json';
 import styled from 'styled-components';
 import 'dayjs';
 import dayjs from 'dayjs';
@@ -70,14 +71,13 @@ function GalleryBoard({ galleryList: gallery, onModal, onModalProps }) {
     const body = {
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
     };
-    await Axios.post(
-      `http://localhost:4000/gallery/?page=${page.current}`,
-      body,
-    ).then((res) => {
-      const fetchedData = res.data;
-      const mergedData = galleryList.concat(...fetchedData);
-      setGalleryList(mergedData);
-    });
+    await Axios.post(`${config.URI}/gallery/?page=${page.current}`, body).then(
+      (res) => {
+        const fetchedData = res.data;
+        const mergedData = galleryList.concat(...fetchedData);
+        setGalleryList(mergedData);
+      },
+    );
     setFetching(false);
   }, [galleryList]);
 

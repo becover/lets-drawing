@@ -86,16 +86,6 @@ function NavContainer({ location }) {
     dispatch,
   ]);
 
-  // useEffect(() => {
-  //   console.log(user);
-  //   if (user?.username && user?.password) {
-  //     const body = user;
-  //     Axios.post(`http://localhost:4000/users/signin`, body).then((res) =>
-  //       localStorage.setItem('dw-user', res.token),
-  //     );
-  //   }
-  // }, [user]);
-
   return (
     <>
       <NavigationContainer>
