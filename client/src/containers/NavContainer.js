@@ -5,10 +5,11 @@ import Logo from '../components/Nav/Logo';
 import styled from 'styled-components';
 import RightMenu from '../components/Nav/RightMenu/RightMenu';
 import { on_setting_button } from '../redux/modules/nav';
-import { modal } from '../redux/modules/portal';
+import { modal, modalProps } from '../redux/modules/portal';
 import { useSelector } from 'react-redux';
 import Portal from '../Portal';
 import { logout } from '../redux/modules/auth';
+import { is_clear } from '../redux/modules/canvas';
 
 const NavigationContainer = styled.div`
   padding: 20px 20px;
@@ -77,7 +78,13 @@ function NavContainer({ location }) {
   const onModal = useCallback((state, compo) => dispatch(modal(state, compo)), [
     dispatch,
   ]);
+  const onModalProps = useCallback((obj) => dispatch(modalProps(obj)), [
+    dispatch,
+  ]);
   const onLogout = useCallback(() => dispatch(logout()), [dispatch]);
+  const onClear = useCallback((boolean) => dispatch(is_clear(boolean)), [
+    dispatch,
+  ]);
 
   // useEffect(() => {
   //   console.log(user);
@@ -96,7 +103,9 @@ function NavContainer({ location }) {
           onSettingButton={onSettingButton}
           isLogged={isLogged}
           onModal={onModal}
+          onModalProps={onModalProps}
           location={location}
+          onClear={onClear}
         />
         <Logo />
         <RightMenu

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import BlankImage from './SystemMenu/BlankImage';
 import LoadImage from './SystemMenu/LoadImage';
 import SaveImage from './SystemMenu/SaveImage';
 
@@ -17,12 +18,19 @@ const LeftMenuContain = styled.div`
   }
 `;
 
-function LeftMenu({ onSettingButton, isLogged, onModal, location }) {
+function LeftMenu({
+  onSettingButton,
+  isLogged,
+  onModal,
+  onModalProps,
+  location,
+  onClear,
+}) {
   return (
     <LeftMenuContain>
       <ul>
-        {isLogged &&
-          (location === '/' ? (
+        {isLogged ? (
+          location === '/' ? (
             <>
               <li>
                 <Link to="/gallery">
@@ -41,10 +49,15 @@ function LeftMenu({ onSettingButton, isLogged, onModal, location }) {
                 </Link>
               </li>
               <li>
-                <SaveImage {...{ onSettingButton, isLogged, onModal }} />
+                <SaveImage
+                  {...{ onSettingButton, isLogged, onModal, onModalProps }}
+                />
               </li>
               <li>
                 <LoadImage onSettingButton={onSettingButton} />
+              </li>
+              <li>
+                <BlankImage onClear={onClear} />
               </li>
             </>
           ) : (
@@ -64,7 +77,22 @@ function LeftMenu({ onSettingButton, isLogged, onModal, location }) {
                 </svg>
               </Link>
             </li>
-          ))}
+          )
+        ) : (
+          <>
+            <li>
+              <SaveImage
+                {...{ onSettingButton, isLogged, onModal, onModalProps }}
+              />
+            </li>
+            <li>
+              <LoadImage onSettingButton={onSettingButton} />
+            </li>
+            <li>
+              <BlankImage onClear={onClear} />
+            </li>
+          </>
+        )}
       </ul>
     </LeftMenuContain>
   );

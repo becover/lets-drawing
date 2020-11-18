@@ -9,6 +9,7 @@ import {
   is_writing,
   change_color,
   change_mode,
+  is_clear,
 } from '../redux/modules/canvas';
 
 import { active, change_button_mode } from '../redux/modules/tools';
@@ -28,7 +29,7 @@ import { stack_History, remove_redo } from '../redux/modules/history';
 import { on_setting_button } from '../redux/modules/nav';
 import { modal, modalProps } from '../redux/modules/portal';
 
-function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
+function CanvasContainer({ setInitialSwitch }) {
   const {
     width,
     height,
@@ -39,11 +40,10 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
     lineJoin,
     isPainting,
     isFilling,
+    isClear,
     isPipetting,
-    isPicking,
     isWriting,
     isDrawingShapes,
-    mode: canvasMode,
     shapes,
   } = useSelector(({ canvas }) => ({
     width: canvas.width,
@@ -55,11 +55,10 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
     lineJoin: canvas.lineJoin,
     isPainting: canvas.isPainting,
     isFilling: canvas.isFilling,
+    isClear: canvas.isClear,
     isPipetting: canvas.isPipetting,
-    isPicking: canvas.isPicking,
     isWriting: canvas.isWriting,
     isDrawingShapes: canvas.isDrawingShapes,
-    mode: canvas.mode,
     shapes: canvas.shapes,
   }));
 
@@ -87,7 +86,7 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
   }));
 
   const {
-    text: { color: textColor, size: textSize },
+    text: { color: textColor },
   } = useSelector(({ tools }) => ({ text: tools.text }));
 
   const dispatch = useDispatch();
@@ -126,6 +125,10 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
     [dispatch],
   );
   const onRemoveRedo = useCallback(() => dispatch(remove_redo()), [dispatch]);
+
+  const onClear = useCallback((boolean) => dispatch(is_clear(boolean)), [
+    dispatch,
+  ]);
 
   //tools(button mode)
   const onChangeActive = useCallback(
@@ -202,17 +205,14 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
         isPainting={isPainting}
         isFilling={isFilling}
         isPipetting={isPipetting}
-        isPicking={isPicking}
         isWriting={isWriting}
         isDrawingShapes={isDrawingShapes}
-        canvasMode={canvasMode}
         shapes={shapes}
         onChangeStatusToPainting={onChangeStatusToPainting}
         onChangeStatusToClicking={onChangeStatusToClicking}
         onChangeStatusTowriting={onChangeStatusTowriting}
         onStackHistory={onStackHistory}
         onRemoveRedo={onRemoveRedo}
-        onChangeColor={onChangeColor}
         textMode={textMode}
         onChangeMode={onChangeMode}
         onStartAngle={onStartAngle}
@@ -230,13 +230,13 @@ function CanvasContainer({ setInitialSwitch, setBeforeLineCap }) {
         rotate={rotate}
         move={move}
         setInitialSwitch={setInitialSwitch}
-        setBeforeLineCap={setBeforeLineCap}
         onChangeButtonMode={onChangeButtonMode}
         onChangeActive={onChangeActive}
         textColor={textColor}
-        textSize={textSize}
         loadImage={loadImage}
         undo={undo}
+        onClear={onClear}
+        isClear={isClear}
       />
     </div>
   );

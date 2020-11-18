@@ -1,13 +1,13 @@
 import React from 'react';
-import Login from '../../../../routes/Login';
+import Alert from '../../../../Alert';
 
-function SaveImage({ onSettingButton, isLogged, onModal }) {
+function SaveImage({ onSettingButton, isLogged, onModal, onModalProps }) {
   const handleClick = () => {
     if (isLogged) {
       onSettingButton('saveImage', 'isActive', true);
     } else {
-      alert('로그인을 먼저 해주세요!');
-      onModal(true, Login);
+      onModalProps({ message: '로그인을 먼저 해주세요!', needAfter: true });
+      onModal(true, Alert);
     }
   };
   return (

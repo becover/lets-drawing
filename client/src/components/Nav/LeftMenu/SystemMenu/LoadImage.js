@@ -36,14 +36,14 @@ function LoadImage({ onSettingButton }) {
       <label htmlFor="fileLoad">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="22"
-          height="14"
-          viewBox="0 0 22 14"
+          width="20"
+          height="16"
+          viewBox="0 0 20 16"
         >
           <path
-            id="ic_burst_mode_24px"
-            d="M1,5H3V19H1ZM5,5H7V19H5ZM22,5H10A1,1,0,0,0,9,6V18a1,1,0,0,0,1,1H22a1,1,0,0,0,1-1V6A1,1,0,0,0,22,5ZM11,17l2.5-3.15L15.29,16l2.5-3.22L21,17Z"
-            transform="translate(-1 -5)"
+            id="ic_folder_open_24px"
+            d="M20,6H12L10,4H4A2,2,0,0,0,2.01,6L2,18a2.006,2.006,0,0,0,2,2H20a2.006,2.006,0,0,0,2-2V8A2.006,2.006,0,0,0,20,6Zm0,12H4V8H20Z"
+            transform="translate(-2 -4)"
           />
         </svg>
       </label>

@@ -1,6 +1,4 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-// import { is_writing } from '../../../redux/modules/canvas';
-// import { useSelector } from 'react-redux';
 import CreateText from '../Tools/CreateText';
 
 function Layer({
@@ -13,17 +11,14 @@ function Layer({
   lineJoin,
   isPainting,
   isFilling,
-  isPicking,
   isWriting,
   isDrawingShapes,
-  canvasMode,
   shapes,
   onChangeStatusToPainting,
   onChangeStatusToClicking,
   onChangeStatusTowriting,
   onStackHistory,
   onRemoveRedo,
-  onChangeColor,
   textMode,
   onChangeMode,
   onStartAngle,
@@ -43,10 +38,11 @@ function Layer({
   setInitialSwitch,
   onChangeButtonMode,
   onChangeActive,
-  onChangeTextColor,
   textColor,
   loadImage,
   undo,
+  onClear,
+  isClear,
 }) {
   const layerRef = useRef();
   const [position, setPosition] = useState({ x: 10, y: 10 });
@@ -67,7 +63,6 @@ function Layer({
   const onRightClick = (e) => {
     e.preventDefault();
   };
-
   function getMousePosition(canvas, e) {
     const rect = canvas.getBoundingClientRect();
     return {
@@ -217,14 +212,6 @@ function Layer({
     isWriting && setPosition({ x: e.offsetX, y: e.offsetY });
   };
 
-  // function setCurrentColor2ctx() {
-  //   const layer = layerRef.current;
-  //   const ctx = layer.getContext('2d');
-  //   handleAlphaValue();
-  //   ctx.fillStyle = color;
-  //   layerCtx.fillStyle = color;
-  //   layerCtx.strokeStyle = color;
-  // }
   const watchLoadFileButton = useCallback(() => {
     const layer = layerRef.current;
     const ctx = layer.getContext('2d');
@@ -242,9 +229,23 @@ function Layer({
     };
   }, [loadImage.src, handleHtmlToImage]);
 
+  const handleClearCanvas = useCallback(async () => {
+    const layer = await layerRef.current;
+    const ctx = await layer.getContext('2d');
+    ctx.fillStyle = 'rgba(255,255,255,0)';
+    ctx.fillRect(0, 0, width, height);
+    const layerImg = new Image();
+    const src = await layer.toDataURL('image/png');
+    layerImg.src = src;
+    await onStackHistory(layerImg);
+    await onRemoveRedo();
+    await onClear(false);
+  }, [onClear, width, height, onStackHistory, onRemoveRedo]);
+
   useEffect(() => {
     loadImage.isActive && watchLoadFileButton();
-  }, [loadImage.isActive, watchLoadFileButton]);
+    isClear && handleClearCanvas();
+  }, [loadImage.isActive, watchLoadFileButton, isClear, handleClearCanvas]);
 
   return (
     <div
