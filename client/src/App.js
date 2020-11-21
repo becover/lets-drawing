@@ -19,17 +19,6 @@ export default function App() {
   const onLogout = useCallback(() => {
     dispatch(logout());
   }, [dispatch]);
-  // const byebye = (e) => {
-  //   e.preventDefault();
-  //   e.returnValue = '';
-  //   localStorage.removeItem('dw-token');
-  //   localStorage.removeItem('dw-user');
-  //   alert('정말 그만 그리실 건가요?');
-  // };
-  useEffect(() => {
-    Axios.get(`${config.URI}`).then((res) => console.log(res.data));
-    // window.addEventListener('beforeunload', byebye);
-  }, []);
 
   useEffect(() => {
     if (localStorage.getItem('dw-token') && localStorage.getItem('dw-user')) {
@@ -37,7 +26,7 @@ export default function App() {
         username: JSON.parse(localStorage.getItem('dw-user')),
         Authorization: JSON.parse(localStorage.getItem('dw-token')),
       };
-      Axios.post(`${config.URI}/users/`, body).then((res) => {
+      Axios.post(`${config.URI}users/`, body).then((res) => {
         if (res.status === 200) onLogin(body.username);
         else onLogout();
       });

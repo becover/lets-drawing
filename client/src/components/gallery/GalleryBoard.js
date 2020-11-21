@@ -71,7 +71,7 @@ function GalleryBoard({ galleryList: gallery, onModal, onModalProps }) {
     const body = {
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
     };
-    await Axios.post(`${config.URI}/gallery/?page=${page.current}`, body).then(
+    await Axios.post(`${config.URI}gallery/?page=${page.current}`, body).then(
       (res) => {
         const fetchedData = res.data;
         const mergedData = galleryList.concat(...fetchedData);
@@ -86,7 +86,8 @@ function GalleryBoard({ galleryList: gallery, onModal, onModalProps }) {
     const scrollHeight = galleryLayoutRef.current.scrollHeight;
     const scrollTop = galleryLayoutRef.current.scrollTop;
     const clientHeight = galleryLayoutRef.current.clientHeight;
-    if (scrollTop + clientHeight >= scrollHeight && fetching === false) {
+    console.log(scrollTop, clientHeight, scrollHeight);
+    if (scrollTop + clientHeight >= scrollHeight - 10 && fetching === false) {
       await fetchMoreInstaFeeds();
       page.current += 1;
     }

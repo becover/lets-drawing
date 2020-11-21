@@ -98,7 +98,7 @@ function GalleryBoradDetail() {
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
       id: optionalProps.id,
     };
-    Axios.post(`${config.URI}/gallery/deleteImage`, body).then(() => {
+    Axios.post(`${config.URI}gallery/deleteImage`, body).then(() => {
       onRemoveImage(true);
       onRemoveId(optionalProps.id);
       handleCloseModal();

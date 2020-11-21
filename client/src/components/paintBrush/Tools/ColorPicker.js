@@ -62,7 +62,6 @@ function ColorPicker({ onChangeStatusToPicking, onChangeColor, isPicking }) {
 
   function setColor2Canvas({ r, g, b, a }) {
     const colorString = buildRgbaString({ r, g, b, a });
-    console.log(colorString);
     onChangeColor(colorString);
   }
 
@@ -81,8 +80,6 @@ function ColorPicker({ onChangeStatusToPicking, onChangeColor, isPicking }) {
   }
 
   const hanleColorPicker = (e) => {
-    console.log('hanleColorPicker', e);
-
     const picker = pickerRef.current;
     const ctx = picker.getContext('2d');
     pipetColor(ctx, e.nativeEvent.offsetX, e.nativeEvent.offsetY, e);

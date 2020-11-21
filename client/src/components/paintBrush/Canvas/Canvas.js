@@ -42,7 +42,6 @@ function Canvas({
 
   function setColor2Canvas({ r, g, b, a }) {
     const colorString = buildRgbaString({ r, g, b, a });
-    console.log(colorString);
     onChangeColor(colorString);
   }
 
@@ -75,7 +74,7 @@ function Canvas({
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
       image,
     };
-    Axios.post(`${config.URI}/gallery/saveImage`, body)
+    Axios.post(`${config.URI}gallery/saveImage`, body)
       .then((res) => onModalProps({ message: res.data.message }))
       .then(() => onModal(true, Alert))
       .then(() => onSettingButton('saveImage', 'isActive', false));

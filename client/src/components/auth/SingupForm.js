@@ -38,9 +38,8 @@ export default function SingupForm({ onModal, onModalProps }) {
 
   const onCheckUsername = useCallback(() => {
     const username = refs.usernameRef.current.value;
-    Axios.get(`${config.URI}/users/ckeckUsername?username=${username}`)
+    Axios.get(`${config.URI}users/ckeckUsername?username=${username}`)
       .then((res) => {
-        console.log(res);
         if (res.status === 404) {
           setFeedbackMassege('사용할 수 없는 아이디 입니다.');
         } else {
@@ -49,7 +48,6 @@ export default function SingupForm({ onModal, onModalProps }) {
         }
       })
       .catch((e) => {
-        console.log(e);
         setFeedbackMassege('사용할 수 없는 아이디 입니다.');
         setValidations({ validation: true, available: false });
       });
@@ -74,7 +72,6 @@ export default function SingupForm({ onModal, onModalProps }) {
         const body = signUpInput;
         Axios.post(`http://localhost:4000/users/signup`, body)
           .then((res) => {
-            console.log(res.data);
             onModalProps({ message: res.data.message });
           })
           .then(() => onModal(false, null))

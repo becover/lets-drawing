@@ -32,9 +32,8 @@ export default function LoginForm({ onLogin, onModal, onModalProps }) {
       refs.passwordRef.current.focus();
     } else {
       const body = loginInput;
-      Axios.post(`${config.URI}/users/signin`, body)
+      Axios.post(`${config.URI}users/signin`, body)
         .then((res) => {
-          console.log(res);
           localStorage.setItem('dw-token', JSON.stringify(res.data.token));
           localStorage.setItem('dw-user', JSON.stringify(res.data.username));
           onLogin(res.data.username);
@@ -44,7 +43,6 @@ export default function LoginForm({ onLogin, onModal, onModalProps }) {
         .then(() => onModal(false, null))
         .then(() => onModal(true, Alert))
         .catch((e) => {
-          console.log(e);
           setFeedbackMessage('입력하신 정보가 일치 하지 않습니다.');
         });
     }

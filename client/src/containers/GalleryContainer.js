@@ -27,7 +27,7 @@ export default function GalleryContainer() {
     const body = {
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
     };
-    Axios.post(`${config.URI}/gallery/`, body).then((res) => {
+    Axios.post(`${config.URI}gallery/`, body).then((res) => {
       setGalleryList(res.data);
     });
   }, []);
