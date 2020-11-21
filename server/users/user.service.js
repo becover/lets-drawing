@@ -18,7 +18,14 @@ const userWithHashedPassword = async ({ username, password }) => {
 
 const signUp = async (req, res, next) => {
   try {
-    const { username } = req.body;
+    const { username, password } = req.body;
+    !checkedVaild(username) &&
+      next({ name: "ValidationError", message: "아이디가 중복됩니다." });
+    !checkedVaild(password) &&
+      next({
+        name: "ValidationError",
+        message: "비밀번호 형식이 올바르지 않습니다.",
+      });
     const user = await User.findOne({ username });
     if (user) res.status(404).json({ message: "아이디가 중복됩니다." });
     await createUserData(req.body);
@@ -28,10 +35,21 @@ const signUp = async (req, res, next) => {
   }
 };
 
+const checkedVaild = (value) => {
+  const checkRegExp = /^[A-Za-z0-9]{4,12}$/;
+  if (checkRegExp.test(value)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 const checkedDuplicate = async (req, res, next) => {
   try {
     const username = req.query.username;
     console.log(username);
+    !checkedVaild(username) &&
+      next({ name: "ValidationError", message: "아이디가 중복됩니다." });
     const user = await User.findOne({ username });
     if (user)
       next({ name: "ValidationError", message: "아이디가 중복됩니다." });
