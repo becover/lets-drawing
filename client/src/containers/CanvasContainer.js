@@ -29,6 +29,16 @@ import { stack_History, remove_redo } from '../redux/modules/history';
 import { on_setting_button } from '../redux/modules/nav';
 import { modal, modalProps } from '../redux/modules/portal';
 
+import styled, { css } from 'styled-components';
+
+const CanvasLayout = styled.div`
+  ${(props) =>
+    props.isPipetting &&
+    css`
+      cursor: crosshair;
+    `}
+`;
+
 function CanvasContainer({ setInitialSwitch }) {
   const {
     width,
@@ -86,7 +96,7 @@ function CanvasContainer({ setInitialSwitch }) {
   }));
 
   const {
-    text: { color: textColor },
+    text: { color: textColor, size: textSize },
   } = useSelector(({ tools }) => ({ text: tools.text }));
 
   const dispatch = useDispatch();
@@ -181,7 +191,7 @@ function CanvasContainer({ setInitialSwitch }) {
     dispatch,
   ]);
   return (
-    <div style={{ height: '78vh' }}>
+    <CanvasLayout style={{ height: '78vh' }} isPipetting={isPipetting}>
       <Canvas
         width={width}
         height={height}
@@ -204,7 +214,6 @@ function CanvasContainer({ setInitialSwitch }) {
         lineJoin={lineJoin}
         isPainting={isPainting}
         isFilling={isFilling}
-        isPipetting={isPipetting}
         isWriting={isWriting}
         isDrawingShapes={isDrawingShapes}
         shapes={shapes}
@@ -233,12 +242,13 @@ function CanvasContainer({ setInitialSwitch }) {
         onChangeButtonMode={onChangeButtonMode}
         onChangeActive={onChangeActive}
         textColor={textColor}
+        textSize={textSize}
         loadImage={loadImage}
         undo={undo}
         onClear={onClear}
         isClear={isClear}
       />
-    </div>
+    </CanvasLayout>
   );
 }
 

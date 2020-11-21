@@ -1,9 +1,14 @@
 import React from 'react';
+import styled from 'styled-components';
+const PipettVsg = styled.div`
+  cursor: pointer;
+  ${(props) => props.isPipetting && `fill:tomato`}
+`;
 
-function Pipett({ onChangeStatusToPipetting, isPicking }) {
+function Pipett({ onChangeStatusToPipetting, isPicking, isPipetting }) {
   return (
-    <div
-      style={{ cursor: 'pointer' }}
+    <PipettVsg
+      isPipetting={isPipetting}
       onClick={() => !isPicking && onChangeStatusToPipetting(true)}
     >
       <svg
@@ -18,7 +23,7 @@ function Pipett({ onChangeStatusToPipetting, isPicking }) {
           transform="translate(-3 -2.998)"
         />
       </svg>
-    </div>
+    </PipettVsg>
   );
 }
 

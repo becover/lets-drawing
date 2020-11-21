@@ -62,12 +62,14 @@ function ToolsContainer() {
     isPainting,
     isPicking,
     isWriting,
+    isPipetting,
     mode: canvasMode,
   } = useSelector(({ canvas }) => ({
     color: canvas.color,
     isPainting: canvas.isPainting,
     isPicking: canvas.isPicking,
     isWriting: canvas.isWriting,
+    isPipetting: canvas.isPipetting,
     mode: canvas.mode,
   }));
 
@@ -274,6 +276,7 @@ function ToolsContainer() {
           <Pipett
             onChangeStatusToPipetting={onChangeStatusToPipetting}
             isPicking={isPicking}
+            isPipetting={isPipetting}
           />
           <ColorPicker
             onChangeStatusToPicking={onChangeStatusToPicking}
