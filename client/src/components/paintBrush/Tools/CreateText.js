@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import fontFace from '../../../assets/fontFace-DoHyeon';
-// import { css, jsx } from '@emotion/core';
-// import styled from '@emotion/styled';
 
 const borderStyledString = (border, size) =>
   `
@@ -98,7 +96,6 @@ function CreateText({
 
   const paintText2canvas = (e) => {
     const style = `${e.target.attributes.style.value} ${e.target.parentNode.attributes.style.value} ${fillStyleStrings} ${borderStyleStrings}`;
-    console.log(style);
     const text = e.target.innerText;
     const xml = `
     <svg xmlns="http://www.w3.org/2000/svg">
@@ -145,7 +142,6 @@ function CreateText({
       //   onStartAngle((180 / Math.PI) * Math.atan2(y, x));
       //   onRotate(true);
       // } else {
-      console.log('move!');
       textRef.current.style.cursor = 'move';
       onMove(true);
       // }
@@ -155,10 +151,8 @@ function CreateText({
 
   const rotationStart = useCallback(
     (e) => {
-      console.log(e);
       e.preventDefault();
       if (e.target.className.includes('rotater')) {
-        console.log('rotate!');
         const x = e.clientX - center.x;
         const y = e.clientY - center.y;
         onStartAngle((180 / Math.PI) * Math.atan2(y, x));

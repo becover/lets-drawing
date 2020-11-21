@@ -39,6 +39,7 @@ function Layer({
   onChangeButtonMode,
   onChangeActive,
   textColor,
+  textSize,
   loadImage,
   undo,
   onClear,
@@ -286,6 +287,7 @@ function Layer({
           onChangeButtonMode={onChangeButtonMode}
           onChangeActive={onChangeActive}
           textColor={textColor}
+          textSize={textSize}
         />
       )}
       <canvas
