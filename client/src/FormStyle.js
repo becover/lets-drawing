@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 const FormStyle = styled.div`
-  width: 25%;
-  height: 40%;
-  min-width: 320px;
+  width: 30%;
+  min-width: 400px;
+  height: 50%;
+  min-height: 400px;
   position: absolute;
   top: 50%;
   left: 50%;

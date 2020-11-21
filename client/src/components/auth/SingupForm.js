@@ -4,6 +4,7 @@ import config from '../../_config/config.json';
 
 import styled from 'styled-components';
 import Alert from '../../Alert';
+
 const Checked = styled.span`
   margin-left: 5px;
   font-size: 0.5rem;
@@ -53,24 +54,53 @@ export default function SingupForm({ onModal, onModalProps }) {
       });
   }, [refs.usernameRef]);
 
-  const onSubmitForm = (e) => {
-    e.preventDefault();
-    if (!signUpInput.username) {
+  const checkUsername = (username) => {
+    const usernameRegExp = /^[A-Za-z0-9]{4,12}$/;
+    if (!username) {
       alert('아이디를 입력하세요');
       refs.usernameRef.current.focus();
-    } else if (!signUpInput.password) {
+      return false;
+    } else if (usernameRegExp.test(username)) {
+      return true;
+    } else {
+      alert('영문 대소문자와 숫자 4~12자리로 입력해 주세요');
+      refs.usernameRef.current.focus();
+      return false;
+    }
+  };
+
+  const checkPassword = (password, confirmPassword) => {
+    const passwordRegExp = /^[a-zA-z0-9]{4,12}$/;
+    if (!password) {
       alert('비밀번호를 입력하세요');
       refs.passwordRef.current.focus();
-    } else if (!signUpInput.confirmPassword) {
+      return false;
+    } else if (!confirmPassword) {
       alert('비밀번호를 확인해주세요');
       refs.confirmPasswordRef.current.focus();
-    } else if (signUpInput.password !== signUpInput.confirmPassword) {
+      return false;
+    } else if (!passwordRegExp.test(password)) {
+      alert('영문 대소문자와 숫자 4~12자리로 입력해 주세요');
+      refs.passwordRef.current.focus();
+      return false;
+    } else if (password !== confirmPassword) {
       alert('비밀번호와 똑같이 입력해 주세요.');
       refs.confirmPasswordRef.current.focus();
+      return false;
     } else {
+      return true;
+    }
+  };
+
+  const onSubmitForm = (e) => {
+    e.preventDefault();
+    if (
+      checkUsername(signUpInput.username) &&
+      checkPassword(signUpInput.password, signUpInput.confirmPassword)
+    ) {
       if (feedbackMassege === '가입 할 수 있는 아이디입니다.') {
         const body = signUpInput;
-        Axios.post(`http://localhost:4000/users/signup`, body)
+        Axios.post(`${config.URI}users/signup`, body)
           .then((res) => {
             onModalProps({ message: res.data.message });
           })
@@ -108,7 +138,7 @@ export default function SingupForm({ onModal, onModalProps }) {
             <input
               type="text"
               id="username"
-              placeholder="아이디"
+              placeholder="아이디(영문 대소문자와 숫자 4~12자리)"
               name="username"
               ref={refs.usernameRef}
               value={signUpInput.username}
@@ -124,7 +154,7 @@ export default function SingupForm({ onModal, onModalProps }) {
               type="password"
               id="userPassword"
               name="password"
-              placeholder="비밀번호"
+              placeholder="비밀번호(영문 대소문자와 숫자 4~12자리)"
               ref={refs.passwordRef}
               value={signUpInput.userPassword}
               autoComplete="off"
@@ -138,7 +168,7 @@ export default function SingupForm({ onModal, onModalProps }) {
             <input
               type="password"
               id="confirmPassword"
-              placeholder="비밀번호 확인"
+              placeholder="비밀번호를 한번 더 입력해 주세요"
               name="confirmPassword"
               ref={refs.confirmPasswordRef}
               value={signUpInput.confirmPassword}
