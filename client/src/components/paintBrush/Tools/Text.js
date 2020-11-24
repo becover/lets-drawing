@@ -7,6 +7,9 @@ const TextContain = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 5px;
+  @media only screen and (max-width: 900px) {
+    justify-content: flex-start;
+  }
 
   > h2 {
     width: 20px;

@@ -3,9 +3,14 @@ import styled from 'styled-components';
 
 const ColorListContainer = styled.div`
   width: 50%;
+  max-width: 550px;
   display: flex;
   justify-content: center;
   align-items: center;
+  @media only screen and (max-width: 900px) {
+    width: auto;
+    display: inline-flex;
+  }
 `;
 
 const ColorList = styled.ul`
@@ -14,6 +19,8 @@ const ColorList = styled.ul`
   align-items: center;
   width: 100%;
   max-width: 500px;
+  min-width: 400px;
+  margin-right: 10px;
 
   li {
     position: relative;
@@ -33,6 +40,29 @@ const ColorList = styled.ul`
 
     &:nth-of-type(2) svg {
       fill: #000;
+    }
+  }
+  @media only screen and (max-width: 900px) {
+    & {
+      width: 150px;
+      min-width: 150px;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+    li {
+      width: 30px;
+      height: 30px;
+      border-radius: 0;
+      box-shadow: 0 0 gray;
+    }
+  }
+  @media only screen and (max-width: 786px) {
+    margin-top: 8px;
+    width: 200px;
+    margin-right: 20px;
+    li {
+      width: calc(200px / 5);
+      height: calc(160px / 5);
     }
   }
 `;

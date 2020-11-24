@@ -3,6 +3,12 @@ import styled from 'styled-components';
 
 const ShapesBox = styled.div`
   display: flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media only screen and (max-width: 900px) {
+    justify-content: flex-start;
+  }
   > ul {
     display: flex;
   }

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   alpha,
   change_linecap,
@@ -42,6 +42,81 @@ const handleDisplay = (painting, noshow) => {
   // console.log(result);
   return result;
 };
+const ToolsContainerWapper = styled.div`
+  border-bottom: 1px solid #d7d7d7;
+  padding: 10px 0;
+  height: 9vh;
+  box-sizing: border-box;
+  /* overflow: hidden; */
+  position: relative;
+  z-index: 10;
+  .mobile_toolbar_btn {
+    display: none;
+  }
+  @media only screen and (max-width: 786px) {
+    height: 16vh;
+    min-height: 152px;
+    .mobile_toolbar_btn {
+      display: inline-block;
+      position: absolute;
+      top: 100%;
+      right: 30px;
+      border-left: 1px solid #d7d7d7;
+      border-right: 1px solid #d7d7d7;
+      border-bottom: 1px solid #d7d7d7;
+      border-radius: 0 0 5px 5px;
+      background: #fff;
+      width: 30px;
+      text-align: center;
+      svg {
+        transform: rotate(180deg);
+        transform-origin: 50%, 50%;
+        cursor: pointer;
+        transition: ease-in-out 0.2s;
+      }
+    }
+
+    ${(props) =>
+      props.foldTools &&
+      css`
+        height: 8vh;
+        min-height: 76px;
+        .mobile_toolbar_btn svg {
+          transform: rotate(0deg);
+        }
+      `}
+  }
+`;
+const ToolsLayout = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  @media only screen and (max-width: 786px) {
+    max-width: 260px;
+    flex-wrap: wrap;
+    margin: auto;
+    ${(props) =>
+      props.foldTools &&
+      css`
+        height: 152px;
+        overflow: hidden;
+      `}
+  }
+`;
+const PippetAndPicker = styled.div`
+  width: 3%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  @media only screen and (max-width: 786px) {
+    width: 30px;
+    justify-content: space-around;
+    margin-top: 8px;
+  }
+`;
 const ToolsButtom = styled.div`
   display: none;
   position: fixed;
@@ -50,11 +125,24 @@ const ToolsButtom = styled.div`
   transform: translate(-50%, -50%);
   z-index: 100;
   transition: 0.3s;
-
+  @media only screen and (max-width: 786px) {
+    bottom: 15px;
+  }
   ${(props) => handleDisplay(props.isPainting, props.handleShow.current)}
+`;
+const TextAndShapesLayout = styled.div`
+  @media only screen and (max-width: 900px) {
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+  }
+  @media only screen and (max-width: 786px) {
+    width: 120px;
+  }
 `;
 
 function ToolsContainer() {
+  const [foldTools, setFoldTools] = useState(true);
   const [textModeAlpha, setTextModeAlpha] = useState(100);
   const dispatch = useDispatch();
   const {
@@ -211,23 +299,8 @@ function ToolsContainer() {
     };
   }, [handleKeydownToolsBottom, handleKeyupToolsBottom]);
   return (
-    <div
-      style={{
-        borderBottom: '1px solid #eee',
-        padding: '10px 0',
-        height: '9vh',
-        boxSizing: 'border-box',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          width: '100%',
-          maxWidth: '1200px',
-          margin: '0 auto',
-        }}
-      >
+    <ToolsContainerWapper foldTools={foldTools}>
+      <ToolsLayout foldTools={foldTools}>
         <Brush
           onChangeLineCap={onChangeLineCap}
           onChangeLineJoin={onChangeLineJoin}
@@ -239,7 +312,9 @@ function ToolsContainer() {
           brushsState={brushsState}
           isWriting={isWriting}
         />
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <TextAndShapesLayout
+          style={{ display: 'flex', flexDirection: 'column' }}
+        >
           <Text
             onChangeStatusToWriting={onChangeStatusToWriting}
             onChangeStatusToTextMode={onChangeStatusToTextMode}
@@ -258,21 +333,13 @@ function ToolsContainer() {
             shapeState={shapeState}
             onChangeButtonMode={onChangeButtonMode}
           />
-        </div>
+        </TextAndShapesLayout>
         <Colors
           onChangeColor={onChangeColor}
           textModeAlpha={textModeAlpha}
           canvasMode={canvasMode}
         />
-        <div
-          style={{
-            width: '3%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+        <PippetAndPicker style={{}}>
           <Pipett
             onChangeStatusToPipetting={onChangeStatusToPipetting}
             isPicking={isPicking}
@@ -283,8 +350,8 @@ function ToolsContainer() {
             onChangeColor={onChangeColor}
             isPicking={isPicking}
           />
-        </div>
-      </div>
+        </PippetAndPicker>
+      </ToolsLayout>
       <ToolsButtom isPainting={isPainting} handleShow={handleShow}>
         <Range
           onChangeLineWidth={onChangeLineWidth}
@@ -298,7 +365,26 @@ function ToolsContainer() {
         />
         <History onUndo={onUndo} onRedo={onRedo} />
       </ToolsButtom>
-    </div>
+      <span
+        className="mobile_toolbar_btn"
+        onClick={() => {
+          setFoldTools((prev) => !prev);
+        }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="7.41"
+          viewBox="0 0 12 7.41"
+        >
+          <path
+            id="ic_keyboard_arrow_down_24px"
+            d="M7.41,7.84,12,12.42l4.59-4.58L18,9.25l-6,6-6-6Z"
+            transform="translate(-6 -7.84)"
+          />
+        </svg>
+      </span>
+    </ToolsContainerWapper>
   );
 }
 

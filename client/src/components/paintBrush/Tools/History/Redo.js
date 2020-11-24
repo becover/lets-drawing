@@ -6,7 +6,7 @@ const RedoIcon = styled.div`
   transform: rotateY(180deg);
   transform-origin: right;
   position: absolute;
-  right: -15%;
+  right: calc(-15% + 16px);
   bottom: 0;
 
   &:hover svg {

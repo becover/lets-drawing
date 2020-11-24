@@ -4,6 +4,12 @@ import styled, { css } from 'styled-components';
 const BrushContainer = styled.div`
   width: 15%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+  @media only screen and (max-width: 786px) {
+    width: 120px;
+  }
 `;
 const TabToggle = styled.div`
   width: 100%;
@@ -101,7 +107,6 @@ const BrushTypes = styled.div`
   align-items: center;
   border: 0.8px solid #ddd;
   border-radius: 5px;
-  margin: 0 15%;
   min-width: 100px;
 
   & > div {
