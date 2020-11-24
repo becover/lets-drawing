@@ -40,8 +40,12 @@ async function deleteImage(req, res, next) {
 
 async function getGallery(req, res, next) {
   try {
-    console.log(req.query.page);
     const page = parseInt(req.query.page || "1", 10);
+    let lastPage = null;
+    if (page === 1) {
+      const countPage = await Gallery.countDocuments().exec();
+      lastPage = Math.ceil(countPage / 9);
+    }
     await Gallery.find({
       painter: req.user._id,
     })
@@ -50,7 +54,7 @@ async function getGallery(req, res, next) {
       .skip((page - 1) * 9)
       .exec((err, gallery) => {
         if (err) return res.status(400).send(err);
-        return res.status(200).json(gallery);
+        return res.status(200).json({ gallery, lastPage });
       });
     // console.log("겟갤러리 오켕");
   } catch (err) {

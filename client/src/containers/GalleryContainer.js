@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import config from '../_config/config.json';
 import { modal, modalProps } from '../redux/modules/portal';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,12 +23,14 @@ export default function GalleryContainer() {
   }));
 
   const [galleryList, setGalleryList] = useState(null);
+  const lastPageNumber = useRef();
   const getGallery = useCallback(() => {
     const body = {
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
     };
     Axios.post(`${config.URI}gallery/`, body).then((res) => {
-      setGalleryList(res.data);
+      lastPageNumber.current = res.data.lastPage;
+      setGalleryList(res.data.gallery);
     });
   }, []);
 
@@ -54,6 +56,7 @@ export default function GalleryContainer() {
         galleryList={galleryList}
         onModal={onModal}
         onModalProps={onModalProps}
+        lastPageNumber={lastPageNumber}
       />
     </>
   );
