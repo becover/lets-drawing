@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import GalleryBoradDetail from './GalleryBoradDetail';
 import { useEffect } from 'react';
 import Axios from 'axios';
+import LoadingAnimation from './LoadingAnimation';
 const GalleryLayout = styled.div`
   padding: 2rem 6rem;
   height: 87vh;
@@ -45,7 +46,7 @@ const GalleryLayout = styled.div`
   }
   > p {
     text-align: center;
-    font-size: 3rem;
+    font-size: 2rem;
     color: #ccc;
     span {
       vertical-align: top;
@@ -53,7 +54,12 @@ const GalleryLayout = styled.div`
   }
 `;
 
-function GalleryBoard({ galleryList: gallery, onModal, onModalProps }) {
+function GalleryBoard({
+  galleryList: gallery,
+  onModal,
+  onModalProps,
+  lastPageNumber,
+}) {
   const [galleryList, setGalleryList] = useState(gallery);
   const [isLoading, setIsLoading] = useState(
     galleryList === null ? true : galleryList.length >= 0 ? false : false,
@@ -67,19 +73,21 @@ function GalleryBoard({ galleryList: gallery, onModal, onModalProps }) {
   const page = useRef(2);
   const galleryLayoutRef = useRef();
   const fetchMoreInstaFeeds = useCallback(async () => {
-    setFetching(true);
-    const body = {
-      Authorization: JSON.parse(localStorage.getItem('dw-token')),
-    };
-    await Axios.post(`${config.URI}gallery/?page=${page.current}`, body).then(
-      (res) => {
-        const fetchedData = res.data;
-        const mergedData = galleryList.concat(...fetchedData);
-        setGalleryList(mergedData);
-      },
-    );
-    setFetching(false);
-  }, [galleryList]);
+    if (page.current < lastPageNumber.current) {
+      setFetching(true);
+      const body = {
+        Authorization: JSON.parse(localStorage.getItem('dw-token')),
+      };
+      await Axios.post(`${config.URI}gallery/?page=${page.current}`, body).then(
+        (res) => {
+          const fetchedData = res.data.gallery;
+          const mergedData = galleryList.concat(...fetchedData);
+          setGalleryList(mergedData);
+        },
+      );
+      setFetching(false);
+    }
+  }, [galleryList, lastPageNumber]);
 
   // 스크롤 이벤트 핸들러
   const handleScroll = useCallback(async () => {
@@ -105,16 +113,13 @@ function GalleryBoard({ galleryList: gallery, onModal, onModalProps }) {
 
   useEffect(() => {
     setIsLoading(galleryList === null ? true : false);
-  }, [isLoading, galleryList]);
+    fetching && onModal(true, LoadingAnimation);
+    !fetching && onModal(false, null);
+  }, [isLoading, galleryList, onModal, fetching]);
   return (
     <GalleryLayout ref={galleryLayoutRef}>
       {isLoading ? (
-        <p>
-          잠시만 기다려 주세요
-          <span role="img" aria-label="스마일 이모티콘">
-            😊
-          </span>
-        </p>
+        <LoadingAnimation />
       ) : galleryList.length > 0 ? (
         <ul>
           {galleryList.map((image, index) => (
