@@ -247,6 +247,7 @@ function CanvasContainer({ setInitialSwitch }) {
         undo={undo}
         onClear={onClear}
         isClear={isClear}
+        onSettingButton={onSettingButton}
       />
     </CanvasLayout>
   );

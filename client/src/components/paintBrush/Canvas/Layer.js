@@ -44,6 +44,7 @@ function Layer({
   undo,
   onClear,
   isClear,
+  onSettingButton,
 }) {
   const layerRef = useRef();
   const [position, setPosition] = useState({ x: 10, y: 10 });
@@ -53,7 +54,7 @@ function Layer({
     const ctx = layer.getContext('2d');
     layer.width = width;
     layer.height = height;
-    ctx.fillStyle = 'rgba(255,255,255,0)';
+    ctx.fillStyle = 'rgb(255,255,255)';
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = color;
     ctx.lineWidth = lineWidth;
@@ -64,11 +65,12 @@ function Layer({
   const onRightClick = (e) => {
     e.preventDefault();
   };
-  function getMousePosition(canvas, e) {
+
+  function getEventPosition(canvas, e) {
     const rect = canvas.getBoundingClientRect();
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
+      x: (e.targetTouches ? e.targetTouches[0].pageX : e.clientX) - rect.left,
+      y: (e.targetTouches ? e.targetTouches[0].pageY : e.clientY) - rect.top,
     };
   }
 
@@ -76,7 +78,7 @@ function Layer({
     if (isWriting) return false;
     if (isDrawingShapes) {
       e.preventDefault();
-      shapes.location.start = getMousePosition(layerRef.current, e);
+      shapes.location.start = getEventPosition(layerRef.current, e);
     }
     onChangeStatusToPainting(true);
     onChangeStatusToClicking(true);
@@ -95,7 +97,7 @@ function Layer({
       e.preventDefault();
       ctx.fillStyle = color;
       ctx.strokeStyle = color;
-      shapes.location.end = getMousePosition(layer, e);
+      shapes.location.end = getEventPosition(layer, e);
       ctx.clearRect(0, 0, width, height);
       ctx.beginPath();
 
@@ -145,6 +147,8 @@ function Layer({
       const canvasImg = new Image();
       const vCanvas = vCanvasRef.current;
       const vCtx = vCanvas.getContext('2d');
+      vCtx.fillStyle = 'rgb(255,255,255)';
+      vCtx.fillRect(0, 0, width, height);
       vCanvas.width = width;
       vCanvas.height = height;
       if (undo.length > 0) {
@@ -192,7 +196,7 @@ function Layer({
     ],
   );
 
-  const onMouseUp = (e) => {
+  const onMouseUp = () => {
     const layer = layerRef.current;
     const ctx = layer.getContext('2d');
     if (isFilling) ctx.fillRect(0, 0, width, height);
@@ -227,8 +231,10 @@ function Layer({
       url.revokeObjectURL(img.src);
       const imgToDataURL = layer.toDataURL('image/png');
       handleHtmlToImage(imgToDataURL, ctx);
+      onSettingButton('loadImage', 'isActive', false);
+      onSettingButton('loadImage', 'src', null);
     };
-  }, [loadImage.src, handleHtmlToImage]);
+  }, [loadImage.src, handleHtmlToImage, onSettingButton]);
 
   const handleClearCanvas = useCallback(async () => {
     const layer = await layerRef.current;
@@ -243,10 +249,68 @@ function Layer({
     await onClear(false);
   }, [onClear, width, height, onStackHistory, onRemoveRedo]);
 
+  //#region
+  const handleTouchStart = useCallback(
+    function (e) {
+      e.preventDefault();
+      const layer = layerRef.current;
+      const ctx = layer.getContext('2d');
+      const touch = e.touches[0];
+      const { x, y } = getEventPosition(layer, touch);
+      layer.style.webkitFilter = 'blur(0.4px)';
+      ctx.fillStyle = color;
+      ctx.strokeStyle = color;
+      ctx.clearRect(0, 0, width, height);
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    },
+    [color, width, height],
+  );
+
+  const handleTouchMove = useCallback(function (e) {
+    e.preventDefault();
+    const layer = layerRef.current;
+    const ctx = layer.getContext('2d');
+    const touch = e.touches[0];
+    const { x, y } = getEventPosition(layer, touch);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    function () {
+      const layer = layerRef.current;
+      const ctx = layer.getContext('2d');
+      const layerImg = new Image();
+      const src = layer.toDataURL('image/png');
+      layerImg.src = src;
+      handleHtmlToImage(src, ctx);
+      ctx.closePath();
+      ctx.save();
+    },
+    [handleHtmlToImage],
+  );
+  // function handleTouchCancel() {}
+  //#endregion
+
   useEffect(() => {
     loadImage.isActive && watchLoadFileButton();
     isClear && handleClearCanvas();
   }, [loadImage.isActive, watchLoadFileButton, isClear, handleClearCanvas]);
+
+  useEffect(() => {
+    const layer = layerRef.current;
+    layer.addEventListener('touchstart', handleTouchStart, false);
+    layer.addEventListener('touchmove', handleTouchMove, false);
+    layer.addEventListener('touchend', handleTouchEnd, false);
+    layer.addEventListener('touchcancel', handleTouchEnd, false);
+    return () => {
+      layer.removeEventListener('touchstart', handleTouchStart, false);
+      layer.removeEventListener('touchmove', handleTouchMove, false);
+      layer.removeEventListener('touchend', handleTouchEnd, false);
+      layer.removeEventListener('touchcancel', handleTouchEnd, false);
+    };
+  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   return (
     <div
@@ -306,15 +370,17 @@ function Layer({
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
-        onMouseLeave={() => onChangeStatusToPainting(false)}
+        onMouseLeave={() => {
+          onChangeStatusToPainting(false);
+        }}
         onClick={onHandleLayerClick}
       ></canvas>
       <canvas
         ref={vCanvasRef}
         style={{
           position: 'absolute',
-          top: '0',
-          left: '0',
+          top: '-100%',
+          left: '-100%',
           width: width,
           height: height,
           zIndex: -99999,
