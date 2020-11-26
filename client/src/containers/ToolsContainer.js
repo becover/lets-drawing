@@ -47,7 +47,6 @@ const ToolsContainerWapper = styled.div`
   padding: 10px 0;
   height: 9vh;
   box-sizing: border-box;
-  /* overflow: hidden; */
   position: relative;
   z-index: 10;
   .mobile_toolbar_btn {
@@ -56,6 +55,15 @@ const ToolsContainerWapper = styled.div`
   @media only screen and (max-width: 786px) {
     height: 16vh;
     min-height: 152px;
+    ${(props) =>
+      props.foldTools &&
+      css`
+        height: 8vh;
+        min-height: 76px;
+        .mobile_toolbar_btn svg {
+          transform: rotate(0deg);
+        }
+      `}
     .mobile_toolbar_btn {
       display: inline-block;
       position: absolute;
@@ -75,16 +83,6 @@ const ToolsContainerWapper = styled.div`
         transition: ease-in-out 0.2s;
       }
     }
-
-    ${(props) =>
-      props.foldTools &&
-      css`
-        height: 8vh;
-        min-height: 76px;
-        .mobile_toolbar_btn svg {
-          transform: rotate(0deg);
-        }
-      `}
   }
 `;
 const ToolsLayout = styled.div`
@@ -100,7 +98,7 @@ const ToolsLayout = styled.div`
     ${(props) =>
       props.foldTools &&
       css`
-        height: 152px;
+        height: 64px;
         overflow: hidden;
       `}
   }
@@ -115,6 +113,11 @@ const PippetAndPicker = styled.div`
     width: 30px;
     justify-content: space-around;
     margin-top: 8px;
+    ${(props) =>
+      props.foldTools &&
+      css`
+        display: none;
+      `}
   }
 `;
 const ToolsButtom = styled.div`
@@ -138,6 +141,7 @@ const TextAndShapesLayout = styled.div`
   }
   @media only screen and (max-width: 786px) {
     width: 120px;
+    /* ${(props) => props.foldTools && 'height:56px'} */
   }
 `;
 
@@ -145,6 +149,7 @@ function ToolsContainer() {
   const [foldTools, setFoldTools] = useState(true);
   const [textModeAlpha, setTextModeAlpha] = useState(100);
   const dispatch = useDispatch();
+  //#region
   const {
     color,
     isPainting,
@@ -298,10 +303,12 @@ function ToolsContainer() {
       window.removeEventListener('keyup', handleKeyupToolsBottom);
     };
   }, [handleKeydownToolsBottom, handleKeyupToolsBottom]);
+  //#endregion
   return (
     <ToolsContainerWapper foldTools={foldTools}>
       <ToolsLayout foldTools={foldTools}>
         <Brush
+          foldTools={foldTools}
           onChangeLineCap={onChangeLineCap}
           onChangeLineJoin={onChangeLineJoin}
           onChangeStatusToPainting={onChangeStatusToPainting}
@@ -313,6 +320,7 @@ function ToolsContainer() {
           isWriting={isWriting}
         />
         <TextAndShapesLayout
+          foldTools={foldTools}
           style={{ display: 'flex', flexDirection: 'column' }}
         >
           <Text
@@ -335,17 +343,20 @@ function ToolsContainer() {
           />
         </TextAndShapesLayout>
         <Colors
+          foldTools={foldTools}
           onChangeColor={onChangeColor}
           textModeAlpha={textModeAlpha}
           canvasMode={canvasMode}
         />
-        <PippetAndPicker style={{}}>
+        <PippetAndPicker foldTools={foldTools}>
           <Pipett
+            foldTools={foldTools}
             onChangeStatusToPipetting={onChangeStatusToPipetting}
             isPicking={isPicking}
             isPipetting={isPipetting}
           />
           <ColorPicker
+            foldTools={foldTools}
             onChangeStatusToPicking={onChangeStatusToPicking}
             onChangeColor={onChangeColor}
             isPicking={isPicking}
