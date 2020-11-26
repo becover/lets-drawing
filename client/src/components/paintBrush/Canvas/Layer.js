@@ -54,7 +54,7 @@ function Layer({
     const ctx = layer.getContext('2d');
     layer.width = width;
     layer.height = height;
-    ctx.fillStyle = 'rgb(255,255,255)';
+    ctx.fillStyle = 'rgba(255,255,255,0)';
     ctx.fillRect(0, 0, width, height);
     ctx.fillStyle = color;
     ctx.lineWidth = lineWidth;
@@ -147,8 +147,6 @@ function Layer({
       const canvasImg = new Image();
       const vCanvas = vCanvasRef.current;
       const vCtx = vCanvas.getContext('2d');
-      vCtx.fillStyle = 'rgb(255,255,255)';
-      vCtx.fillRect(0, 0, width, height);
       vCanvas.width = width;
       vCanvas.height = height;
       if (undo.length > 0) {
@@ -253,34 +251,115 @@ function Layer({
   const handleTouchStart = useCallback(
     function (e) {
       e.preventDefault();
-      const layer = layerRef.current;
-      const ctx = layer.getContext('2d');
-      const touch = e.touches[0];
-      const { x, y } = getEventPosition(layer, touch);
-      layer.style.webkitFilter = 'blur(0.4px)';
-      ctx.fillStyle = color;
-      ctx.strokeStyle = color;
-      ctx.clearRect(0, 0, width, height);
-      ctx.beginPath();
-      ctx.moveTo(x, y);
+      console.log(e.touches.length);
+      if (e.touches.length === 1) {
+        const layer = layerRef.current;
+        const ctx = layer.getContext('2d');
+        const touch = e.touches[0];
+        const { x, y } = getEventPosition(layer, touch);
+
+        if (isWriting) return false;
+        if (isDrawingShapes) {
+          e.preventDefault();
+          shapes.location.start = getEventPosition(layerRef.current, e);
+        }
+        onChangeStatusToPainting(true);
+        onChangeStatusToClicking(true);
+
+        layer.style.webkitFilter = 'blur(0.4px)';
+        ctx.fillStyle = color;
+        ctx.strokeStyle = color;
+        ctx.clearRect(0, 0, width, height);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+      }
     },
-    [color, width, height],
+    [
+      color,
+      width,
+      height,
+      isWriting,
+      isDrawingShapes,
+      onChangeStatusToPainting,
+      onChangeStatusToClicking,
+      shapes.location.start,
+    ],
   );
 
-  const handleTouchMove = useCallback(function (e) {
-    e.preventDefault();
-    const layer = layerRef.current;
-    const ctx = layer.getContext('2d');
-    const touch = e.touches[0];
-    const { x, y } = getEventPosition(layer, touch);
-    ctx.lineTo(x, y);
-    ctx.stroke();
-  }, []);
+  const handleTouchMove = useCallback(
+    function (e) {
+      e.preventDefault();
+      if (e.touches.length === 1) {
+        const layer = layerRef.current;
+        const ctx = layer.getContext('2d');
+        const touch = e.touches[0];
+        const { x, y } = getEventPosition(layer, touch);
+
+        if (isDrawingShapes) {
+          e.preventDefault();
+          ctx.fillStyle = color;
+          ctx.strokeStyle = color;
+          shapes.location.end = getEventPosition(layer, touch);
+          ctx.clearRect(0, 0, width, height);
+          ctx.beginPath();
+
+          if (shapes.type === 'rectangle') {
+            ctx.strokeRect(
+              shapes.location.start.x,
+              shapes.location.start.y,
+              shapes.location.end.x - shapes.location.start.x,
+              shapes.location.end.y - shapes.location.start.y,
+            );
+          } else if (shapes.type === 'triangle') {
+            const triangle = new Path2D();
+            triangle.moveTo(
+              shapes.location.start.x +
+                (shapes.location.end.x - shapes.location.start.x) / 2,
+              shapes.location.start.y,
+            );
+            triangle.lineTo(shapes.location.start.x, shapes.location.end.y);
+            triangle.lineTo(shapes.location.end.x, shapes.location.end.y);
+            triangle.closePath();
+            ctx.stroke(triangle);
+          } else if (shapes.type === 'circle') {
+            const circle = new Path2D();
+            circle.arc(
+              shapes.location.start.x +
+                (shapes.location.end.x - shapes.location.start.x) / 2,
+              shapes.location.start.y +
+                (shapes.location.end.y - shapes.location.start.y) / 2,
+              (shapes.location.end.x - shapes.location.start.x) / 2,
+              -0.5 * Math.PI,
+              2 * Math.PI,
+            );
+            ctx.stroke(circle);
+          }
+        } else {
+          layer.style.webkitFilter = 'blur(0.4px)';
+          ctx.fillStyle = color;
+          ctx.strokeStyle = color;
+          ctx.lineTo(x, y);
+          ctx.stroke();
+        }
+      }
+    },
+    [
+      color,
+      height,
+      isDrawingShapes,
+      shapes.location.end,
+      shapes.location.start.x,
+      shapes.location.start.y,
+      shapes.type,
+      width,
+    ],
+  );
 
   const handleTouchEnd = useCallback(
     function () {
       const layer = layerRef.current;
       const ctx = layer.getContext('2d');
+      if (isFilling) ctx.fillRect(0, 0, width, height);
       const layerImg = new Image();
       const src = layer.toDataURL('image/png');
       layerImg.src = src;
@@ -288,7 +367,7 @@ function Layer({
       ctx.closePath();
       ctx.save();
     },
-    [handleHtmlToImage],
+    [handleHtmlToImage, isFilling, width, height],
   );
   // function handleTouchCancel() {}
   //#endregion
@@ -304,6 +383,13 @@ function Layer({
     layer.addEventListener('touchmove', handleTouchMove, false);
     layer.addEventListener('touchend', handleTouchEnd, false);
     layer.addEventListener('touchcancel', handleTouchEnd, false);
+    layer.addEventListener(
+      'scroll',
+      (e) => {
+        if (e.targetTouches) return false;
+      },
+      false,
+    );
     return () => {
       layer.removeEventListener('touchstart', handleTouchStart, false);
       layer.removeEventListener('touchmove', handleTouchMove, false);
