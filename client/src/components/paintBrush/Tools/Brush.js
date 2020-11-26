@@ -9,6 +9,7 @@ const BrushContainer = styled.div`
   margin-right: 10px;
   @media only screen and (max-width: 786px) {
     width: 120px;
+    /* ${(props) => props.foldTools && 'height:56px'} */
   }
 `;
 const TabToggle = styled.div`
@@ -160,6 +161,7 @@ const BrushTypes = styled.div`
 `;
 
 function Brush({
+  foldTools,
   onChangeLineCap,
   onChangeLineJoin,
   onChangeStatusToFilling,
@@ -237,7 +239,7 @@ function Brush({
   );
 
   return (
-    <BrushContainer>
+    <BrushContainer foldTools={foldTools}>
       <TabToggle switch={Switch}>
         <FillIcon />
         <div>

@@ -3,13 +3,18 @@ import styled from 'styled-components';
 
 const ColorListContainer = styled.div`
   width: 50%;
+  min-width: 215px;
   max-width: 550px;
   display: flex;
   justify-content: center;
   align-items: center;
-  @media only screen and (max-width: 900px) {
+  @media only screen and (min-width: 787px) and (max-width: 900px) {
     width: auto;
     display: inline-flex;
+  }
+
+  @media only screen and (max-width: 786px) {
+    ${(props) => props.foldTools && 'display:none;'}
   }
 `;
 
@@ -59,7 +64,7 @@ const ColorList = styled.ul`
   @media only screen and (max-width: 786px) {
     margin-top: 8px;
     width: 200px;
-    margin-right: 20px;
+    margin-right: 15px;
     li {
       width: calc(200px / 5);
       height: calc(160px / 5);
@@ -67,7 +72,7 @@ const ColorList = styled.ul`
   }
 `;
 
-function Colors({ onChangeColor, textModeAlpha, canvasMode }) {
+function Colors({ onChangeColor, textModeAlpha, canvasMode, foldTools }) {
   const colors = [
     {
       color: 'rgba(51, 51, 51, 1)',
@@ -165,7 +170,7 @@ function Colors({ onChangeColor, textModeAlpha, canvasMode }) {
     [Colors],
   );
   return (
-    <ColorListContainer>
+    <ColorListContainer foldTools={foldTools}>
       <ColorList onClick={onClickColor}>
         {Colors.map((color, index) => (
           <li
