@@ -47,7 +47,11 @@ function Layer({
   onSettingButton,
 }) {
   const layerRef = useRef();
-  const [position, setPosition] = useState({ x: 10, y: 10 });
+  const [position, setPosition] = useState({
+    x: null,
+    y: null,
+  });
+  const [textModeClick, setTextModeclick] = useState(false);
 
   useEffect(() => {
     const layer = layerRef.current;
@@ -195,6 +199,7 @@ function Layer({
   );
 
   const onMouseUp = () => {
+    if (isWriting) return false;
     const layer = layerRef.current;
     const ctx = layer.getContext('2d');
     if (isFilling) ctx.fillRect(0, 0, width, height);
@@ -386,7 +391,7 @@ function Layer({
     layer.addEventListener(
       'scroll',
       (e) => {
-        if (e.targetTouches) return false;
+        if (e.targetTouches.length === 1) return false;
       },
       false,
     );
@@ -398,6 +403,14 @@ function Layer({
     };
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
+  const handleclickCanvas = (e) => {
+    setPosition({
+      x: `${e.nativeEvent.offsetX}px`,
+      y: `${e.nativeEvent.offsetY}px`,
+    });
+    setTextModeclick(true);
+  };
+
   return (
     <div
       style={{
@@ -405,8 +418,9 @@ function Layer({
         overflow: 'hidden',
         height: '100%',
       }}
+      onClick={(e) => isWriting && handleclickCanvas(e)}
     >
-      {isWriting && (
+      {isWriting && textModeClick && (
         <CreateText
           text_position={position}
           size={lineWidth}
@@ -438,6 +452,8 @@ function Layer({
           onChangeActive={onChangeActive}
           textColor={textColor}
           textSize={textSize}
+          setTextModeclick={setTextModeclick}
+          handleHtmlToImage={handleHtmlToImage}
         />
       )}
       <canvas

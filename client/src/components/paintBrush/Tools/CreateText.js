@@ -79,6 +79,8 @@ function CreateText({
   onChangeActive,
   textColor,
   textSize,
+  setTextModeclick,
+  handleHtmlToImage,
 }) {
   const { fill, border } = textColor;
   const [positions, setPositions] = useState(text_position);
@@ -122,12 +124,9 @@ function CreateText({
         </div>
       </foreignObject>
     </svg>`;
-    const img = new Image();
-    img.src = 'data:image/svg+xml,' + encodeURIComponent(xml);
-    img.onload = function () {
-      layerRef.current.getContext('2d').drawImage(img, 0, 0, width, height);
-      onStackHistory(img);
-    };
+    // const img = new Image();
+    const src = 'data:image/svg+xml,' + encodeURIComponent(xml);
+    handleHtmlToImage(src, layerRef.current.getContext('2d'));
   };
 
   const dragStart = useCallback(
@@ -219,6 +218,7 @@ function CreateText({
       ]);
       onChangeActive('brush', true);
       onChangeActive('text', false);
+      setTextModeclick(false);
     }
   };
 
