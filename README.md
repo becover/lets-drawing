@@ -27,7 +27,7 @@
 - 그리기
 - 칠하기(Paint all)
 
-### 2. Tistory
+### 2. History
 
 - 실행 취소(undo) : <code>ctrl</code> + <code>z</code>
 - 되돌리기(redo) : <code>ctrl</code> + <code>shift</code> + <code>z</code>
