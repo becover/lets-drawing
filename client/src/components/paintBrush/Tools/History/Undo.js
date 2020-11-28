@@ -6,7 +6,10 @@ const UndoIcon = styled.div`
   position: absolute;
   left: -15%;
   bottom: 0;
-
+  @media only screen and (max-width: 786px) {
+    transform: scale(2);
+    bottom: 10px;
+  }
   &:hover svg {
     fill: #333;
   }

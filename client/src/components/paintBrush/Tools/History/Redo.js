@@ -8,7 +8,11 @@ const RedoIcon = styled.div`
   position: absolute;
   right: calc(-15% + 16px);
   bottom: 0;
-
+  @media only screen and (max-width: 786px) {
+    transform: rotateY(180deg) scale(2);
+    right: calc(-15% + 24px);
+    bottom: 10px;
+  }
   &:hover svg {
     fill: #333;
   }

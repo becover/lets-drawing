@@ -43,11 +43,13 @@ const handleDisplay = (painting, noshow) => {
   return result;
 };
 const ToolsContainerWapper = styled.div`
+  width: 100%;
   border-bottom: 1px solid #d7d7d7;
   padding: 10px 0;
   height: 9vh;
   box-sizing: border-box;
-  position: relative;
+  position: absolute;
+  background-color: #fff;
   z-index: 10;
   .mobile_toolbar_btn {
     display: none;
