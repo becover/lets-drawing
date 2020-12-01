@@ -10,6 +10,7 @@ function Pipett({ onChangeStatusToPipetting, isPicking, isPipetting }) {
     <PipettVsg
       isPipetting={isPipetting}
       onClick={() => !isPicking && onChangeStatusToPipetting(true)}
+      title="컬러 스포이드"
     >
       <svg
         viewBox="0 0 15 15"

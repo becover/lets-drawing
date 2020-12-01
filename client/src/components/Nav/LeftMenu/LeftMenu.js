@@ -37,7 +37,7 @@ function LeftMenu({
         {isLogged ? (
           location === '/' ? (
             <>
-              <li>
+              <li title="갤러리">
                 <Link to="/gallery">
                   <svg
                     viewBox="0 0 15 15"
@@ -53,20 +53,20 @@ function LeftMenu({
                   </svg>
                 </Link>
               </li>
-              <li>
+              <li title="그림저장">
                 <SaveImage
                   {...{ onSettingButton, isLogged, onModal, onModalProps }}
                 />
               </li>
-              <li>
+              <li title="불러오기">
                 <LoadImage onSettingButton={onSettingButton} />
               </li>
-              <li>
+              <li title="새캔버스">
                 <BlankImage onClear={onClear} />
               </li>
             </>
           ) : (
-            <li>
+            <li title="메인으로">
               <Link to="/">
                 <svg
                   viewBox="0 0 15 15"

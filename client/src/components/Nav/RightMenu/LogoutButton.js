@@ -12,6 +12,7 @@ export default function LogoutButton({ onLogout }) {
         localStorage.removeItem('dw-user');
         history.push('/');
       }}
+      title="로그아웃"
     >
       <svg
         viewBox="0 0 15 15"

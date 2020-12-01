@@ -24,7 +24,7 @@ const UndoIcon = styled.div`
 
 function Undo({ onUndo }) {
   return (
-    <UndoIcon onClick={() => onUndo()}>
+    <UndoIcon onClick={() => onUndo()} title="실행취소">
       <svg
         viewBox="0 0 15 15"
         fill="none"

@@ -103,6 +103,7 @@ function ColorPicker({ onChangeStatusToPicking, onChangeColor, isPicking }) {
       style={{ position: 'relative', cursor: 'pointer' }}
       onClick={hanleTogglePicker}
       isPicking={isPicking}
+      title="팔레트"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

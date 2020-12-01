@@ -80,7 +80,7 @@ function Size({ onChangeLineWidth, onChangeTextSize, textMode }) {
   }, [onChangeLineWidth, Size, textMode, onChangeTextSize]);
 
   return (
-    <SizeContainer color={color}>
+    <SizeContainer color={color} title="크기">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="20"

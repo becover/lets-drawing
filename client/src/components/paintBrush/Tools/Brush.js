@@ -252,6 +252,7 @@ function Brush({
               ? onToggleSwitch
               : undefined
           }
+          title="채우기"
         >
           <FillIcon />
         </div>
@@ -275,6 +276,7 @@ function Brush({
               ? onToggleSwitch
               : undefined
           }
+          title="그리기"
         >
           <BrushIcon />
         </div>

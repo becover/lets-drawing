@@ -24,7 +24,7 @@ const RedoIcon = styled.div`
 
 function Redo({ onRedo }) {
   return (
-    <RedoIcon onClick={() => onRedo()}>
+    <RedoIcon onClick={() => onRedo()} title="다시실행">
       <svg
         viewBox="0 0 15 15"
         fill="none"

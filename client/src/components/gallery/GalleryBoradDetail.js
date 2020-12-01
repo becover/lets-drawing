@@ -121,7 +121,7 @@ function GalleryBoradDetail() {
       <DetailModal>
         <div className="detailpage_layout" onClick={handleEventPropagation}>
           <ul>
-            <li onClick={handleOverdrawing}>
+            <li onClick={handleOverdrawing} title="이어그리기">
               <Link to="/">
                 <svg
                   viewBox="0 0 15 15"
@@ -136,7 +136,7 @@ function GalleryBoradDetail() {
                 </svg>
               </Link>
             </li>
-            <li onClick={handleSaveImage}>
+            <li onClick={handleSaveImage} title="기기에 저장하기">
               <svg
                 viewBox="0 0 15 15"
                 xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +151,7 @@ function GalleryBoradDetail() {
                 ></path>
               </svg>
             </li>
-            <li onClick={handleDeleteImage}>
+            <li onClick={handleDeleteImage} title="삭제하기">
               <svg
                 viewBox="0 0 15 15"
                 fill="none"
@@ -165,7 +165,7 @@ function GalleryBoradDetail() {
                 ></path>
               </svg>
             </li>
-            <li onClick={handleCloseModal}>
+            <li onClick={handleCloseModal} title="창닫기">
               <svg
                 viewBox="0 0 15 15"
                 xmlns="http://www.w3.org/2000/svg"

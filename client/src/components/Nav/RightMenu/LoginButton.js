@@ -6,7 +6,7 @@ function LoginButton({ onModal }) {
     onModal(true, Login);
   };
   return (
-    <div onClick={onLoginModal}>
+    <div onClick={onLoginModal} title="로그인">
       <svg
         viewBox="0 0 15 15"
         fill="none"
