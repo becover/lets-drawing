@@ -44,26 +44,35 @@ const handleDisplay = (painting, noshow) => {
 };
 const ToolsContainerWapper = styled.div`
   width: 100%;
-  border-bottom: 1px solid #d7d7d7;
+  border-bottom: 1px solid #c6c6c6;
   padding: 10px 0;
   height: 9vh;
   box-sizing: border-box;
-  position: absolute;
+  position: relative;
   background-color: #fff;
   z-index: 10;
   .mobile_toolbar_btn {
     display: none;
   }
   @media only screen and (max-width: 786px) {
+    position: absolute;
     height: 16vh;
     min-height: 152px;
     ${(props) =>
       props.foldTools &&
       css`
         height: 8vh;
-        min-height: 76px;
+        min-height: 82px;
         .mobile_toolbar_btn svg {
           transform: rotate(0deg);
+        }
+      `}
+
+    ${(props) =>
+      !props.foldTools &&
+      css`
+        .mobile_toolbar_btn svg {
+          transform: rotate(180deg);
         }
       `}
     .mobile_toolbar_btn {
@@ -79,8 +88,7 @@ const ToolsContainerWapper = styled.div`
       width: 30px;
       text-align: center;
       svg {
-        transform: rotate(180deg);
-        transform-origin: 50%, 50%;
+        transform-origin: 50% 50%;
         cursor: pointer;
         transition: ease-in-out 0.2s;
       }
@@ -136,10 +144,14 @@ const ToolsButtom = styled.div`
   ${(props) => handleDisplay(props.isPainting, props.handleShow.current)}
 `;
 const TextAndShapesLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 62px;
+  margin-left:5px;
   @media only screen and (max-width: 900px) {
     width: 15%;
-    display: flex;
-    flex-direction: column;
+    
   }
   @media only screen and (max-width: 786px) {
     width: 120px;
@@ -321,10 +333,7 @@ function ToolsContainer() {
           brushsState={brushsState}
           isWriting={isWriting}
         />
-        <TextAndShapesLayout
-          foldTools={foldTools}
-          style={{ display: 'flex', flexDirection: 'column' }}
-        >
+        <TextAndShapesLayout foldTools={foldTools}>
           <Text
             onChangeStatusToWriting={onChangeStatusToWriting}
             onChangeStatusToTextMode={onChangeStatusToTextMode}
@@ -385,16 +394,17 @@ function ToolsContainer() {
         }}
       >
         <svg
+          viewBox="0 0 15 15"
+          fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          width="12"
-          height="7.41"
-          viewBox="0 0 12 7.41"
+          width="15"
+          height="15"
         >
           <path
-            id="ic_keyboard_arrow_down_24px"
-            d="M7.41,7.84,12,12.42l4.59-4.58L18,9.25l-6,6-6-6Z"
-            transform="translate(-6 -7.84)"
-          />
+            d="M14 5l-6.5 7L1 5"
+            stroke="currentColor"
+            stroke-linecap="square"
+          ></path>
         </svg>
       </span>
     </ToolsContainerWapper>

@@ -10,9 +10,6 @@ const LoadButton = styled.span`
   label {
     cursor: pointer;
   }
-  label:hover svg {
-    fill: #ff7b57;
-  }
 `;
 
 function LoadImage({ onSettingButton }) {
@@ -35,16 +32,16 @@ function LoadImage({ onSettingButton }) {
       />
       <label htmlFor="fileLoad">
         <svg
+          viewBox="0 0 15 15"
+          fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="16"
-          viewBox="0 0 20 16"
+          width="23"
+          height="23"
         >
           <path
-            id="ic_folder_open_24px"
-            d="M20,6H12L10,4H4A2,2,0,0,0,2.01,6L2,18a2.006,2.006,0,0,0,2,2H20a2.006,2.006,0,0,0,2-2V8A2.006,2.006,0,0,0,20,6Zm0,12H4V8H20Z"
-            transform="translate(-2 -4)"
-          />
+            d="M7.5 6v5M5 8.5h5m-9.5-6v10a1 1 0 001 1h12a1 1 0 001-1v-8a1 1 0 00-1-1h-6l-2-2h-4a1 1 0 00-1 1z"
+            stroke="currentColor"
+          ></path>
         </svg>
       </label>
     </LoadButton>

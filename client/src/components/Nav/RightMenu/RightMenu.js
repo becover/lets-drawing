@@ -5,8 +5,10 @@ import LogoutButton from './LogoutButton';
 
 const RightMenuContain = styled.div`
   cursor: pointer;
-  svg {
-    fill: #05baf5;
+  &:hover {
+    svg path {
+      fill: coral;
+    }
   }
   .greetings {
     display: inline-block;

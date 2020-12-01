@@ -2,6 +2,15 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRef } from 'react';
 import styled, { css } from 'styled-components';
 
+const ColorPickerLayout = styled.div`
+  ${(props) =>
+    props.isPicking &&
+    css`
+      svg path {
+        fill: tomato;
+      }
+    `}
+`;
 const PickerCanvas = styled.canvas`
   display: none;
   position: absolute;
@@ -90,9 +99,10 @@ function ColorPicker({ onChangeStatusToPicking, onChangeColor, isPicking }) {
   }, [onChangeStatusToPicking, togglePicker]);
 
   return (
-    <div
+    <ColorPickerLayout
       style={{ position: 'relative', cursor: 'pointer' }}
       onClick={hanleTogglePicker}
+      isPicking={isPicking}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +121,7 @@ function ColorPicker({ onChangeStatusToPicking, onChangeColor, isPicking }) {
         ref={pickerRef}
         onClick={hanleColorPicker}
       ></PickerCanvas>
-    </div>
+    </ColorPickerLayout>
   );
 }
 

@@ -10,6 +10,8 @@ import {
   change_color,
   change_mode,
   is_clear,
+  fill_coordinates,
+  is_filling,
 } from '../redux/modules/canvas';
 
 import { active, change_button_mode } from '../redux/modules/tools';
@@ -32,6 +34,9 @@ import { modal, modalProps } from '../redux/modules/portal';
 import styled, { css } from 'styled-components';
 
 const CanvasLayout = styled.div`
+  @media only screen and (max-width: 786px) {
+    margin-top: 82px;
+  }
   ${(props) =>
     props.isPipetting &&
     css`
@@ -55,6 +60,7 @@ function CanvasContainer({ setInitialSwitch }) {
     isWriting,
     isDrawingShapes,
     shapes,
+    fillCoordinates,
   } = useSelector(({ canvas }) => ({
     width: canvas.width,
     height: canvas.height,
@@ -70,6 +76,7 @@ function CanvasContainer({ setInitialSwitch }) {
     isWriting: canvas.isWriting,
     isDrawingShapes: canvas.isDrawingShapes,
     shapes: canvas.shapes,
+    fillCoordinates: canvas.fillCoordinates,
   }));
 
   const {
@@ -111,6 +118,11 @@ function CanvasContainer({ setInitialSwitch }) {
     (boolean) => dispatch(is_painting(boolean)),
     [dispatch],
   );
+
+  const onChangeStatusToFilling = useCallback(
+    (boolean) => dispatch(is_filling(boolean)),
+    [dispatch],
+  );
   const onChangeStatusTowriting = useCallback(
     (boolean) => dispatch(is_writing(boolean)),
     [dispatch],
@@ -139,6 +151,11 @@ function CanvasContainer({ setInitialSwitch }) {
   const onClear = useCallback((boolean) => dispatch(is_clear(boolean)), [
     dispatch,
   ]);
+
+  const onFillCoordinates = useCallback(
+    (coord) => dispatch(fill_coordinates(coord)),
+    [dispatch],
+  );
 
   //tools(button mode)
   const onChangeActive = useCallback(
@@ -203,6 +220,8 @@ function CanvasContainer({ setInitialSwitch }) {
         onSettingButton={onSettingButton}
         onModal={onModal}
         onModalProps={onModalProps}
+        isFilling={isFilling}
+        onFillCoordinates={onFillCoordinates}
       />
       <Layer
         width={width}
@@ -248,6 +267,8 @@ function CanvasContainer({ setInitialSwitch }) {
         onClear={onClear}
         isClear={isClear}
         onSettingButton={onSettingButton}
+        fillCoordinates={fillCoordinates}
+        onChangeStatusToFilling={onChangeStatusToFilling}
       />
     </CanvasLayout>
   );

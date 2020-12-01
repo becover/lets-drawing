@@ -3,14 +3,14 @@ import styled from 'styled-components';
 
 const ShapesBox = styled.div`
   display: flex;
-  display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
   @media only screen and (max-width: 900px) {
     justify-content: flex-start;
   }
   > ul {
     display: flex;
+    width: calc(100% - 25px);
   }
 
   > h2 {
@@ -44,9 +44,9 @@ const ShapesBox = styled.div`
   }
 
   ul > li {
-    border: 1px solid #ddd;
+    border: 1px solid #c6c6c6;
     border-radius: 5px;
-    width: 23px;
+    width: 24px;
     height: 23px;
     display: flex;
     justify-content: center;

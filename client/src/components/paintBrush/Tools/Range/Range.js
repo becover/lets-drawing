@@ -12,7 +12,8 @@ const RangeContainer = styled.div`
   padding: 10px 5px 10px 10px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1.5px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 2px 5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #c6c6c6;
   &:hover {
     background: rgba(255, 255, 255, 0.9);
   }

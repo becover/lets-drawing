@@ -94,7 +94,6 @@ function GalleryBoard({
     const scrollHeight = galleryLayoutRef.current.scrollHeight;
     const scrollTop = galleryLayoutRef.current.scrollTop;
     const clientHeight = galleryLayoutRef.current.clientHeight;
-    console.log(scrollTop, clientHeight, scrollHeight);
     if (scrollTop + clientHeight >= scrollHeight - 10 && fetching === false) {
       await fetchMoreInstaFeeds();
       page.current += 1;

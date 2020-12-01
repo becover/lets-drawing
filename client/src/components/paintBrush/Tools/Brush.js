@@ -17,6 +17,7 @@ const TabToggle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 30px;
 
   & > div {
     display: flex;
@@ -25,30 +26,28 @@ const TabToggle = styled.div`
     height: 100%;
     margin: 10px;
     box-sizing: border-box;
+    cursor: pointer;
   }
   ${(props) =>
     props.switch
       ? css`
-          svg:nth-of-type(1) {
-            fill: #ccc;
-          }
-          svg:nth-of-type(2) {
-            fill: hotpink;
+          div:nth-of-type(3) svg {
+            path {
+              fill: hotpink;
+            }
           }
         `
       : css`
-          svg:nth-of-type(1) {
-            fill: #2196f3;
-          }
-          svg:nth-of-type(2) {
-            fill: #ccc;
+          div:nth-of-type(1) svg {
+            path {
+              fill: hotpink;
+            }
           }
         `}
 
   svg {
-    width: 17px;
-    height: 17px;
-    fill: #2196f3;
+    width: 20px;
+    height: 20px;
   }
 `;
 
@@ -106,7 +105,7 @@ const BrushTypes = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 0.8px solid #ddd;
+  border: 0.8px solid #c6c6c6;
   border-radius: 5px;
   min-width: 100px;
 
@@ -210,38 +209,52 @@ function Brush({
 
   const BrushIcon = () => (
     <svg
+      viewBox="0 0 15 15"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      width="19.003"
-      height="18.002"
-      viewBox="0 0 19.003 18.002"
+      width="30"
+      height="30"
     >
       <path
-        id="ic_brush_24px"
-        d="M7,14a3,3,0,0,0-3,3,2.029,2.029,0,0,1-2,2,5.174,5.174,0,0,0,4,2,4,4,0,0,0,4-4A3,3,0,0,0,7,14ZM20.71,4.63,19.37,3.29a1,1,0,0,0-1.41,0L9,12.25,11.75,15l8.96-8.96A1,1,0,0,0,20.71,4.63Z"
-        transform="translate(-2 -2.998)"
-      />
+        d="M14.854.146a.5.5 0 01.079.605l-3.841 6.634-3.477-3.477L14.25.068a.5.5 0 01.605.078zM6.72 4.427l-1.97 1.14a.5.5 0 00-.104.787l4 4a.5.5 0 00.787-.103l1.14-1.97L6.72 4.426zM.99 10.441a3.063 3.063 0 012.947-2.227H4a3 3 0 013 3v.053a2.947 2.947 0 01-2.947 2.947h-.08a2.59 2.59 0 01-1.115-.252 1.594 1.594 0 00-1.57.113l-.51.341a.5.5 0 01-.759-.553l.971-3.422z"
+        fill="currentColor"
+      ></path>
     </svg>
   );
 
   const FillIcon = () => (
     <svg
+      viewBox="0 0 15 15"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      width="17"
-      height="20"
-      viewBox="0 0 17 20"
+      width="30"
+      height="30"
     >
       <path
-        id="ic_format_paint_24px"
-        d="M18,4V3a1,1,0,0,0-1-1H5A1,1,0,0,0,4,3V7A1,1,0,0,0,5,8H17a1,1,0,0,0,1-1V6h1v4H9V21a1,1,0,0,0,1,1h2a1,1,0,0,0,1-1V12h8V4Z"
-        transform="translate(-4 -2)"
-      />
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M4.5 0A2.5 2.5 0 002 2.5v3.793l-.44.44a2.5 2.5 0 000 3.535l3.172 3.171a2.5 2.5 0 003.536 0l4.171-4.171a2.5 2.5 0 000-3.536L9.268 2.561a2.498 2.498 0 00-2.342-.666A2.501 2.501 0 004.5 0zM6 3.707V7h1V2.914a1.5 1.5 0 011.56.354l3.172 3.171a1.5 1.5 0 010 2.122l-.44.439H1.915a1.5 1.5 0 01.354-1.56L6 3.706zm-.009-1.372A1.5 1.5 0 003 2.5v2.793L5.732 2.56c.082-.083.169-.158.259-.226z"
+        fill="currentColor"
+      ></path>
+      <path
+        d="M12.645 9.737l1.534 1.534a2.17 2.17 0 11-3.069 0l1.535-1.534z"
+        fill="currentColor"
+      ></path>
     </svg>
   );
 
   return (
     <BrushContainer foldTools={foldTools}>
       <TabToggle switch={Switch}>
-        <FillIcon />
+        <div
+          onClick={
+            (canvasMode === 'brush' || canvasMode === 'shape') && Switch
+              ? onToggleSwitch
+              : undefined
+          }
+        >
+          <FillIcon />
+        </div>
         <div>
           <SwitchLabel
             htmlFor="brushSwitch"
@@ -256,7 +269,15 @@ function Brush({
             <span></span>
           </SwitchLabel>
         </div>
-        <BrushIcon />
+        <div
+          onClick={
+            (canvasMode === 'brush' || canvasMode === 'shape') && !Switch
+              ? onToggleSwitch
+              : undefined
+          }
+        >
+          <BrushIcon />
+        </div>
       </TabToggle>
       <BrushTypes>
         {Brushs.map((brush, index) => (

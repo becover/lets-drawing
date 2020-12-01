@@ -13,16 +13,16 @@ function SaveImage({ onSettingButton, isLogged, onModal, onModalProps }) {
   return (
     <span onClick={handleClick}>
       <svg
+        viewBox="0 0 15 15"
+        fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="16"
-        viewBox="0 0 24 16"
+        width="23"
+        height="23"
       >
         <path
-          id="ic_cloud_upload_24px"
-          d="M19.35,10.04a7.492,7.492,0,0,0-14-2A6,6,0,0,0,6,20H19a4.986,4.986,0,0,0,.35-9.96ZM14,13v4H10V13H7l5-5,5,5Z"
-          transform="translate(0 -4)"
-        />
+          d="M7.5 1.5l3.25 3m-3.25-3l-3 3m3-3V11m6-4v6.5h-12V7"
+          stroke="currentColor"
+        ></path>
       </svg>
     </span>
   );

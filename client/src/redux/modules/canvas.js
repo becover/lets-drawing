@@ -16,6 +16,7 @@ const IS_DRAWING_SHAPES = 'paint/canvas/IS_DRAWING_SHAPES';
 const MODE = 'paint/canvas/MODE';
 const SHAPES_TYPE = 'paint/canvas/SHAPES_TYPE';
 const SHAPES_LOCATION = 'paint/canvas/SHAPES_LOCATION';
+const FILL_COORDINATES = 'paint/canvas/FILL_COORDINATES';
 
 export const Width = (value) => ({ type: WIDTH, value });
 export const Height = (value) => ({ type: HEIGHT, value });
@@ -52,6 +53,8 @@ export const shapes_location = (location, value) => ({
   value,
 });
 
+export const fill_coordinates = (coord) => ({ type: FILL_COORDINATES, coord });
+
 const INITIAL_STATE = {
   width: null,
   height: null,
@@ -68,6 +71,7 @@ const INITIAL_STATE = {
   isPicking: false,
   isWriting: false,
   isDrawingShapes: false,
+  fillCoordinates: [],
   mode: 'brush',
   shapes: {
     type: null,
@@ -177,6 +181,11 @@ const canvas = (state = INITIAL_STATE, action) => {
           [action.location]: action.value,
         },
       },
+    };
+  } else if (action.type === FILL_COORDINATES) {
+    return {
+      ...state,
+      fillCoordinates: action.coord,
     };
   } else {
     return state;

@@ -26,9 +26,9 @@ const NavigationContainer = styled.div`
     display: flex;
   }
 
-  > div svg:hover {
+  /* > div svg:hover {
     fill: #ff7b57;
-  }
+  } */
 
   > div:first-of-type {
     justify-content: flex-start;
@@ -56,6 +56,11 @@ const NavigationContainer = styled.div`
   svg {
     width: 20px;
     height: 20px;
+  }
+  @media only screen and (max-width: 430px) {
+    & div:nth-of-type(2) {
+      display: none;
+    }
   }
 `;
 /**

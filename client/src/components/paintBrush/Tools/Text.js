@@ -6,7 +6,7 @@ const TextContain = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   @media only screen and (max-width: 900px) {
     justify-content: flex-start;
   }
@@ -31,7 +31,7 @@ const TextContain = styled.div`
   }
   label {
     padding: 2px 5px;
-    border: 1px solid #ddd;
+    border: 1px solid #c6c6c6;
     border-radius: 5px;
     cursor: pointer;
     font-size: small;
@@ -115,16 +115,16 @@ function Text({
     <TextContain>
       <h2>
         <svg
+          viewBox="0 0 15 15"
+          fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          width="14"
-          height="15"
-          viewBox="0 0 14 15"
+          width="23"
+          height="23"
         >
           <path
-            id="ic_title_24px"
-            d="M5,4V7h5.5V19h3V7H19V4Z"
-            transform="translate(-5 -4)"
-          />
+            d="M7.5 14V1.5M1.5 5V1.5h12V5m-10 8.5H11"
+            stroke="currentColor"
+          ></path>
         </svg>
       </h2>
       <div>
