@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { removeId, on_remove_image } from '../../redux/modules/gallery';
 import { on_setting_button } from '../../redux/modules/nav';
 import { modal, modalProps } from '../../redux/modules/portal';
+import Alert from '../../Alert';
 
 const DetailModal = styled.div`
   max-width: 100%;
@@ -95,12 +96,24 @@ function GalleryBoradDetail() {
       Authorization: JSON.parse(localStorage.getItem('dw-token')),
       id: optionalProps.id,
     };
-    Axios.post(`${config.URI}gallery/deleteImage`, body).then(() => {
-      onRemoveImage(true);
-      onRemoveId(optionalProps.id);
-      handleCloseModal();
-    });
-  }, [onRemoveImage, onRemoveId, handleCloseModal, optionalProps.id]);
+    Axios.post(`${config.URI}gallery/deleteImage`, body)
+      .then(() => {
+        onRemoveImage(true);
+        onRemoveId(optionalProps.id);
+        handleCloseModal();
+      })
+      .then(() => {
+        onModalProps({ message: '삭제되었습니다.' });
+        onModal(true, Alert);
+      });
+  }, [
+    onRemoveImage,
+    onRemoveId,
+    handleCloseModal,
+    optionalProps.id,
+    onModalProps,
+    onModal,
+  ]);
 
   return (
     optionalProps.id &&
