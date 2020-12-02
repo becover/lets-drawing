@@ -4,26 +4,26 @@
 
 <br>
 
-<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_main.png" height="50%" title="pc메인화면" alt="pc메인화면"></img>
+<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_main.png" width="40%" title="pc메인화면" alt="pc메인화면"></img>
 
-<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_logged.png" height="50%" title="pc로그인한 메인화면" alt="pc로그인한 메인화면"></img>
+<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_logged.png" width="40%" title="pc로그인한 메인화면" alt="pc로그인한 메인화면"></img>
 
-<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_login.png" height="50%" title="login모달" alt="login모달"></img>
+<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_login.png" width="40%" title="login모달" alt="login모달"></img>
 
-<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_signup.png" height="50%" title="signup모달" alt="signup모달"></img>
+<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_signup.png" width="40%" title="signup모달" alt="signup모달"></img>
 
-<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_gallery.png" height="50%" title="pc갤러리페이지" alt="pc갤러리페이지"></img>
+<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_gallery.png" width="40%" title="pc갤러리페이지" alt="pc갤러리페이지"></img>
 
-<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_gallerydetail.png" height="50%" title="pc갤러리디테일모달" alt="pc갤러리디테일모달"></img>
+<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_gallerydetail.png" width="40%" title="pc갤러리디테일모달" alt="pc갤러리디테일모달"></img>
 
 ## 개발 이슈
 
 - 웹서버 사용하여 배포(OCI)
 - 계획 밖의 반응형 추가(모바일 대응 터치이벤트 적용)
 
-<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/m.fold.png" height="50%" title="mobile메인 접힌툴" alt="mobile메인 접힌툴"></img>
+<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/m_fold.png" width="80%" title="mobile메인 접힌툴" alt="mobile메인 접힌툴"></img>
 
-<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/pc_unflod.png" height="50%" title="mobile메인 펼쳐진툴" alt="mobile메인 펼쳐진툴"></img>
+<img src="https://github.com/becover/lets-drawing/blob/master/readmeImg/m_unflod.png" width="80%" title="mobile메인 펼쳐진툴" alt="mobile메인 펼쳐진툴"></img>
 
 ## 사용한 기술들
 
