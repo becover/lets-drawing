@@ -1,13 +1,12 @@
 import React, { useCallback, useRef, useState } from 'react';
 import config from '../../_config/config.json';
 import styled from 'styled-components';
-import 'dayjs';
 import dayjs from 'dayjs';
 import GalleryBoradDetail from './GalleryBoradDetail';
 import { useEffect } from 'react';
 import Axios from 'axios';
 import LoadingAnimation from './LoadingAnimation';
-import throttle from '../../utils/throttle';
+import debounce from '../../utils/debounce';
 const GalleryLayout = styled.div`
   padding: 2rem 6rem;
   height: 87vh;
@@ -84,28 +83,30 @@ function GalleryBoard({
       await Axios.post(`${config.URI}gallery/?page=${page.current}`, body).then(
         (res) => {
           const fetchedData = res.data.gallery;
-          const mergedData = galleryList.concat(...fetchedData);
+          const mergedData = [...galleryList, ...fetchedData];
           setGalleryList(mergedData);
         },
       );
       setFetching(false);
+      page.current += 1;
     }
   }, [galleryList, lastPageNumber]);
 
   // 스크롤 이벤트 핸들러
-  const handleScroll = useCallback(async () => {
-    const scrollHeight = galleryLayoutRef.current.scrollHeight;
-    const scrollTop = galleryLayoutRef.current.scrollTop;
-    const clientHeight = galleryLayoutRef.current.clientHeight;
-    if (scrollTop + clientHeight >= scrollHeight - 10 && fetching === false) {
-      await fetchMoreInstaFeeds();
-      page.current += 1;
-    }
-  }, [fetchMoreInstaFeeds, fetching]);
-
+  const handleScroll = useCallback(
+    debounce(async () => {
+      const scrollHeight = galleryLayoutRef.current.scrollHeight;
+      const scrollTop = galleryLayoutRef.current.scrollTop;
+      const clientHeight = galleryLayoutRef.current.clientHeight;
+      if (scrollTop + clientHeight >= scrollHeight - 10 && fetching === false) {
+        await fetchMoreInstaFeeds();
+      }
+    }, 500),
+    [fetchMoreInstaFeeds, fetching],
+  );
   useEffect(() => {
     const galleryLayout = galleryLayoutRef.current;
-    galleryLayout.addEventListener('scroll', throttle(handleScroll, 800));
+    galleryLayout.addEventListener('scroll', handleScroll);
     return () => galleryLayout.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
@@ -118,6 +119,7 @@ function GalleryBoard({
     fetching && onModal(true, LoadingAnimation);
     !fetching && onModal(false, null);
   }, [isLoading, galleryList, onModal, fetching]);
+
   return (
     <GalleryLayout ref={galleryLayoutRef}>
       {isLoading ? (
