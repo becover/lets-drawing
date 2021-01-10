@@ -4,6 +4,7 @@ import config from '../../_config/config.json';
 
 import styled from 'styled-components';
 import Alert from '../../Alert';
+import debounce from '../../utils/debounce';
 
 const Checked = styled.span`
   margin-left: 5px;
@@ -119,7 +120,10 @@ export default function SingupForm({ onModal, onModalProps }) {
   }, []);
 
   useEffect(() => {
-    refs.usernameRef.current.addEventListener('input', onCheckUsername);
+    refs.usernameRef.current.addEventListener(
+      'input',
+      debounce(onCheckUsername, 1500),
+    );
     return () =>
       refs.usernameRef.current.removeEventListener('input', onCheckUsername);
   }, [onCheckUsername, refs.usernameRef]);
