@@ -144,8 +144,8 @@ function GalleryBoradDetail() {
                 height="19"
               >
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M7 9.358V1h1v8.293l2.146-2.147.708.708-3.34 3.34L3.91 7.866l.678-.734L7 9.358zM2 13V7H1v7h13V7h-1v6H2z"
                   fill="currentColor"
                 ></path>
