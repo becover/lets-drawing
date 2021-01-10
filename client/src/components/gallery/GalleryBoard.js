@@ -7,6 +7,7 @@ import GalleryBoradDetail from './GalleryBoradDetail';
 import { useEffect } from 'react';
 import Axios from 'axios';
 import LoadingAnimation from './LoadingAnimation';
+import throttle from '../../utils/throttle';
 const GalleryLayout = styled.div`
   padding: 2rem 6rem;
   height: 87vh;
@@ -20,6 +21,8 @@ const GalleryLayout = styled.div`
     flex-wrap: wrap;
     li {
       width: 32%;
+      min-height: 35%;
+      max-height: 50%;
       min-width: 300px;
       margin: 15px auto;
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
@@ -102,7 +105,7 @@ function GalleryBoard({
 
   useEffect(() => {
     const galleryLayout = galleryLayoutRef.current;
-    galleryLayout.addEventListener('scroll', handleScroll);
+    galleryLayout.addEventListener('scroll', throttle(handleScroll, 800));
     return () => galleryLayout.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
