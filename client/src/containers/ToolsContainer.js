@@ -46,7 +46,8 @@ const ToolsContainerWapper = styled.div`
   width: 100%;
   border-bottom: 1px solid #c6c6c6;
   padding: 10px 0;
-  height: 9vh;
+  height: 10vh;
+  min-height: 83px;
   box-sizing: border-box;
   position: relative;
   background-color: #fff;
@@ -358,6 +359,7 @@ function ToolsContainer() {
           onChangeColor={onChangeColor}
           textModeAlpha={textModeAlpha}
           canvasMode={canvasMode}
+          isPicking={isPicking}
         />
         <PippetAndPicker foldTools={foldTools}>
           <Pipett
@@ -403,7 +405,7 @@ function ToolsContainer() {
           <path
             d="M14 5l-6.5 7L1 5"
             stroke="currentColor"
-            stroke-linecap="square"
+            strokeLinecap="square"
           ></path>
         </svg>
       </span>

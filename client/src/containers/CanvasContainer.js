@@ -208,7 +208,7 @@ function CanvasContainer({ setInitialSwitch }) {
     dispatch,
   ]);
   return (
-    <CanvasLayout style={{ height: '78vh' }} isPipetting={isPipetting}>
+    <CanvasLayout style={{ height: '77vh' }} isPipetting={isPipetting}>
       <Canvas
         width={width}
         height={height}

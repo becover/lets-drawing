@@ -33,7 +33,10 @@ const ColorList = styled.ul`
     height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3), 0 0 3px rgba(0, 0, 0, 0.1);
+    &:nth-of-type(2) {
+      border: 1px solid #c6c6c6;
+    }
+    box-sizing: border-box;
 
     svg {
       position: absolute;
@@ -72,7 +75,13 @@ const ColorList = styled.ul`
   }
 `;
 
-function Colors({ onChangeColor, textModeAlpha, canvasMode, foldTools }) {
+function Colors({
+  onChangeColor,
+  textModeAlpha,
+  canvasMode,
+  foldTools,
+  isPicking,
+}) {
   const colors = [
     {
       color: 'rgba(51, 51, 51, 1)',
@@ -118,21 +127,26 @@ function Colors({ onChangeColor, textModeAlpha, canvasMode, foldTools }) {
 
   const [Colors, setColors] = useState(colors);
 
-  const handleRgbRegex = (color) => {
-    const rgbRegex = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/;
-    const rgbaRegex = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/;
-    if (rgbRegex.test(color)) {
-      // eslint-disable-next-line
-      const [_, r, g, b] = color.match(rgbRegex);
-      const ALPHA = textModeAlpha / 100;
-      return onChangeColor(`rgba(${r},${g},${b},${ALPHA})`);
-    } else if (rgbaRegex.test(color)) {
-      // eslint-disable-next-line
-      const [_, r, g, b, a] = color.match(rgbaRegex);
-      const ALPHA = textModeAlpha / 100;
-      return onChangeColor(`rgba(${r},${g},${b},${ALPHA})`);
-    }
-  };
+  const handleRgbRegex = useCallback(
+    (color) => {
+      const rgbRegex = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/;
+      const rgbaRegex = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/;
+      if (rgbRegex.test(color)) {
+        // eslint-disable-next-line
+        const [_, r, g, b] = color.match(rgbRegex);
+        const ALPHA = textModeAlpha / 100;
+        console.log(`rgba(${r}, ${g}, ${b}, ${ALPHA})`);
+        return onChangeColor(`rgba(${r}, ${g}, ${b}, ${ALPHA})`);
+      } else if (rgbaRegex.test(color)) {
+        // eslint-disable-next-line
+        const [_, r, g, b, a] = color.match(rgbaRegex);
+        const ALPHA = textModeAlpha / 100;
+        console.log(`rgba(${r}, ${g}, ${b}, ${ALPHA})`);
+        return onChangeColor(`rgba(${r}, ${g}, ${b}, ${ALPHA})`);
+      }
+    },
+    [onChangeColor, textModeAlpha],
+  );
 
   const onClickColor = (e) => {
     if (e.target && e.target.tagName === 'LI') {
@@ -157,17 +171,21 @@ function Colors({ onChangeColor, textModeAlpha, canvasMode, foldTools }) {
     </svg>
   );
 
-  const onClick = useCallback(
+  const onClickLi = useCallback(
     (index) => {
       setColors(
-        Colors.map((color, idx) =>
-          idx === index
-            ? { ...color, clicked: true }
-            : { ...color, clicked: false },
-        ),
+        Colors.map((colors, idx) => {
+          if (idx === index) {
+            const clickedColor = colors.color;
+            onChangeColor(clickedColor);
+            return { ...colors, clicked: true };
+          } else {
+            return { ...colors, clicked: false };
+          }
+        }),
       );
     },
-    [Colors],
+    [Colors, onChangeColor],
   );
   return (
     <ColorListContainer foldTools={foldTools}>
@@ -176,9 +194,9 @@ function Colors({ onChangeColor, textModeAlpha, canvasMode, foldTools }) {
           <li
             key={index}
             style={{ background: color.color }}
-            onClick={() => onClick(index)}
+            onClick={() => onClickLi(index)}
           >
-            {color.clicked ? <CheckdIcon /> : ''}
+            {color.clicked && !isPicking ? <CheckdIcon /> : ''}
           </li>
         ))}
       </ColorList>
