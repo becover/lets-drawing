@@ -49,9 +49,9 @@ const Loader = styled.div`
 export default function LoadingAnimation() {
   return (
     <Loader>
-      <div class="dot dot1"></div>
-      <div class="dot dot2"></div>
-      <div class="dot dot3"></div>
+      <div className="dot dot1"></div>
+      <div className="dot dot2"></div>
+      <div className="dot dot3"></div>
     </Loader>
   );
 }
