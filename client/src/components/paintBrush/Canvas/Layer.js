@@ -369,7 +369,7 @@ function Layer({
       const src = layer.toDataURL('image/png');
       layerImg.src = src;
       handleHtmlToImage(src, ctx);
-      ctx.closePath();
+      // ctx.closePath();
       ctx.save();
     },
     [handleHtmlToImage, isFilling, width, height],
